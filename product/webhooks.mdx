@@ -1,0 +1,86 @@
+---
+title: Webhooks
+description: You can set up an Octolens Webhook to send mention notifications to other apps.
+---
+
+## How to create a webhook
+
+You can turn any view in your feed into a webhook notification. Here's how:
+
+**1. Choose which view you want to send as a webhook**
+
+You can do this by clicking "Enable as notification" in the top-right.
+
+<Frame>
+  <img src="/images/webhooks-enable-notification.png" alt="Enable as notification button" />
+</Frame>
+
+Or hover over a view in the sidebar, click the three dots, and select "Enable notification."
+
+<Frame>
+  <img src="/images/webhooks-sidebar-enable.png" alt="Enable notification from sidebar" />
+</Frame>
+
+**2. Toggle on webhook**
+
+Once you have chosen your view, select "Webhook" in Step 2: Destination and Frequency.
+
+<Frame>
+  <img src="/images/webhooks-destination.png" alt="Select webhook destination" />
+</Frame>
+
+**3. Add the webhook URL and choose a frequency**
+
+**4. Test your webhook to confirm it works**
+
+## Example Payload
+
+Here is an example of one of our webhook payloads. The action event can be either `mention_created` or `mention_updated`.
+
+```json
+{
+  "action": "mention_created",
+  "data": {
+    "title": "title",
+    "body": "post body text.",
+    "url": "https://posturl",
+    "timestamp": "2024-12-04T13:55:32.000Z",
+    "imageUrl": "imageurl",
+    "author": "author",
+    "authorProfileLink": "https://platform.com/author",
+    "source": "platform",
+    "sourceId": "111111111",
+    "relevanceScore": "0",
+    "relevanceComment": "User is suggesting a feature that could enhance Octolens.",
+    "keyword": "Octolens",
+    "sentimentLabel": "Neutral",
+    "subreddit": "r/subreddit",
+    "viewId": "111",
+    "viewName": "View name"
+  }
+}
+```
+
+<Note>
+The `subreddit` field is only present for Reddit mentions.
+</Note>
+
+## Example use cases for webhooks
+
+1. Send Discord notifications for new mentions
+2. Automatically add mentions to a Notion database
+3. Add new mentions to Google Sheets
+4. Automatically add mentions to Airtable
+5. Capture new mentions as HubSpot CRM contacts
+6. Create Asana tasks from mentions
+7. Turn mentions into ClickUp tasks
+8. Automatically receive email alerts for new mentions
+9. Automatically create Intercom tickets from mentions
+10. Generate Monday.com tasks from mentions
+11. Create Linear issues for new mentions
+12. Create new leads in Pipedrive from mentions
+13. Create new Salesforce leads for new mentions
+14. Automatically add mentions to Zoho CRM
+15. Create Todoist tasks instantly from mentions
+16. Create Trello cards for new mentions
+17. Send Microsoft Teams messages for new mentions

@@ -1,0 +1,86 @@
+---
+title: Keyword Settings
+description: The extra rules you can set for your tracked mentions
+---
+
+You can set extra rules for your keywords in their settings.
+
+1. Find your keyword in the sidebar.
+2. Click the three dots.
+3. Select **Keyword settings**.
+
+<Frame>
+  <img src="/images/keyword-settings-menu.png" alt="Hover over a keyword, then click the three dots to open Keyword settings." />
+</Frame>
+
+A sheet will open with your main keyword at the top and extra settings below.
+
+You can define the following settings:
+
+- [Platforms](#platforms)
+- [Keyword context](#keyword-context)
+- [Include ANY OF](#include-any-of)
+- [Include ALL OF](#include-all-of)
+- [Negative terms](#negative-terms) (exclude)
+- [Negative authors](#negative-authors) (exclude)
+- [Wildcard negative terms](#wildcard-negative-terms)
+- [Exact match](#exact-match)
+- [Case-sensitive](#case-sensitivity)
+
+You can also define [global keyword settings](/product/global-keyword-settings) that apply immediately to all keywords.
+
+### Platforms
+
+You can exclude specific platforms for a keyword. This helps if you only want a few keywords monitored on GitHub.
+
+### Keyword context
+
+This is optional extra context for your keyword. It helps our AI assess incoming posts. We already use your company info from settings, but keyword-specific context can still help.
+
+Help the AI understand what's relevant for this keyword.
+
+This is useful if:
+
+- Your keyword is a common word or brand name (e.g. "Anything")
+- Your keyword is a broad industry term (e.g. "social listening")
+
+Examples:
+
+- "Our brand Anything is an AI tool, ignore posts using 'anything' as a common word."
+- "Only include posts about social listening in a B2B SaaS context, exclude B2C brands like Nike."
+
+Keep it under 200 characters. The AI uses this only to filter noise, not to change your keyword.
+
+### Include ANY OF
+
+Set extra terms that must appear with your primary keyword. You can choose multiple terms, and we will then search for posts that include your primary keyword and ANY of these extra terms.
+
+For example, if your primary keyword is GitHub and you add the terms AI and Copilot, we will only add mentions that include GitHub and either AI or Copilot (or both).
+
+### Include ALL OF
+
+Set extra terms that must appear with your primary keyword. You can choose multiple terms, and we will then search for posts that include your primary keyword and ALL of these extra terms.
+
+For example, if your primary keyword is GitHub and you add the terms AI and Copilot, we will only add mentions that include GitHub, AI, and Copilot.
+
+### Negative terms
+
+You can add negative terms (one or multiple, comma-separated). If you do this, we will exclude posts mentioning any of those terms. For example, if your primary keyword is GitHub and you add Runner as a negative term, we will exclude mentions that include Runner together with GitHub.
+
+### Negative authors
+
+You can add negative authors (one or multiple, comma-separated). If you do this, we will exclude posts where the author field matches one of these names exactly. For example, add your own social handles to exclude posts from your company or employee accounts.
+
+### Wildcard negative terms
+
+We will exclude patterns of terms. This is useful if you get a lot of spammy posts with the same type of URL, for example.
+
+Add terms ending with `*` to exclude any word starting with that pattern. For example, `beta.*` will match `beta.0.1`, `beta.0.2.com`, `beta.test`, etc.
+
+### Exact match
+
+Toggle this to control how strict matching should be. If this is off, we use a broad match (your term can appear inside another string, like a URL). If this is on, we only match the standalone term.
+
+### Case-sensitivity
+
+Toggle this to enforce uppercase/lowercase matching. For example, if your primary keyword is RAG (uppercase), you can toggle case-sensitive on to only get posts with RAG, not rag.

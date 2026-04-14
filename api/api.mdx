@@ -1,0 +1,217 @@
+---
+title: API
+description: Create custom integrations and automations
+---
+
+With the Octolens API, you can use data from your Octolens workspace to create custom integrations and automations.
+
+The Octolens API is available on **Scale and Custom** plans.
+
+---
+
+## How to use the Octolens API
+
+#### Create an API Key
+
+In Octolens, navigate to Settings and then the API tab.
+
+- Click "Add new key"
+- Choose a name for your API key
+- Choose an expiration date for your API key from the dropdown
+- Click **Create**
+
+You can revoke access to an API key at any time by clicking the three dots next to it.
+
+---
+
+## Quick Start
+
+#### Base URL
+
+```
+https://app.octolens.com/api/v1
+```
+
+#### Rate Limits
+
+500 requests per hour
+
+Check `X-RateLimit-*` headers for usage
+
+#### Authentication
+
+Bearer token in the Authorization header
+
+#### Example Request
+
+```bash
+curl -X POST "https://app.octolens.com/api/v1/mentions" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"limit": 10}'
+```
+
+---
+
+## Endpoints
+
+### 1. POST /mentions
+
+Fetch mentions matching your keywords with optional filtering. Returns posts sorted by timestamp (newest first).
+
+#### Parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `view` | number | View ID to use for filtering. View filters are merged with other filters. |
+| `limit` | number | Maximum number of results to return (1-100). Default: `20` |
+| `cursor` | string | Pagination cursor from previous response |
+| `includeAll` | boolean | Include low-relevance posts. When false, only high and medium relevance posts are returned. Default: `false` |
+
+#### Filters (11 options)
+
+**You can also check out our AI Filter Wizard to help construct the filter you want.**
+
+| Filter | Type | Description |
+| --- | --- | --- |
+| `filters.source` | string[] | Filter by source platforms. Prefix with `!` to exclude. Values: `twitter`, `reddit`, `github`, `linkedin`, `youtube`, `hackernews`, `devto`, `stackoverflow`, `bluesky`, `newsletter`, `podcast` |
+| `filters.sentiment` | string[] | Filter by sentiment. Prefix with `!` to exclude. Values: `positive`, `neutral`, `negative` |
+| `filters.keyword` | string[] | Filter by specific keyword IDs. Prefix with `!` to exclude. |
+| `filters.language` | string[] | Filter by language codes (ISO 639-1). Prefix with `!` to exclude. Values: `en`, `es`, `fr`, `de`, `pt`, `it`, `nl`, `ja`, `ko`, `zh` |
+| `filters.tag` | string[] | Filter by tags. Prefix with `!` to exclude. |
+| `filters.bookmarked` | boolean | Filter to only bookmarked (true) or non-bookmarked (false) posts. |
+| `filters.engaged` | boolean | Filter to only engaged (true) or non-engaged (false) posts. |
+| `filters.minXFollowers` | number | Minimum X/Twitter follower count for the author. |
+| `filters.maxXFollowers` | number | Maximum X/Twitter follower count for the author. |
+| `filters.startDate` | string | Only return posts from this date onwards (ISO 8601). |
+| `filters.endDate` | string | Only return posts up to this date (ISO 8601). |
+
+#### Request Body
+
+```json
+{
+  "limit": 20,
+  "includeAll": false,
+  "filters": {
+    "source": ["twitter", "reddit"],
+    "sentiment": ["positive", "neutral"],
+    "language": ["en"],
+    "minXFollowers": 1000,
+    "startDate": "2024-01-01T00:00:00Z"
+  }
+}
+```
+
+#### Response
+
+```json
+{
+  "data": [
+    {
+      "id": "abc123",
+      "url": "https://twitter.com/user/status/123",
+      "title": null,
+      "body": "Just discovered @YourProduct - this is exactly what I needed!",
+      "source": "twitter",
+      "timestamp": "2024-01-15T10:30:00Z",
+      "author": "user123",
+      "authorName": "John Doe",
+      "authorAvatar": "https://...",
+      "authorUrl": "https://twitter.com/user123",
+      "authorFollowers": 5420,
+      "relevance": "relevant",
+      "relevanceComment": "Direct mention of product",
+      "sentiment": "positive",
+      "language": "en",
+      "tags": ["feature-request"],
+      "keywords": [{ "id": 1, "keyword": "YourProduct" }],
+      "bookmarked": false,
+      "engaged": false
+    }
+  ],
+  "cursor": "eyJsYXN0SWQiOiAiYWJjMTIzIn0="
+}
+```
+
+### 2. GET /keywords
+
+List all keywords configured for your organization. Returns keyword details including platforms and status.
+
+#### Response
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "keyword": "YourProduct",
+      "platforms": ["twitter", "reddit", "github"],
+      "color": "#6366f1",
+      "paused": false,
+      "context": "Our main product name"
+    },
+    {
+      "id": 2,
+      "keyword": "CompetitorX",
+      "platforms": ["twitter"],
+      "color": "#ef4444",
+      "paused": false,
+      "context": "Main competitor"
+    }
+  ]
+}
+```
+
+### 3. GET /views
+
+List all saved views for your organization. Views contain pre-configured filters that can be used with the mentions endpoint.
+
+#### Response
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "High Priority",
+      "icon": "star",
+      "filters": {
+        "sentiment": ["positive", "negative"],
+        "source": ["twitter"]
+      },
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-15T10:30:00Z"
+    }
+  ]
+}
+```
+
+---
+
+## Error Codes
+
+The API uses standard HTTP status codes. Here are the possible error responses.
+
+#### 401 `unauthorized`
+
+Missing or invalid API key. Ensure you include the Authorization header with a valid API key.
+
+#### 403 `forbidden`
+
+API key is valid but doesn't have permission to access this resource.
+
+#### 404 `not_found`
+
+The requested resource (e.g., view ID) was not found.
+
+#### 429 `rate_limit_exceeded`
+
+Too many requests. Check the `X-RateLimit-*` headers for limits and reset time.
+
+#### 400 `invalid_request`
+
+The request body is malformed or contains invalid parameters.
+
+#### 500 `internal_error`
+
+An unexpected error occurred. Please try again or contact support.

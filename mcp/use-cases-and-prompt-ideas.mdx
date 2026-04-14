@@ -1,0 +1,106 @@
+---
+title: Use Cases and Prompt Ideas
+description: Practical prompts and workflows for Octolens MCP
+---
+
+#### 1. Custom analytics and graphs
+
+**Prompt:** "Using Octolens, calculate the share of voice for BRAND vs. COMPETITOR1, and COMPETITOR2, over the last 90 days. Return a share of voice graph (pie chart) with brand, total mentions, and percentage share of total mentions."
+
+**What this does:**
+
+- Checks all your brand and competitor mentions from the last 90 days
+- Creates a custom graph
+
+Recommendation: for heavier analytics searches and graph creation go for a strong model like Claude Opus 4.6 or GPT 5.3
+
+<Frame>
+  <img src="/images/mcp-share-of-voice.png" alt="Share of voice graph example" />
+</Frame>
+
+#### 2. Weekly Reputation Monitoring
+
+**Prompt:** "Show me all mentions from the last 7 days, grouped by sentiment. Highlight any negative mentions that need immediate response."
+
+**What this does:**
+
+- Pulls mentions from your tracked keywords
+- Uses AI to analyze sentiment
+- Surfaces urgent issues
+
+**Best for:** Weekly stand-ups, team reviews
+
+---
+
+#### 3. Competitive Intelligence
+
+**Prompt:** "Compare how people talk about \[Your Brand] vs \[Competitor] on Reddit this month. What are the key differentiators?"
+
+**What this does:**
+
+- Analyzes language patterns
+- Identifies positioning gaps
+- Surfaces competitive advantages
+
+**Best for:** Product marketing, positioning strategy
+
+---
+
+#### 4. Product Feedback Analysis
+
+**Prompt:** "Extract all feature requests mentioned on any platform in the last month. Group by frequency and urgency."
+
+**What this does:**
+
+- Consolidates feedback across platforms
+- Prioritizes by volume
+- Identifies patterns
+
+**Best for:** Product teams, roadmap planning
+
+---
+
+#### 5. Support Issue Detection
+
+**Prompt:** "Alert me to any mentions containing words like 'bug', 'error', 'not working', or 'broken' in the last 24 hours."
+
+**What this does:**
+
+- Real-time issue detection
+- Proactive support outreach
+- Reduces escalation risk
+
+**Best for:** Support teams, DevOps
+
+---
+
+#### 6. Campaign performance
+
+**Prompt:** "Show me all mentions during our product launch week (Feb 1-7). How did sentiment change day by day?"
+
+**What this does:**
+
+- Tracks launch momentum
+- Measures campaign impact
+- Identifies amplification opportunities
+
+**Best for:** Marketing teams, launch retrospectives
+
+---
+
+### Prompting Tips
+
+**Be specific about time ranges:**
+
+- "Last 7 days" is better than "recently"
+- "January 2026" is better than "this month"
+
+**Specify platforms when relevant:**
+
+- "Reddit and Hacker News" vs. "all platforms"
+- Helps AI focus on the most relevant data
+
+**Ask for structured outputs:**
+
+- "Group by sentiment"
+- "Summarize in bullet points"

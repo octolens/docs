@@ -1,0 +1,126 @@
+---
+title: Setup Guides
+description: Step-by-step guides to connect Octolens to your favorite tool
+---
+
+## Claude Code
+
+Add the Octolens MCP server using the CLI command.
+
+#### 1. Run this command
+
+Remember to replace the URL with your own.
+
+```bash
+claude mcp add octolens \
+  --transport sse \
+  "https://app.octolens.com/api/mcp?token=YOUR_API_KEY"
+```
+
+#### 2. Verify the connection
+
+Inside Claude Code, run the `/mcp` command to check the server status:
+
+```
+/mcp
+⎿ MCP Server Status
+  • octolens: connected
+```
+
+Scope options: Add `--scope user` to make it available across all projects, or `--scope project` to share with your team via `.mcp.json`.
+
+---
+
+## Claude Desktop / Web
+
+Add the Octolens MCP server to Claude Desktop or Claude Web.
+
+#### 1. Using Connectors (Pro, Max, Team & Enterprise)
+
+Go to `Settings → Connectors → Add Custom Connector` and add the server URL:
+
+```
+https://app.octolens.com/api/mcp?token=YOUR_API_KEY
+```
+
+#### 2. Alternative: use mcp-remote
+
+Edit your config file:
+
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+Replace `YOUR_API_KEY` with your API key:
+
+```json
+{
+  "mcpServers": {
+    "octolens": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://app.octolens.com/api/mcp?token=YOUR_API_KEY"
+      ]
+    }
+  }
+}
+```
+
+#### 3. Restart Claude Desktop
+
+After saving, restart Claude Desktop to connect.
+
+---
+
+## ChatGPT
+
+Add the Octolens MCP server to ChatGPT.
+
+#### 1. Enable Developer Mode
+
+Go to `Settings → Apps` and turn on Developer Mode.
+
+#### 2. Create the app
+
+Create a new app with no authentication, using just the server URL:
+
+```
+https://app.octolens.com/api/mcp?token=YOUR_API_KEY
+```
+
+#### 3. Use in chat
+
+In the chat, click the `+` button and select the Octolens MCP.
+
+---
+
+## Cursor
+
+Add the Octolens MCP server to your Cursor IDE.
+
+#### 1. Open MCP settings
+
+Open the Command Palette (`⌘ + Shift + P` on Mac, `Ctrl + Shift + P` on Windows), search for "MCP" and select "Add new global MCP server".
+
+Or edit the config file directly:
+
+- **macOS/Linux:** `~/.cursor/mcp.json`
+- **Windows:** `%USERPROFILE%\.cursor\mcp.json`
+
+#### 2. Add this configuration
+
+Replace `YOUR_API_KEY` with your API key:
+
+```json
+{
+  "mcpServers": {
+    "octolens": {
+      "url": "https://app.octolens.com/api/mcp?token=YOUR_API_KEY"
+    }
+  }
+}
+```
+
+#### 3. Reload Cursor
+
+After saving, reload Cursor to connect. Use MCP tools in Agent mode.

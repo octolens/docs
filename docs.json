@@ -1,122 +1,122 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Octolens",
+  "theme": "venus",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6366f1",
+    "light": "#818cf8",
+    "dark": "#4f46e5"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
+  "logo": "/logo.svg",
   "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "API Reference",
+          "href": "/api/api",
+          "icon": "plug"
+        },
+        {
+          "anchor": "MCP",
+          "href": "/mcp/what-is-octolens-mcp",
+          "icon": "robot"
+        }
+      ]
+    },
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Product",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "product/introduction"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Keywords",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "product/choosing-keywords",
+              "product/keyword-settings",
+              "product/global-keyword-settings"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Platforms",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "product/tracked-platforms/tracked-platforms",
+              "product/tracked-platforms/list-of-newsletters"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Features",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "product/views",
+              "product/alerts",
+              "product/webhooks",
+              "product/ai-relevance-and-tags/ai-relevance-and-tags",
+              "product/ai-relevance-and-tags/company-context",
+              "product/analytics",
+              "product/ai-summaries"
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "pages": [
+              "product/why-am-i-not-getting-mentions",
+              "product/faqs"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "API Reference",
             "pages": [
-              "api-reference/introduction"
+              "api/api"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "MCP",
+        "groups": [
           {
-            "group": "Endpoint examples",
+            "group": "MCP",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "mcp/what-is-octolens-mcp",
+              "mcp/setup-guides",
+              "mcp/use-cases-and-prompt-ideas"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    ]
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:hi@octolens.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://app.octolens.com"
     }
   },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+  "feedback": {
+    "thumbsRating": true
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/Octolens_HQ",
+      "website": "https://octolens.com"
     }
   }
 }
