@@ -14,12 +14,12 @@
       "anchors": [
         {
           "anchor": "API Reference",
-          "href": "/api/api",
+          "href": "/api/overview",
           "icon": "plug"
         },
         {
           "anchor": "MCP",
-          "href": "/mcp/what-is-octolens-mcp",
+          "href": "/mcp/overview",
           "icon": "robot"
         }
       ]
@@ -32,41 +32,40 @@
             "group": "Getting Started",
             "pages": [
               "index",
-              "product/introduction"
+              "introduction"
             ]
           },
           {
             "group": "Keywords",
             "pages": [
-              "product/choosing-keywords",
-              "product/keyword-settings",
-              "product/global-keyword-settings"
+              "keywords/choosing-keywords",
+              "keywords/settings",
+              "keywords/global-settings"
             ]
           },
           {
             "group": "Platforms",
             "pages": [
-              "product/tracked-platforms/tracked-platforms",
-              "product/tracked-platforms/list-of-newsletters"
+              "platforms/overview",
+              "platforms/newsletters"
             ]
           },
           {
             "group": "Features",
             "pages": [
-              "product/views",
-              "product/alerts",
-              "product/webhooks",
-              "product/ai-relevance-and-tags/ai-relevance-and-tags",
-              "product/ai-relevance-and-tags/company-context",
-              "product/analytics",
-              "product/ai-summaries"
+              "features/views",
+              "features/alerts",
+              "features/webhooks",
+              "features/ai-relevance",
+              "features/company-context",
+              "features/analytics",
+              "features/ai-summaries"
             ]
           },
           {
             "group": "Troubleshooting",
             "pages": [
-              "product/why-am-i-not-getting-mentions",
-              "product/faqs"
+              "troubleshooting"
             ]
           }
         ]
@@ -77,7 +76,7 @@
           {
             "group": "API Reference",
             "pages": [
-              "api/api"
+              "api/overview"
             ]
           }
         ]
@@ -88,9 +87,9 @@
           {
             "group": "MCP",
             "pages": [
-              "mcp/what-is-octolens-mcp",
+              "mcp/overview",
               "mcp/setup-guides",
-              "mcp/use-cases-and-prompt-ideas"
+              "mcp/use-cases"
             ]
           }
         ]
