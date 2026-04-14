@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "name": "Octolens",
-  "theme": "venus",
+  "theme": "maple",
   "colors": {
-    "primary": "#6366f1",
-    "light": "#818cf8",
-    "dark": "#4f46e5"
+    "primary": "#9266CC",
+    "light": "#9266CC",
+    "dark": "#553788"
   },
   "favicon": "/favicon.png",
   "logo": "/logo.svg",
