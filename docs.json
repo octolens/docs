@@ -10,20 +10,6 @@
   "favicon": "/favicon.png",
   "logo": "/logo.svg",
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "API Reference",
-          "href": "/api/overview",
-          "icon": "plug"
-        },
-        {
-          "anchor": "MCP Server",
-          "href": "/mcp/overview",
-          "icon": "robot"
-        }
-      ]
-    },
     "tabs": [
       {
         "tab": "Documentation",
@@ -31,8 +17,7 @@
           {
             "group": "Documentation",
             "pages": [
-              "index",
-              "introduction"
+              "index"
             ]
           },
           {
