@@ -1,0 +1,59 @@
+---
+title: Alerts
+description: Get notifications via email, Slack, or webhook
+---
+
+You can create notifications based on any of your saved [views](/quickstart/views). Once a view is set up, you can enable it as a notification. Octolens supports three notification destinations: **Email**, **Slack**, and **Webhook**.
+
+## How to set up an alert
+
+You can start the notification setup from two places:
+
+**From your feed** — click "Enable as notification" in the top-right of any view.
+
+<Frame>
+  <img src="/images/alerts-feed-setup.png" alt="Set up notifications from the feed" />
+</Frame>
+
+**From the [notifications page](https://octolens.com/me/notifications)** — manage all your notifications in one place.
+
+<Frame>
+  <img src="/images/alerts-notifications-page.png" alt="Set up notifications from the notifications page" />
+</Frame>
+
+### Step 1: Choose notification settings
+
+<Steps>
+  <Step title="Choose the view you want to get notified for">
+    Select a view from the dropdown. If the view doesn't exist yet, [create it first](/quickstart/views).
+  </Step>
+  <Step title="Check the filters of that view">
+    Review the filters including **Keyword**, **Platform**, **Tag**, **Sentiment**, and **Language**. You can also set advanced filters.
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/alerts-step1-settings.png" alt="Step 1: Choose notification settings" />
+</Frame>
+
+### Step 2: Select destination and frequency
+
+Choose where you want to send your notification and how often.
+
+<Frame>
+  <img src="/images/alerts-step2-destination.png" alt="Step 2: Select destination and frequency" />
+</Frame>
+
+## Email alerts
+
+Select **Email** as your destination. You'll receive mention notifications directly in your inbox at the frequency you choose.
+
+## Slack alerts
+
+Select **Slack** as your destination. Make sure your [Slack workspace is connected](/quickstart/connect-slack) first—otherwise the Slack option won't appear.
+
+You can choose which relevance levels to include. For example, get notified only for posts the AI deems as high relevance (buy-intent, engagement opportunities, customer complaints, or praise).
+
+## Webhook alerts
+
+Select **Webhook** as your destination. This lets you send mention data to any external app. For full details on webhook setup and payload format, see [Webhooks](/quickstart/webhooks).

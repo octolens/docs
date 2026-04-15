@@ -1,0 +1,76 @@
+---
+title: Global Keyword Settings
+description: Settings that apply to every keyword at once
+---
+
+Global keyword settings apply to **all keywords** in your workspace. Use them to cut noise across your whole account without configuring each keyword individually.
+
+## Where to edit global settings
+
+You have two ways to access the same global settings:
+
+<Steps>
+  <Step title="From any keyword">
+    Open **Keyword settings** for any keyword, then scroll to the **Global settings** section at the very bottom. Your changes apply to **every keyword**, not just the one you opened.
+  </Step>
+  <Step title="From the main Settings page">
+    Go to **Settings** in Octolens, then open **Global Settings**.
+  </Step>
+</Steps>
+
+<Warning>
+Global settings are shared. Treat them like account-level filters.
+
+If you want keyword-specific filtering, use the settings inside that keyword (like **Negative terms**). See [Keyword Settings](/quickstart/keyword-settings).
+</Warning>
+
+## How global settings interact with keyword settings
+
+A post must pass **both** global filters and the keyword's own filters. This means global settings can only _reduce_ results—they can't expand them.
+
+## Available global settings
+
+### Global negative terms
+
+Exclude posts that include these terms for **all keywords**.
+
+- **Matching:** exact match
+- **Input:** one or more terms (comma-separated)
+
+> Example: `job, hiring, careers`
+
+### Global negative authors
+
+Exclude posts from these authors for **all keywords**.
+
+- **Matching:** exact match and case sensitive
+- **Input:** one or more authors (comma-separated)
+
+> Example: `Octolens, OctolensHQ`
+
+### Allowed subreddits (allowlist)
+
+When set, Octolens will **only** include Reddit posts from these subreddits.
+
+- Leave empty to include all subreddits (except those in Excluded subreddits)
+- **Format:** `r/<subreddit>`
+
+> Example: `r/technology, r/startups`
+
+### Excluded subreddits
+
+Exclude Reddit posts from these subreddits for **all keywords**.
+
+- **Matching:** exact match and case insensitive
+- **Format:** `r/<subreddit>`
+
+> Example: `r/health`
+
+### Global negative GitHub repositories
+
+Exclude posts from these GitHub repositories for **all keywords**.
+
+- **Matching:** exact match and case insensitive
+- **Format:** `owner/repo`
+
+> Example: `For-Hives/beswib, facebook/react`

@@ -18,7 +18,7 @@
           "icon": "plug"
         },
         {
-          "anchor": "MCP",
+          "anchor": "MCP Server",
           "href": "/mcp/overview",
           "icon": "robot"
         }
@@ -26,51 +26,47 @@
     },
     "tabs": [
       {
-        "tab": "Product",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Documentation",
             "pages": [
-              "index"
+              "index",
+              "introduction"
             ]
           },
           {
-            "group": "Keywords",
+            "group": "Quickstart",
             "pages": [
-              "keywords/choosing-keywords",
-              "keywords/settings",
-              "keywords/global-settings"
+              "quickstart/company-context",
+              "quickstart/keywords",
+              "quickstart/keyword-settings",
+              "quickstart/global-keyword-settings",
+              "quickstart/views",
+              "quickstart/connect-slack",
+              "quickstart/alerts",
+              "quickstart/webhooks",
+              "quickstart/csv-export",
+              "quickstart/team-members"
             ]
           },
           {
-            "group": "Platforms",
+            "group": "Learn",
             "pages": [
-              "platforms/overview",
-              "platforms/newsletters"
-            ]
-          },
-          {
-            "group": "Features",
-            "pages": [
-              "features/views",
-              "features/alerts",
-              "features/webhooks",
-              "features/ai-relevance",
-              "features/company-context",
-              "features/analytics",
-              "features/ai-summaries"
-            ]
-          },
-          {
-            "group": "Troubleshooting",
-            "pages": [
-              "troubleshooting"
+              "learn/mention-limits",
+              "learn/ai-relevance",
+              "learn/sentiment",
+              "learn/platforms/overview",
+              "learn/platforms/newsletter-list",
+              "learn/analytics",
+              "learn/ai-summaries",
+              "learn/faqs"
             ]
           }
         ]
       },
       {
-        "tab": "API",
+        "tab": "API Reference",
         "groups": [
           {
             "group": "API Reference",
@@ -81,10 +77,10 @@
         ]
       },
       {
-        "tab": "MCP",
+        "tab": "MCP Server",
         "groups": [
           {
-            "group": "MCP",
+            "group": "MCP Server",
             "pages": [
               "mcp/overview",
               "mcp/setup-guides",

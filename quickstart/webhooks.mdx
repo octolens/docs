@@ -1,41 +1,40 @@
 ---
 title: Webhooks
-description: You can set up an Octolens Webhook to send mention notifications to other apps.
+description: Send mention notifications to other apps via webhooks
 ---
+
+You can set up an Octolens webhook to send mention notifications to other apps. Webhooks turn any view in your feed into a real-time data stream.
 
 ## How to create a webhook
 
-You can turn any view in your feed into a webhook notification. Here's how:
+<Steps>
+  <Step title="Choose which view you want to send as a webhook">
+    Click **"Enable as notification"** in the top-right of any view.
 
-**1. Choose which view you want to send as a webhook**
+    <Frame>
+      <img src="/images/webhooks-enable-notification.png" alt="Enable as notification button" />
+    </Frame>
 
-You can do this by clicking "Enable as notification" in the top-right.
+    Or hover over a view in the sidebar, click the three dots, and select **"Enable notification."**
 
-<Frame>
-  <img src="/images/webhooks-enable-notification.png" alt="Enable as notification button" />
-</Frame>
+    <Frame>
+      <img src="/images/webhooks-sidebar-enable.png" alt="Enable notification from sidebar" />
+    </Frame>
+  </Step>
+  <Step title="Toggle on webhook">
+    In **Step 2: Destination and Frequency**, select **"Webhook."**
 
-Or hover over a view in the sidebar, click the three dots, and select "Enable notification."
+    <Frame>
+      <img src="/images/webhooks-destination.png" alt="Select webhook destination" />
+    </Frame>
+  </Step>
+  <Step title="Add the webhook URL and choose a frequency" />
+  <Step title="Test your webhook to confirm it works" />
+</Steps>
 
-<Frame>
-  <img src="/images/webhooks-sidebar-enable.png" alt="Enable notification from sidebar" />
-</Frame>
+## Example payload
 
-**2. Toggle on webhook**
-
-Once you have chosen your view, select "Webhook" in Step 2: Destination and Frequency.
-
-<Frame>
-  <img src="/images/webhooks-destination.png" alt="Select webhook destination" />
-</Frame>
-
-**3. Add the webhook URL and choose a frequency**
-
-**4. Test your webhook to confirm it works**
-
-## Example Payload
-
-Here is an example of one of our webhook payloads. The action event can be either `mention_created` or `mention_updated`.
+Here is an example of a webhook payload. The **action** event can be either `mention_created` or `mention_updated`.
 
 ```json
 {
@@ -84,3 +83,7 @@ The `subreddit` field is only present for Reddit mentions.
 15. Create Todoist tasks instantly from mentions
 16. Create Trello cards for new mentions
 17. Send Microsoft Teams messages for new mentions
+
+<Tip>
+You can also use popular automation tools like **Zapier**, **n8n**, or **Make** to connect your webhook to hundreds of other apps.
+</Tip>

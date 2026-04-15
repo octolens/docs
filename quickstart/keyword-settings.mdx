@@ -1,0 +1,84 @@
+---
+title: Keyword Settings
+description: Configure extra rules for each tracked keyword
+---
+
+You can set extra rules for each keyword to control what gets matched and what gets filtered out.
+
+## How to open keyword settings
+
+<Steps>
+  <Step title="Find your keyword in the sidebar" />
+  <Step title="Click the three dots next to it" />
+  <Step title="Select Keyword settings">
+    A sheet will open with your main keyword at the top and extra settings below.
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/keyword-settings-menu.png" alt="Hover over a keyword, then click the three dots to open Keyword settings." />
+</Frame>
+
+## Available settings
+
+### Platforms
+
+You can **exclude specific platforms** for a keyword. This helps if you only want certain keywords monitored on specific platforms (e.g., only monitor a keyword on GitHub).
+
+### Keyword context
+
+Optional extra context for your keyword. It helps the AI assess incoming posts. Octolens already uses your [company context](/quickstart/company-context), but keyword-specific context can still help.
+
+This is useful if:
+
+- Your keyword is a common word or brand name (e.g., "Anything")
+- Your keyword is a broad industry term (e.g., "social listening")
+
+Examples:
+
+- "Our brand Anything is an AI tool, ignore posts using 'anything' as a common word."
+- "Only include posts about social listening in a B2B SaaS context, exclude B2C brands like Nike."
+
+Keep it under 200 characters. The AI uses this only to filter noise, not to change your keyword.
+
+### Include ANY OF
+
+Set extra terms that must appear **with** your primary keyword. We will search for posts that include your primary keyword **and ANY** of these extra terms.
+
+> Example: If your primary keyword is **GitHub** and you add **AI** and **Copilot**, we will only add mentions that include GitHub and either AI or Copilot (or both).
+
+### Include ALL OF
+
+Set extra terms that must **all** appear with your primary keyword. We will search for posts that include your primary keyword **and ALL** of these extra terms.
+
+> Example: If your primary keyword is **GitHub** and you add **AI** and **Copilot**, we will only add mentions that include GitHub, AI, and Copilot.
+
+### Negative terms
+
+Add terms (comma-separated) to **exclude** posts that contain them alongside your keyword.
+
+> Example: If your primary keyword is **GitHub** and you add **Runner** as a negative term, we will exclude mentions that include Runner together with GitHub.
+
+### Negative authors
+
+Add author names (comma-separated) to **exclude** posts from those authors. Matches are exact. Use this to exclude your own company or employee accounts.
+
+### Wildcard negative terms
+
+Exclude patterns of terms using wildcards. Add terms ending with `*` to exclude any word starting with that pattern.
+
+> Example: `beta.*` will match `beta.0.1`, `beta.0.2.com`, `beta.test`, etc.
+
+### Exact match
+
+Toggle to control how strict matching should be. **Off** = broad match (your term can appear inside another string, like a URL). **On** = only match the standalone term.
+
+### Case sensitivity
+
+Toggle to enforce uppercase/lowercase matching. Useful when your keyword is an acronym.
+
+> Example: If your keyword is **RAG** (uppercase), toggle case-sensitive on to only get posts with RAG, not "rag."
+
+<Info>
+You can also apply filters that affect **all keywords at once** with [Global Keyword Settings](/quickstart/global-keyword-settings).
+</Info>
