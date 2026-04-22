@@ -1,56 +1,72 @@
 ---
 title: Company Context
-description: Add context about your business to improve AI assessment
+description: Tell Octolens about your business so the AI can judge which mentions are actually relevant to you.
 ---
 
-Providing company context helps Octolens understand your business, so the AI can better assess which posts are relevant to you. The more detail you give, the more accurate your results.
+Your company context is the single biggest lever on relevance quality. The AI uses it to decide whether a post actually matters to your brand — especially important if your brand name is a common word ("Arc," "Modal," "Stripe").
 
-You can edit your company information in your **Relevance settings**, located in the left sidebar of your workspace. Octolens uses this information to contextualize the posts it finds and assess their importance to your company.
+<Note>
+Octolens fills in your company context automatically during onboarding based on your website. You can edit it at any time — from the moment you save, the AI uses the updated context when scoring **new** posts. Existing mentions keep their original scoring.
+</Note>
+
+Go to **Settings → Company Profile** in your workspace to review or edit it.
+
+<Frame caption="Settings → Company Profile — the fields that shape AI relevance scoring.">
+  <img src="/images/settings-company-profile.png" alt="Company Profile settings tab with Company name, Company description, Product Use Cases, X/Twitter account, and LinkedIn account fields" />
+</Frame>
 
 ## What to fill in
+
+**Company name** and **Company description** are required. The rest is optional but recommended — the more context you give, the fewer irrelevant mentions you'll see.
 
 ### Company name
 
 Your company or product name as it appears publicly.
 
-> Example: Octolens
+> Example: `Octolens`
 
 ### Company description
 
-A few sentences describing what your company does. Aim for 2–3 sentences, not just your one-liner pitch from your homepage.
+2–3 sentences covering what you do, how it works, and who it's for. Go beyond your homepage one-liner — include your core use cases, the platforms or tech involved, and the outcome for users.
 
-> Example: Octolens is a social listening and selling tool that monitors platforms relevant to B2B software companies and sends alerts when somebody mentions your brand, your competitor, the problem you are tackling, or any other keyword that matters to you. Octolens helps its customers find warm leads by identifying sales signals in posts.
+> **Example:** Octolens is a brand monitoring and social listening platform for SaaS, AI, and developer-focused companies. It monitors mentions across platforms like Reddit, X, LinkedIn, Hacker News, GitHub, YouTube, podcasts, newsletters, and news, then uses AI to filter noise and surface the most relevant brand, competitor, and pain-point conversations. Teams use it to get alerts in Slack, email, webhooks, or via API/MCP so they can respond faster and stay close to market sentiment.
+
+<Tip>
+A good test: if a stranger read only your description, could they tell your product apart from your closest competitor? If not, add more specificity.
+</Tip>
 
 ### Product use cases
 
-Add your main product use cases so Octolens can better understand what your company does and what your competitive edge is.
+A list of the main jobs your product does for customers. Click the **+** next to "Product Use Cases" to add each one as its own entry — short sentences work better than a single long paragraph.
 
-> Example: "Monitor brand mentions across social media and the web" and "Track competitor activity through social listening"
+Good use cases are concrete and outcome-oriented:
 
-### Twitter handle
+- Track brand mentions across social, community, and media channels so teams can respond quickly.
+- Monitor competitor names and category keywords to understand market sentiment and share of voice.
+- Detect pain-point and buying-signal conversations on Reddit, X, LinkedIn, Hacker News, and GitHub.
+- Route mention data into Slack, email, webhooks, API, or MCP-powered agent workflows.
 
-Your brand's Twitter/X handle without the `@` sign.
+### X/Twitter account
 
-> Example: Octolens
+Your brand's X/Twitter handle without the `@`.
 
-### LinkedIn handle
+> Example: `Octolens`
 
-Your company's LinkedIn handle without `company/` prefix.
+### LinkedIn account
 
-> Example: Octolens
+Your company's LinkedIn slug — the part after `linkedin.com/company/`.
 
-### Industry
+> Example: `Octolens`
 
-Enter the specific category or type that best describes your company within a broader classification.
+## When to update your context
 
-> Example: Social Media Monitoring & Social Selling
-
-### Sector
-
-Enter the overall or broad category that best represents your company's industry.
-
-> Example: B2B Marketing
+Update Company Profile whenever your positioning, pricing model, or core use cases change. The AI re-uses this context every time it scores a new post, so keeping it current keeps your relevance high.
 
 <Tip>
-The more context you provide, the better Octolens can distinguish relevant mentions from noise. This is especially important if your brand name is a common word. See [AI Relevance & Tags](/learn/ai-relevance) to learn how Octolens uses this information.
+If you're seeing too many irrelevant mentions, start here before tweaking keyword settings. Most noise problems trace back to thin company context.
 </Tip>
+
+## Next steps
+
+- [Choose your keywords →](/quickstart/keywords)
+- [How AI Relevance & Tags work](/learn/ai-relevance)
