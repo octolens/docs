@@ -1,38 +1,36 @@
 ---
 title: Global Keyword Settings
-description: Settings that apply to every keyword at once
+description: Account-wide filters — cut noise across every keyword without editing them one at a time.
 ---
 
-Global keyword settings apply to **all keywords** in your workspace. Use them to cut noise across your whole account without configuring each keyword individually.
+Global keyword settings apply to **every keyword** in your workspace. Use them when the same noise keeps showing up across all your keywords — job posts, generic subreddits, bot accounts, internal repos — and you don't want to configure each keyword separately.
+
+<Frame caption="Settings → Global Settings — the same fields also appear at the bottom of any Keyword Settings panel.">
+  <img src="/images/settings-global-settings.png" alt="Settings Global Settings tab showing Global negative terms, Global negative authors, Allowed subreddits, Excluded subreddits, and Global negative GitHub repositories" />
+</Frame>
+
+## How global settings combine with keyword settings
+
+A post must pass **both** the global filters *and* the keyword's own filters to land in your feed. Global settings can only **reduce** results — they can't expand them.
+
+> **Example.** You add `r/health` to Excluded subreddits globally, and your `mental health` keyword also has its own `beta` negative term. A post in `r/health` that mentions `mental health` is excluded globally; a post in `r/productivity` that mentions `mental health beta release` is excluded by the keyword. Both filters apply, always.
+
+If you want filtering that's specific to one keyword, use [Keyword Settings](/quickstart/keyword-settings) instead.
 
 ## Where to edit global settings
 
-You have two ways to access the same global settings:
+You can edit every global setting from either of two entry points — the fields are identical:
 
-<Steps>
-  <Step title="From any keyword">
-    Open **Keyword settings** for any keyword, then scroll to the **Global settings** section at the very bottom. Your changes apply to **every keyword**, not just the one you opened.
-  </Step>
-  <Step title="From the main Settings page">
-    Go to **Settings** in Octolens, then open **Global Settings**.
-  </Step>
-</Steps>
+- **Settings → Global Settings** — the dedicated tab on the main Settings page
+- **Any Keyword Settings panel** — scroll to the **Global settings** section at the bottom of the panel
 
-<Warning>
-Global settings are shared. Treat them like account-level filters.
-
-If you want keyword-specific filtering, use the settings inside that keyword (like **Negative terms**). See [Keyword Settings](/quickstart/keyword-settings).
-</Warning>
-
-## How global settings interact with keyword settings
-
-A post must pass **both** global filters and the keyword's own filters. This means global settings can only _reduce_ results—they can't expand them.
+Either way, your changes apply to every keyword.
 
 ## Available global settings
 
 ### Global negative terms
 
-Exclude posts that include these terms for **all keywords**.
+Exclude posts that include these terms across **all keywords**.
 
 - **Matching:** exact match
 - **Input:** one or more terms (comma-separated)
@@ -41,36 +39,52 @@ Exclude posts that include these terms for **all keywords**.
 
 ### Global negative authors
 
-Exclude posts from these authors for **all keywords**.
+Exclude posts from these authors across **all keywords**.
 
-- **Matching:** exact match and case sensitive
-- **Input:** one or more authors (comma-separated)
+- **Matching:** exact match, case sensitive
+- **Input:** one or more author handles (comma-separated)
 
 > Example: `Octolens, OctolensHQ`
 
 ### Allowed subreddits (allowlist)
 
-When set, Octolens will **only** include Reddit posts from these subreddits.
+When set, Octolens only includes Reddit posts from these subreddits — across every keyword.
 
 - Leave empty to include all subreddits (except those in Excluded subreddits)
 - **Format:** `r/<subreddit>`
 
 > Example: `r/technology, r/startups`
 
+<Note>
+**Allowlist overrides the excluded list.** If Allowed subreddits has any entries, **Excluded subreddits is ignored**. Use the allowlist when you want a strict "only these subreddits" policy.
+</Note>
+
 ### Excluded subreddits
 
-Exclude Reddit posts from these subreddits for **all keywords**.
+Exclude Reddit posts from these subreddits across **all keywords**.
 
-- **Matching:** exact match and case insensitive
+- **Matching:** exact match, case insensitive
 - **Format:** `r/<subreddit>`
 
 > Example: `r/health`
 
 ### Global negative GitHub repositories
 
-Exclude posts from these GitHub repositories for **all keywords**.
+Exclude posts from these GitHub repos across **all keywords**.
 
-- **Matching:** exact match and case insensitive
+- **Matching:** exact match, case insensitive
 - **Format:** `owner/repo`
 
 > Example: `For-Hives/beswib, facebook/react`
+
+## Saving changes
+
+<Note>
+Global settings apply to **new** mentions going forward. Existing mentions in your feed keep their original scoring.
+</Note>
+
+## Next steps
+
+- [Keyword Settings](/quickstart/keyword-settings) — per-keyword platforms, context, and include/exclude rules
+- [Views](/quickstart/views) — organize mentions across keywords into saved filters
+- [Mention Limits](/learn/mention-limits) — how filters affect your monthly quota
