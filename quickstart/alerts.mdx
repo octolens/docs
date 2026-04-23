@@ -1,59 +1,114 @@
 ---
 title: Alerts
-description: Get alerts via email, Slack, or webhook
+description: Send new mentions from any view to email, Slack, or a webhook — instantly or on a schedule.
 ---
 
-You can create alerts based on any of your saved [views](/quickstart/views). Once a view is set up, you can enable it as an alert. Octolens supports three alert destinations: **Email**, **Slack**, and **Webhook**.
+Alerts take mentions that match a [view](/quickstart/views) and push them somewhere — email, Slack, or a webhook — at the frequency you choose. An alert is always:
 
-## How to set up an alert
+**a view + one or more destinations + a frequency.**
 
-You can start the alert setup from two places:
+One alert can fan out to multiple destinations at once (for example, email + Slack + webhook).
 
-**From your feed** — click "Enable as alert" in the top-right of any view.
+## The Alerts page
 
-<Frame>
-  <img src="/images/alerts-feed-setup.png" alt="Set up alerts from the feed" />
+Manage every alert in your workspace from **My alerts** in the sidebar — or directly at [app.octolens.com/me/notifications](https://app.octolens.com/me/notifications).
+
+<Frame caption="The Alerts page — one row per alert, with the linked view, destination, and frequency.">
+  <img src="/images/alerts-page.png" alt="Alerts page showing a list of alerts with View and Destination and frequency columns and an Add alert button" />
 </Frame>
 
-**From the [alerts page](https://octolens.com/me/notifications)** — manage all your alerts in one place.
+Each row shows:
 
-<Frame>
-  <img src="/images/alerts-notifications-page.png" alt="Set up alerts from the alerts page" />
+- **View** — the saved view that feeds this alert
+- **Destination & frequency** — where alerts go (e.g. a Slack channel like `octolens-buy-intent`) and how often (`Instant`, `Daily`, etc.)
+- A **···** menu to **Edit** or **Delete** the alert
+
+## Create an alert
+
+You can start the setup from two places:
+
+- **From any view**, click **Set up alert** in the top-right.
+
+<Frame caption="The Set up alert button in the top-right of any view.">
+  <img src="/images/alerts-feed-setup.png" alt="View header showing Export and Set up alert buttons" />
 </Frame>
+
+- **From the Alerts page**, click **+ Add alert** in the top-right.
+
+Either way, the Add alert dialog walks you through two steps.
 
 ### Step 1: Choose alert settings
 
-<Steps>
-  <Step title="Choose the view you want to get alerted for">
-    Select a view from the dropdown. If the view doesn't exist yet, [create it first](/quickstart/views).
-  </Step>
-  <Step title="Check the filters of that view">
-    Review the filters including **Keyword**, **Platform**, **Tag**, **Sentiment**, and **Language**. You can also set advanced filters.
-  </Step>
-</Steps>
+Pick the **Saved view** that will feed this alert. The alert will fire whenever a new mention matches that view's filters.
 
-<Frame>
-  <img src="/images/alerts-step1-settings.png" alt="Step 1: Choose alert settings" />
+<Frame caption="Step 1 — pick the view that feeds the alert.">
+  <img src="/images/alerts-step1-settings.png" alt="Add alert dialog Step 1 with a Saved view dropdown" />
 </Frame>
 
-### Step 2: Select destination and frequency
+If the view doesn't exist yet, close the dialog, [create it in Views](/quickstart/views), then start the alert setup again.
 
-Choose where you want to send your alert and how often.
+### Step 2: Select destination & frequency
 
-<Frame>
-  <img src="/images/alerts-step2-destination.png" alt="Step 2: Select destination and frequency" />
+Toggle on one or more destinations and configure each one. You can turn on email + Slack + webhook simultaneously — they all fire off the same view.
+
+<Frame caption="Step 2 — enable one or more destinations.">
+  <img src="/images/alerts-step2-destination.png" alt="Add alert dialog Step 2 with Email notification, Slack notification, and Webhook toggles" />
 </Frame>
 
-## Email alerts
+#### Email
 
-Select **Email** as your destination. You'll receive mention alerts directly in your inbox at the frequency you choose.
+<Frame caption="Email alert config — one or more recipients, plus a delivery frequency.">
+  <img src="/images/alerts-email.png" alt="Email alert panel with email recipients input, Add recipient button, and Frequency radio buttons" />
+</Frame>
 
-## Slack alerts
+- **Email recipient(s)** — enter one email per field. Click **+ Add recipient** to send to multiple addresses.
+- **Frequency** — Instantly, Hourly, Daily, or Weekly. Hourly, Daily, and Weekly are batched — you get one digest per interval with all matching mentions.
 
-Select **Slack** as your destination. Make sure your [Slack workspace is connected](/quickstart/connect-slack) first—otherwise the Slack option won't appear.
+#### Slack
 
-You can choose which relevance levels to include. For example, get alerted only for posts the AI deems as high relevance (buy-intent, engagement opportunities, customer complaints, or praise).
+<Frame caption="Slack alert config — one or more channels, plus a delivery frequency.">
+  <img src="/images/alerts-slack.png" alt="Slack alert panel with Slack channels multi-select and Frequency radio buttons" />
+</Frame>
 
-## Webhook alerts
+- **Slack channel(s)** — multi-select the channels you want the alert to post to.
+- **Frequency** — same options as email, with batched delivery for Hourly/Daily/Weekly.
 
-Select **Webhook** as your destination. This lets you send mention data to any external app. For full details on webhook setup and payload format, see [Webhooks](/quickstart/webhooks).
+Slack requires a connected workspace. See [Connect Slack](/quickstart/connect-slack) if the Slack toggle isn't available.
+
+#### Webhook
+
+<Frame caption="Webhook config — one URL, plus a delivery frequency and a Test button.">
+  <img src="/images/alerts-webhook.png" alt="Webhook panel with Webhook URL input, Test button, and Frequency radio buttons" />
+</Frame>
+
+- **Webhook URL** — the endpoint Octolens will POST to.
+- **Test** — send a sample payload to your endpoint to verify it's reachable before you save.
+- **Frequency** — Instantly, Hourly, Daily, or Weekly.
+
+For payload format, signature verification, and retry behavior, see [Webhooks](/quickstart/webhooks).
+
+## Frequency explained
+
+All three destinations support the same four frequencies:
+
+- **Instantly** — each matching mention is sent as soon as Octolens ingests it
+- **Hourly** — one batched delivery per hour with all matches from that hour
+- **Daily** — one batched delivery per day
+- **Weekly** — one batched delivery per week
+
+<Tip>
+Use **Instantly** for time-sensitive views like **Crisis Management** and **Buy Intent** where minutes matter. Use a batched frequency for noisier views (e.g. **Industry insights**) so you're not interrupted all day.
+</Tip>
+
+## Edit or delete an alert
+
+On the Alerts page, click the **···** menu next to any alert:
+
+- **Edit** — change the view, destinations, recipients, channels, webhook URL, or frequency
+- **Delete** — remove the alert. This can't be undone. Deleting doesn't affect the underlying view — just stops deliveries.
+
+## Next steps
+
+- [Views](/quickstart/views) — build custom views that feed your alerts
+- [Connect Slack](/quickstart/connect-slack) — prerequisite for Slack alerts
+- [Webhooks](/quickstart/webhooks) — payload format and integration patterns
