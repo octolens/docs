@@ -1,56 +1,97 @@
 ---
 title: Choosing Keywords
-description: Tips for selecting the right keywords to monitor
+description: Pick keywords that surface real conversations — and learn how to add, pause, and delete them.
 ---
 
-Selecting the right keywords is one of the most important steps for successful social listening. Here's how to make smart choices.
+Keywords are what Octolens searches for across every tracked platform. Good keywords surface real conversations you want to be part of; bad ones bury the feed in noise and burn through your monthly quota.
+
+## During onboarding
+
+Octolens suggests **4 starter keywords** based on your [company context](/quickstart/company-context) — typically a mix of your own brand, competitors, and industry terms. You can edit, remove, or replace them during onboarding, and you can always change them later in your workspace.
+
+## Add a keyword
+
+In the left sidebar, click **+ Add keyword** at the top of the Keywords list.
+
+<Frame caption="The Keywords list in the sidebar. Click + Add keyword to add a new one.">
+  <img src="/images/keywords-list.png" alt="Octolens sidebar Keywords section showing a list of tracked keywords with color dots and an Add keyword button" />
+</Frame>
+
+Enter the keyword and save. Octolens handles the rest:
+
+- **Type** — AI assigns one of **Own Brand**, **Competitor**, or **Industry Term** based on your [company context](/quickstart/company-context). You can change it in [Keyword Settings](/quickstart/keyword-settings) if it's wrong.
+- **Color** — auto-assigned so each keyword is visually distinct in the feed. Change it anytime from Keyword Settings.
+- **Smart defaults for common words** — if your keyword is also a common word (e.g. `Railway`, `Arc`, `Modal`), the AI pre-fills **keyword context**, **negative terms**, and **"any of" terms** so you catch the brand, not the noun. You can edit any of it in [Keyword Settings](/quickstart/keyword-settings).
+
+<Note>
+**What each keyword catches.** You only need to add the keyword once. Octolens automatically matches common variants — so for the keyword `octolens` you'll get mentions like:
+
+- The exact keyword: `octolens`
+- The keyword within a domain: `octolens.com`
+- The keyword as a handle: `@octolens`
+- The possessive form: `octolens's`
+</Note>
+
+<Note>
+**Backfill on new keywords.** When you first sign up and choose keywords during onboarding, Octolens looks back 7 days and pulls up to **100 posts per platform**. For any keyword you add after onboarding, we look back 7 days and pull up to **10 posts per platform**.
+</Note>
+
+## Need more keywords than your plan includes?
+
+Every plan has a keyword limit, but you're not stuck with it. Workspace admins can add **Flex keywords** from **Settings → Plans & Billing** on any plan. Extra keywords are billed monthly and can be added or removed at any time — see your Plans & Billing page for the current rate.
+
+## Manage an existing keyword
+
+Click the **···** menu next to any keyword in the sidebar to open its row actions:
+
+<Frame caption="Row actions for a single keyword.">
+  <img src="/images/keyword-row-actions.png" alt="Keyword row dropdown menu with Keyword settings, Pause keyword, and Delete keyword options" />
+</Frame>
+
+- **Keyword settings** — edit type, color, platforms, context, and include/exclude rules. See [Keyword Settings](/quickstart/keyword-settings).
+- **Pause keyword** — stop pulling new mentions for this keyword without deleting it. Existing mentions stay in your feed. Useful when you hit your mention limit or want to quiet a noisy keyword temporarily.
+- **Delete keyword** — permanently remove the keyword and all its mentions. This can't be undone.
 
 ## General tips
 
-**Be specific** — Avoid overly broad industry terms like "open source," "strategy," or "software." These will clutter your feed with irrelevant posts and quickly use up your monthly quota.
+**Be specific.** Avoid overly broad terms like "open source," "strategy," or "software." They clutter your feed and burn through your monthly quota.
 
-**Test and tweak** — If you're not seeing any hits after a few hours or days, try broadening your keyword. If you're getting too much noise, narrow it down. This process often takes a few rounds to get right.
+**Test and tweak.** If you see no hits after a few hours, broaden the keyword. If you see too much noise, narrow it or add exclusions in [Keyword Settings](/quickstart/keyword-settings). It usually takes 2–3 rounds to get right.
 
-**Avoid common words** — If your brand name is also a common word (e.g., "Apple"), try adding context like your domain ("Apple Inc.") or social handle ("@AppleHQ") to reduce irrelevant matches.
+**Watch common words.** If your brand is a common word, Octolens will pre-fill context and negative terms for you (see above) — but a quick review of those defaults before you save pays off. You can also enable case-sensitive matching in [Keyword Settings](/quickstart/keyword-settings) to cut out most common-word noise.
 
-## Types of keywords to monitor
+## What to track
 
-### 1. Your brand and product names
+Most customers track keywords in three buckets — the same three types the AI assigns:
 
-Your own name is one of the most important keywords to track. If someone mentions your company, you want to know.
+### Own Brand — your company and product names
 
-> Example: We monitor for "Octolens," "Octolens.com," and "@Octolens\_HQ" to catch brand mentions across platforms.
+The most important keywords. If someone mentions you, you want to know.
 
-### 2. Keywords related to the problem you solve
+> Example: We track `Octolens`.
 
-These are terms your audience uses when talking about the space you're in—even if they don't mention your product directly.
+### Competitor — companies you compete with
 
-> Example: At Octolens, we track "social listening," "keyword tracking," and "social media monitoring."
+Tracking competitors turns up:
+
+- User complaints you can respond to with a better alternative
+- Content inspiration from their announcements and launches
+- Features customers love that can inform your roadmap
+
+> Example: A post saying "Looking for alternatives to \[Competitor]" is a clear buying signal.
+
+### Industry Term — the problem you solve
+
+Terms your audience uses when discussing your space, even when they don't mention your product.
+
+> Example: We track `social listening`, `keyword tracking`, and `social media monitoring`.
 >
-> If you offer a project management tool, you might monitor "project planning tool" or "task tracking strategy."
+> A project management tool might track `project planning tool` or `task tracker recommendations`.
 
-These are great for finding users sharing pain points or asking for recommendations—prime moments to engage.
+These are where you'll find people asking for recommendations or venting about pain points — prime moments to show up.
 
-### 3. Your competitors' names
+## Next steps
 
-Tracking your competitors can uncover powerful insights and opportunities:
-
-- Spot user complaints—jump in with a better alternative.
-- Get content inspiration from their social strategy.
-- See what customers love—use that to inform your roadmap.
-
-> Example: A post saying "Looking for alternatives to \[Competitor]" is a perfect chance to join the conversation.
-
-### Final tip: start small, then expand
-
-When starting out, don't track everything at once. Begin with 3–10 focused keywords and refine as you go based on the types of posts that come in.
-
-With smart keyword tracking, you'll uncover better leads, gather valuable feedback, and protect your brand—without the noise.
-
-<Warning>
-When you first sign up to Octolens and choose keywords during onboarding, we go as far back as 7 days in your chosen platforms and find up to 100 posts per platform.
-
-For any new keywords you add after onboarding, we also go as far back as 7 days in your chosen platforms and find up to 10 posts per platform.
-</Warning>
-
-Once you've chosen your keywords, fine-tune them with [Keyword Settings](/quickstart/keyword-settings) or apply account-wide filters with [Global Keyword Settings](/quickstart/global-keyword-settings).
+- [Keyword Settings](/quickstart/keyword-settings) — per-keyword type, color, platforms, context, and include/exclude rules
+- [Global Keyword Settings](/quickstart/global-keyword-settings) — account-wide exclusions that apply to every keyword
+- [Views](/quickstart/views) — organize mentions across keywords into saved filters
