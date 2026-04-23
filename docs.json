@@ -89,6 +89,11 @@
       "href": "https://app.octolens.com"
     }
   },
+  "integrations": {
+    "plausible": {
+      "domain": "octolens.com"
+    }
+  },
   "feedback": {
     "thumbsRating": true
   },
