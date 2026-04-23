@@ -1,37 +1,136 @@
 ---
 title: Views
-description: Organize your mentions feed with default and custom views
+description: Saved filters over your mentions — use defaults like Brand Monitoring and Buy Intent, or build your own.
 ---
 
-To help you stay organized and focus on what matters, Octolens offers both **default** and **custom views** of your mentions feed.
+Views are saved filters over your mentions feed. Think of them as playlists for what you want to pay attention to — every day, most customers live inside a handful of views rather than scrolling through every mention.
 
-Think of views as saved filters that group relevant posts based on your tracked keywords. They make it easier to monitor trends, spot opportunities, and set up meaningful [alerts](/quickstart/alerts).
+Every view can also become an [alert](/quickstart/alerts), so mentions matching that view get sent to Slack, email, or a webhook.
+
+## How the Views sidebar is laid out
+
+<Frame caption="The Views sidebar, with default views on top and your custom views below.">
+  <img src="/images/views-sidebar.png" alt="Octolens Views sidebar showing For you, All mentions, and default and custom views" />
+</Frame>
+
+Two views sit above the **Views** header and are always pinned:
+
+- **For you** — a curated mix of your Own Brand, Competitor, and Industry Term keyword mentions. A good default home screen.
+- **All mentions** — literally every mention Octolens pulls in, **including low-relevance ones**. Use this when you're investigating what's being filtered out.
+
+Below the Views header sit the **default views** (pre-configured for common workflows) and any **custom views** you've created.
 
 ## Default views
 
-When you start using Octolens, we pre-load a few views to get you started. You can edit these or use them as inspiration for your own.
+| View | What it shows |
+|---|---|
+| **For you** | A mix of mentions tagged Own Brand Mention, Competitor Mention, and Industry Insights |
+| **All mentions** | Every mention — both relevant and not relevant |
+| **Brand Monitoring** | Posts that mention your brand directly — tag `Own Brand Mention` |
+| **Competitor Intelligence** | Posts that mention your competitors. Useful for market sentiment, content ideas, and gap-spotting |
+| **Buy Intent** | Posts where people express intent to buy or switch tools — like "looking for a \[tool]" or "alternatives to \[competitor]" |
+| **Industry insights** | Posts tagged `Industry Insights` — conversations about your category, whether or not they mention your brand |
+| **Crisis Management** | Posts with negative sentiment about your brand. Use this to act quickly and protect your reputation |
 
-- **High Relevance** — Curated for action. Includes posts tagged with "Own Brand Mention," "Buy Intent," negative mentions about your competitors, and posts containing "User Feedback," "Product Questions," or "Bug Reports" about competitors.
-- **Brand Monitoring** — Any posts that mention your brand directly (tag: _Own Brand Mention_).
-- **Brand Love** — Posts that mention your brand with **positive sentiment**. Great for capturing testimonials and social proof.
-- **Crisis Management** — Posts with **negative sentiment** about your brand. Use this view to act quickly and manage your reputation.
-- **Buy Intent** — Posts where users express intent to buy or switch tools—like "Looking for a \[tool]" or "Any alternatives to \[competitor]."
-- **Competitor Intelligence** — Posts that mention your competitors. Useful for understanding market sentiment, gathering ideas, and identifying gaps.
+You can edit any default view — just open it, adjust the filters, and save.
+
+## Feed controls
+
+Every view shows the same controls at the top:
+
+- **Time range** — Last 7 days (default), Last 30 days, Last 90 days, Last 6 months, Last 1 year, or Custom
+- **Only unread** toggle — hide mentions you've already seen
+- **Relevant vs. total counter** — e.g. *"Showing 13 relevant mentions out of 1,494 total mentions."* Tells you how tight your filters are.
 
 ## Custom views
 
-You can create your own views to match your goals and workflow.
+Build your own view when none of the defaults match your workflow.
 
 <Steps>
-  <Step title="Click the + next to Views in the sidebar" />
-  <Step title="Apply the filters you need" />
-  <Step title="Hit Save View at the bottom" />
+  <Step title="Click + Add view">
+    Next to the **Views** header in the sidebar.
+  </Step>
+  <Step title="Add filters">
+    Click **+ Add filter** and pick one or more of the categories below. Each filter narrows your results.
+  </Step>
+  <Step title="Save the view">
+    Give it a name and save. It appears in your sidebar under Views.
+  </Step>
 </Steps>
 
-You can also edit an existing view and save it under a new name.
+You can also open any existing view, tweak the filters, and save changes — or duplicate it under a new name.
 
-**Available filters:** **Keyword**, **Platform**, **Language**, **Tag** (e.g., "Buy Intent," "Own Brand Mention," "Competitor Feedback"), and **Sentiment** (positive, neutral, negative).
+## Available filters
 
-With **advanced filters**, you can build more complex logic using **AND/OR operators**—just like filtering in Notion.
+<Frame caption="The Add filter menu. Each filter narrows results; combine them freely.">
+  <img src="/images/views-add-filter.png" alt="Add filter dropdown showing Keyword, Platform, Language, Tag, Sentiment, X Followers, and Advanced filter options" />
+</Frame>
 
-Every view—default or custom—can be turned into an **alert** (e.g., send relevant posts to Slack, email, or via webhook). Head to [Alerts](/quickstart/alerts) to learn how to set up alerts from your views.
+### Keyword
+
+Scope to one or more of your tracked keywords. Example: narrow a view to just `Octolens` + `social listening`.
+
+### Platform
+
+Filter by source. Options: LinkedIn, Stack Overflow, GitHub, DEV, Reddit, Hacker News, Twitter/X, YouTube, TikTok, Bluesky, Newsletter. See [Tracked Platforms](/learn/platforms/overview) for what's monitored where.
+
+### Language
+
+Filter by detected language. Supported: English, Spanish, French, Chinese, Portuguese, Russian, Italian, Japanese, Korean, German, Dutch.
+
+### Tag
+
+Filter by AI-assigned tag. Every mention gets one or more of these:
+
+`Own Brand Mention` · `Competitor Mention` · `Industry Insights` · `Product Question` · `Buy Intent` · `User Feedback` · `Bug Report` · `Hiring` · `Event` · `Promotional Post` · `AI generated`
+
+See [AI Relevance & Tags](/learn/ai-relevance) for what each tag means.
+
+### Sentiment
+
+Filter by `Positive`, `Neutral`, or `Negative`. See [Sentiment Analysis](/learn/sentiment).
+
+### X Followers
+
+On X/Twitter mentions only, filter by the author's follower count. Set a **Min** and/or **Max**. Useful for "only show posts from influencers" (min 10,000) or "only show posts from everyday users" (max 5,000).
+
+## Advanced filter
+
+When simple AND-across-filters isn't enough, use Advanced filter to build nested Boolean logic.
+
+<Frame caption="The Advanced filter builder — combine rules and groups to express complex logic.">
+  <img src="/images/views-advanced-filter.png" alt="Advanced filter UI with a Where clause, filter/operator/value dropdowns, and options to add a single filter rule, a filter group, or delete the advanced filter" />
+</Frame>
+
+Each rule has three parts:
+
+- **Field** — pick a filter like Tag, Sentiment, Keyword, Platform, Language, or X Followers
+- **Operator** — for example `Contains`, or a comparator for numeric fields
+- **Values** — one or more values for that field
+
+From there, you can:
+
+- **+ Add single filter rule** — add another rule at the same level, combined with AND
+- **+ Add filter group** — nest a set of rules inside parentheses, giving you AND/OR composition (e.g. *(A AND B) OR C*)
+- **Delete advanced filter** — remove the advanced filter entirely
+
+> **Example.** *(Sentiment = Negative AND Tag = Own Brand Mention) OR Tag = Bug Report* — a view that surfaces anything negative about your brand, plus any bug reports regardless of sentiment.
+
+Advanced filter appears as its own pill alongside regular filters at the top of the view, so you can still layer standard filters (like language) on top of it.
+
+## Edit or delete a view
+
+- **Edit a view** — open it, change the filters or time range, and save.
+- **Delete a view** — click the **···** next to the view name in the sidebar and choose **Delete**. Default views can be edited but not deleted.
+
+## Turn a view into an alert
+
+Every view — default or custom — can be wired up to send new matching mentions to Slack, email, or a webhook.
+
+See [Alerts](/quickstart/alerts) for setup.
+
+## Next steps
+
+- [Alerts](/quickstart/alerts) — send view matches to Slack, email, or webhooks
+- [AI Relevance & Tags](/learn/ai-relevance) — understand the tags you can filter by
+- [Sentiment Analysis](/learn/sentiment) — how sentiment gets assigned
