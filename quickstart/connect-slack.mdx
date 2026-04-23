@@ -1,41 +1,71 @@
 ---
 title: Connect Slack
-description: Connect your Slack workspace to receive Octolens alerts
+description: Connect your Slack workspace once, then send any alert to the channels you choose.
 ---
 
-Octolens integrates with Slack so your team can receive mention alerts directly in a Slack channel. Before you can send alerts to Slack, you need to connect your Slack workspace.
+Connecting Slack is a one-time setup per workspace. Once it's done, every [alert](/quickstart/alerts) you create can be sent to one or more Slack channels.
 
-## How to connect Slack
+This page covers the **workspace connection** only. You pick which channels receive a given alert — and how often — when you create the alert itself.
+
+## Connect your Slack workspace
 
 <Steps>
-  <Step title="Go to Settings in Octolens">
-    Navigate to **Settings** in your Octolens workspace.
+  <Step title="Go to Settings">
+    Open **Settings** in your Octolens workspace.
   </Step>
-  <Step title="Open the Integrations or Alerts tab">
-    Find the Slack integration section.
+  <Step title="Open the Integration for Slack tab">
+    Click the **Integration for Slack** tab at the top of the Settings page.
   </Step>
-  <Step title="Click Connect Slack">
-    You'll be redirected to Slack to authorize the Octolens app for your workspace.
-  </Step>
-  <Step title="Choose a channel">
-    Select the Slack channel where you want to receive alerts.
+  <Step title="Authorize Octolens in Slack">
+    Click **Connect** and authorize the Octolens app for your Slack workspace. You'll be redirected to Slack to approve the permissions, then bounced back to Octolens.
   </Step>
 </Steps>
 
-Once your workspace is connected, you can select **Slack** as a destination when [setting up alerts](/quickstart/alerts).
+<Frame caption="Settings → Integration for Slack, showing an active connection.">
+  <img src="/images/settings-integration-slack.png" alt="Integration for Slack tab showing Connected Workspace with workspace name, Active status, and a Remove integration button" />
+</Frame>
+
+## Confirm you're connected
+
+After authorizing, the Integration for Slack page shows:
+
+- **Workspace** — the name of your connected Slack workspace
+- **Status** — `Active` when the connection is healthy
+
+If you see this, you're done. Slack will now appear as a destination option when you create or edit an alert.
 
 ## What you can send to Slack
 
-You can send any view-based alert to Slack. This means you control exactly which mentions reach your team. For example:
+Any view-based alert can be sent to Slack, which means you control exactly which mentions reach your team. Some common patterns:
 
-- Send only **High Relevance** mentions to a dedicated channel
+- Send **Brand Monitoring** mentions to a dedicated `#brand-watch` channel
 - Send **Buy Intent** posts to your sales team's channel
-- Send **Crisis Management** alerts to a leadership channel
+- Send **Crisis Management** alerts to a leadership or comms channel
+- Send a custom view (e.g. "negative mentions of our pricing") to the product team
 
-You can also choose which **relevance levels** to include. For example, get alerted only for posts the AI deems as high relevance (buy-intent, engagement opportunities, customer complaints, or praise).
+See [Views](/quickstart/views) for the default views and how to build custom ones.
 
-<Info>
-Make sure your Slack workspace is connected **before** creating a Slack alert. If Slack isn't connected, the Slack option won't appear as a destination in the alert setup flow.
-</Info>
+## Pick channels and frequency
 
-Once connected, head to [Alerts](/quickstart/alerts) to create your first Slack alert.
+Channel selection and delivery frequency are configured **per alert**, not on this page:
+
+- **Slack channels** — multi-select; an alert can post to more than one channel
+- **Frequency** — Instantly, Hourly, Daily, or Weekly (batched)
+
+See [Alerts](/quickstart/alerts) for the full alert setup flow.
+
+## Disconnect or switch workspaces
+
+To disconnect Slack, click **Remove integration for Slack** on the Integration for Slack tab.
+
+To switch to a different Slack workspace, remove the existing integration and then connect again — you'll be able to pick a new workspace during authorization.
+
+<Note>
+Removing the integration stops all Slack deliveries immediately. Alerts configured to send to Slack will pause until a new workspace is connected.
+</Note>
+
+## Next steps
+
+- [Alerts](/quickstart/alerts) — create alerts and pick Slack channels + delivery frequency
+- [Views](/quickstart/views) — the saved filters that feed your alerts
+- [Webhooks](/quickstart/webhooks) — another way to pipe mentions into your tools
