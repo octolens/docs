@@ -1,11 +1,11 @@
 ---
 title: Keyword Settings
-description: Control what each keyword matches — platforms, context, include/exclude rules, and match strictness.
+description: Control what each keyword matches. Platforms, context, include/exclude rules, and match strictness.
 ---
 
 Keyword Settings is where you fine-tune a single keyword: which platforms to track, what context the AI uses, and which posts to include or exclude.
 
-For [common words](/quickstart/keywords#add-a-keyword), Octolens pre-fills context, negative terms, and "any of" terms for you — Keyword Settings is usually where you review and adjust those defaults.
+For [common words](/quickstart/keywords#add-a-keyword), Octolens pre-fills context, negative terms, and "any of" terms for you. Keyword Settings is usually where you review and adjust those defaults.
 
 ## Open Keyword Settings
 
@@ -25,21 +25,21 @@ The settings panel is grouped into four sections from top to bottom:
 
 ### Header: keyword, type, color
 
-- **Keyword** — the term you're tracking. You can edit it here, but changing the keyword only affects new mentions going forward.
-- **Type** — **Own Brand**, **Competitor**, or **Industry Term**. Auto-assigned by AI, editable if wrong.
-- **Color** — the dot you see next to the keyword in the sidebar and on mention cards. Auto-assigned, pick any color you like.
+- **Keyword:** the term you're tracking. You can edit it here, but changing the keyword only affects new mentions going forward.
+- **Type:** **Own Brand**, **Competitor**, or **Industry Term**. Auto-assigned by AI, editable if wrong.
+- **Color:** the dot you see next to the keyword in the sidebar and on mention cards. Auto-assigned, pick any color you like.
 
 ### Platforms
 
 Select the platforms Octolens searches for this keyword. By default every platform your plan supports is enabled. Deselect a platform to stop pulling mentions from it for this keyword only.
 
-Useful when a keyword is noisy on one platform but valuable on others — for example, keeping a generic industry term on Reddit and Hacker News but turning it off on X.
+Useful when a keyword is noisy on one platform but valuable on others. For example, keeping a generic industry term on Reddit and Hacker News but turning it off on X.
 
 See [Tracked Platforms](/learn/platforms/overview) for the full list and refresh intervals.
 
 ### Keyword context (optional)
 
-Up to **200 characters** of extra context that helps the AI score posts for this specific keyword. Octolens already uses your [company context](/quickstart/company-context) — this is for rules that apply to one keyword only.
+Up to **200 characters** of extra context that helps the AI score posts for this specific keyword. Octolens already uses your [company context](/quickstart/company-context). This field is for rules that apply to one keyword only.
 
 Use it when:
 
@@ -49,22 +49,22 @@ Use it when:
 
 **Examples:**
 
-> Our brand `Anything` is an AI tool — ignore posts using "anything" as a common word.
+> Our brand `Anything` is an AI tool. Ignore posts using "anything" as a common word.
 
 > Only include posts about `social listening` in a B2B SaaS context. Exclude B2C brands like Nike.
 
 <Tip>
-For common-word keywords, Octolens pre-fills this field. Review the text before saving — the defaults are usually a good start, but your own wording is almost always sharper.
+For common-word keywords, Octolens pre-fills this field. Review the text before saving. The defaults are usually a good start, but your own wording is almost always sharper.
 </Tip>
 
 ## Include / Exclude
 
-### Posts must ALSO include — ANY OF / ALL OF
+### Posts must ALSO include: ANY OF / ALL OF
 
 Require that matching posts contain other terms in addition to your primary keyword. One field with a toggle between two modes:
 
-- **ANY OF** — the post must contain your keyword **and at least one** of the extra terms.
-- **ALL OF** — the post must contain your keyword **and all** of the extra terms.
+- **ANY OF:** the post must contain your keyword **and at least one** of the extra terms.
+- **ALL OF:** the post must contain your keyword **and all** of the extra terms.
 
 > **ANY OF example.** Keyword `GitHub`, extras `AI, Copilot`. Matches posts mentioning GitHub *and* at least one of AI or Copilot.
 >
@@ -80,9 +80,9 @@ Comma-separated terms that **exclude** posts when they appear alongside your key
 
 Comma-separated author handles to exclude. Matching is exact. Use this to filter out your own company accounts, employees, or known spammers.
 
-You can also add negative authors directly from your feed — click on the **author name** of any post and select **Add as negative author** from the dropdown. You'll be asked whether to exclude them for just the keyword of that mention or for all keywords (global).
+You can also add negative authors directly from your feed. Click on the **author name** of any post and select **Add as negative author** from the dropdown. You'll be asked whether to exclude them for just the keyword of that mention or for all keywords (global).
 
-For X/Twitter handles, don't include the `@` — just the handle itself (e.g. `OctolensHQ`, not `@OctolensHQ`).
+For X/Twitter handles, don't include the `@`. Just the handle itself (e.g. `OctolensHQ`, not `@OctolensHQ`).
 
 For account-wide author exclusions, use [Global Keyword Settings](/quickstart/global-keyword-settings) instead.
 
@@ -100,13 +100,13 @@ Use wildcards for structured patterns like version strings, subdomain chunks, or
 
 **On by default.** Matches only when your keyword appears as a standalone term.
 
-Turn it **off** for broad matching — your keyword will also match when it appears inside longer strings (e.g. part of a URL or a concatenated word). Useful if you want to catch `octolens` inside `support.octolens.io`.
+Turn it **off** for broad matching. Your keyword will also match when it appears inside longer strings (e.g. part of a URL or a concatenated word). Useful if you want to catch `octolens` inside `support.octolens.io`.
 
 ### Case sensitive
 
 **Off by default.** Turn it on when your keyword is an acronym or a common-word brand you only want to match in a specific case.
 
-> Keyword `RAG` with case sensitive on — matches "RAG" but ignores "rag."
+> Keyword `RAG` with case sensitive on: matches "RAG" but ignores "rag."
 
 ## Saving changes
 
@@ -116,6 +116,6 @@ Keyword Settings changes apply to **new** mentions going forward. Existing menti
 
 ## Next steps
 
-- [Global Keyword Settings](/quickstart/global-keyword-settings) — exclusions that apply to every keyword at once
-- [Views](/quickstart/views) — organize mentions across keywords into saved filters
-- [AI Relevance & Tags](/learn/ai-relevance) — how Octolens scores and tags each mention
+- [Global Keyword Settings](/quickstart/global-keyword-settings): exclusions that apply to every keyword at once
+- [Views](/quickstart/views): organize mentions across keywords into saved filters
+- [AI Relevance & Tags](/learn/ai-relevance): how Octolens scores and tags each mention

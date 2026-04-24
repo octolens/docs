@@ -5,7 +5,7 @@ description: Connect your Slack workspace once, then send any alert to the chann
 
 Connecting Slack is a one-time setup per workspace. Once it's done, every [alert](/quickstart/alerts) you create can be sent to one or more Slack channels.
 
-This page covers the **workspace connection** only. You pick which channels receive a given alert — and how often — when you create the alert itself.
+This page covers the **workspace connection** only. You pick which channels receive a given alert, and how often, when you create the alert itself.
 
 ## Connect your Slack workspace
 
@@ -29,8 +29,8 @@ This page covers the **workspace connection** only. You pick which channels rece
 
 After authorizing, the Integration for Slack page shows:
 
-- **Workspace** — the name of your connected Slack workspace
-- **Status** — `Active` when the connection is healthy
+- **Workspace:** the name of your connected Slack workspace
+- **Status:** `Active` when the connection is healthy
 
 If you see this, you're done. Slack will now appear as a destination option when you create or edit an alert.
 
@@ -49,8 +49,8 @@ See [Views](/quickstart/views) for the default views and how to build custom one
 
 Channel selection and delivery frequency are configured **per alert**, not on this page:
 
-- **Slack channels** — multi-select; an alert can post to more than one channel
-- **Frequency** — Instantly, Hourly, Daily, or Weekly (batched)
+- **Slack channels:** multi-select; an alert can post to more than one channel
+- **Frequency:** Instantly, Hourly, Daily, or Weekly (batched)
 
 See [Alerts](/quickstart/alerts) for the full alert setup flow.
 
@@ -58,7 +58,7 @@ See [Alerts](/quickstart/alerts) for the full alert setup flow.
 
 To disconnect Slack, click **Remove integration for Slack** on the Integration for Slack tab.
 
-To switch to a different Slack workspace, remove the existing integration and then connect again — you'll be able to pick a new workspace during authorization.
+To switch to a different Slack workspace, remove the existing integration and then connect again. You'll be able to pick a new workspace during authorization.
 
 <Note>
 Removing the integration stops all Slack deliveries immediately. Alerts configured to send to Slack will pause until a new workspace is connected.
@@ -66,6 +66,6 @@ Removing the integration stops all Slack deliveries immediately. Alerts configur
 
 ## Next steps
 
-- [Alerts](/quickstart/alerts) — create alerts and pick Slack channels + delivery frequency
-- [Views](/quickstart/views) — the saved filters that feed your alerts
-- [Webhooks](/quickstart/webhooks) — another way to pipe mentions into your tools
+- [Alerts](/quickstart/alerts): create alerts and pick Slack channels + delivery frequency
+- [Views](/quickstart/views): the saved filters that feed your alerts
+- [Webhooks](/quickstart/webhooks): another way to pipe mentions into your tools
