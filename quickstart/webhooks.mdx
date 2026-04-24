@@ -1,40 +1,58 @@
 ---
 title: Webhooks
-description: Send mention alerts to other apps via webhooks
+description: Pipe any view into your own systems — send new mentions as JSON to any URL.
 ---
 
-You can set up an Octolens webhook to send mention alerts to other apps. Webhooks turn any view in your feed into a real-time data stream.
+A webhook is an alert destination that sends matching mentions to a URL you control. Every [view](/quickstart/views) can fan out to a webhook — point it at Zapier, an internal API, a Slack webhook, or anything else that accepts an HTTPS POST.
 
-## How to create a webhook
+Webhooks are available on every plan, alongside [Email and Slack](/quickstart/alerts) destinations.
+
+## Set up a webhook
+
+The setup flow is the same as any other alert — see [Alerts](/quickstart/alerts) for the full walkthrough. The short version:
 
 <Steps>
-  <Step title="Choose which view you want to send as a webhook">
-    Click **"Enable as alert"** in the top-right of any view.
-
-    <Frame>
-      <img src="/images/webhooks-enable-notification.png" alt="Enable as alert button" />
-    </Frame>
-
-    Or hover over a view in the sidebar, click the three dots, and select **"Enable alert."**
-
-    <Frame>
-      <img src="/images/webhooks-sidebar-enable.png" alt="Enable alert from sidebar" />
-    </Frame>
+  <Step title="Open any view and click Set up alert">
+    Or go to **My alerts → + Add alert**.
   </Step>
-  <Step title="Toggle on webhook">
-    In **Step 2: Destination and Frequency**, select **"Webhook."**
-
-    <Frame>
-      <img src="/images/webhooks-destination.png" alt="Select webhook destination" />
-    </Frame>
+  <Step title="Pick the saved view">
+    In Step 1 of the Add alert dialog, select the view you want to forward.
   </Step>
-  <Step title="Add the webhook URL and choose a frequency" />
-  <Step title="Test your webhook to confirm it works" />
+  <Step title="Toggle on Webhook in Step 2">
+    Enter your **Webhook URL**, click **Test** to verify it's reachable, and choose a **Frequency** — Instantly, Hourly, Daily, or Weekly.
+  </Step>
 </Steps>
 
-## Example payload
+<Frame caption="Webhook config inside the Add alert dialog.">
+  <img src="/images/alerts-webhook.png" alt="Webhook panel with Webhook URL input, Test button, and Frequency radio buttons" />
+</Frame>
 
-Here is an example of a webhook payload. The **action** event can be either `mention_created` or `mention_updated`.
+<Tip>
+**Discord-compatible.** Octolens webhooks work directly with Discord channel webhook URLs. Create a webhook in your Discord channel settings, copy the URL, paste it into the Webhook URL field, and mentions will post straight into the channel — no Zapier or middleware needed.
+</Tip>
+
+You can enable the webhook alongside Email and Slack on the same alert — all three fire off the same view.
+
+## Receiving webhook requests
+
+Octolens sends webhooks as HTTPS `POST` requests with a JSON body.
+
+- **Content-Type**: `application/json`
+- **Expected response**: return any `2xx` status to acknowledge receipt
+- **Timeout**: reply promptly (under a few seconds). If your processing is slow, acknowledge first and queue the work.
+
+<Note>
+**Webhook requests are not signed.** Octolens does not currently send a signature header. If your endpoint is publicly reachable, treat any webhook URL as a secret — and consider adding a hard-to-guess path segment (e.g. `/webhooks/octolens/a8f3...`) that acts as a shared token.
+</Note>
+
+## Payload format
+
+Octolens sends one mention per request. The top-level `action` field tells you why it fired:
+
+- `mention_created` — a new mention matched the view
+- `mention_updated` — an existing mention changed (e.g. its sentiment or tags were re-scored)
+
+### Example
 
 ```json
 {
@@ -60,30 +78,65 @@ Here is an example of a webhook payload. The **action** event can be either `men
 }
 ```
 
+### Field reference
+
+| Field | Type | Description |
+|---|---|---|
+| `action` | string | `mention_created` or `mention_updated` |
+| `data.title` | string | Post title, if the platform has one (e.g. Reddit). Can be empty on platforms without titles. |
+| `data.body` | string | The post text. |
+| `data.url` | string | Canonical URL to the post on the source platform. |
+| `data.timestamp` | string | ISO 8601 timestamp of when the post was published. |
+| `data.imageUrl` | string | URL of the attached image, if any. |
+| `data.author` | string | The author's handle or username on the source platform. |
+| `data.authorProfileLink` | string | Link to the author's profile. |
+| `data.source` | string | The platform the mention came from (e.g. `reddit`, `twitter`, `github`). |
+| `data.sourceId` | string | The platform's native ID for the post. |
+| `data.relevanceScore` | string | Relevance value assigned by the AI. |
+| `data.relevanceComment` | string | One-sentence explanation of why the mention matched. |
+| `data.keyword` | string | The keyword that triggered the match. |
+| `data.sentimentLabel` | string | `Positive`, `Neutral`, or `Negative`. |
+| `data.subreddit` | string | Subreddit name. **Only present for Reddit mentions.** |
+| `data.viewId` | string | ID of the view that fired this alert. |
+| `data.viewName` | string | Name of the view that fired this alert. |
+
 <Note>
-The `subreddit` field is only present for Reddit mentions.
+Webhook field names differ slightly from the [REST API](/api/overview) response. For example, the API returns `sentiment` while webhooks use `sentimentLabel`, and the API returns a `keywords` array while webhooks send a single `keyword` string. If you're wiring up both, map them explicitly.
 </Note>
 
-## Example use cases for webhooks
+## Use cases
 
-1. Send Discord alerts for new mentions
-2. Automatically add mentions to a Notion database
-3. Add new mentions to Google Sheets
-4. Automatically add mentions to Airtable
-5. Capture new mentions as HubSpot CRM contacts
-6. Create Asana tasks from mentions
-7. Turn mentions into ClickUp tasks
-8. Automatically receive email alerts for new mentions
-9. Automatically create Intercom tickets from mentions
-10. Generate Monday.com tasks from mentions
-11. Create Linear issues for new mentions
-12. Create new leads in Pipedrive from mentions
-13. Create new Salesforce leads for new mentions
-14. Automatically add mentions to Zoho CRM
-15. Create Todoist tasks instantly from mentions
-16. Create Trello cards for new mentions
-17. Send Microsoft Teams messages for new mentions
+Webhooks turn mentions into events in the rest of your stack. Common patterns:
 
-<Tip>
-You can also use popular automation tools like **Zapier**, **n8n**, or **Make** to connect your webhook to hundreds of other apps.
-</Tip>
+- **Discord** — paste a channel webhook URL straight into Octolens; mentions post into your channel
+- **CRMs** — create or update leads in Salesforce, HubSpot, Pipedrive, or Zoho when someone expresses buy intent
+- **Task managers** — open tickets in Linear, Asana, ClickUp, Monday, Trello, or Todoist from Bug Reports or User Feedback mentions
+- **Chat** — Microsoft Teams, or extra Slack workspaces beyond your primary connection
+- **Databases** — append to Notion, Airtable, or Google Sheets for custom reporting
+- **Support** — auto-create Intercom or Zendesk conversations from product questions
+
+Don't have a direct integration? Point the webhook at **Zapier**, **n8n**, or **Make** and fan out from there to hundreds of other apps.
+
+## Customize your payload with Val Town
+
+If you want more control than a direct webhook gives — custom message formatting, interactive buttons in Discord or Slack, per-mention routing logic, filtering before delivery — a small piece of code in the middle gets you there.
+
+[Val Town](https://val.town) is a serverless JavaScript platform built for exactly this pattern. You paste your Val Town URL into Octolens as the Webhook URL, and the val receives the payload, transforms it however you want, then forwards it on.
+
+**What this unlocks:**
+
+- Reformat the Octolens payload into a rich Discord embed or Slack Block Kit message with buttons
+- Drop fields you don't need, or enrich the payload with data from another API before it lands
+- Edit the code in the browser and redeploy instantly — no build step, no hosting to manage
+
+**Start here:**
+
+- [Creating a webhook in Val Town](https://docs.val.town/guides/creating-a-webhook/) — the pattern for receiving any incoming webhook
+- [Send a Discord message via webhook](https://docs.val.town/guides/discord/send-message/) — forward to Discord with custom formatting
+- [Sending Slack messages](https://docs.val.town/guides/slack/send-messages-to-slack/) — forward to Slack with Block Kit
+
+## Next steps
+
+- [Alerts](/quickstart/alerts) — the full alert setup flow (destinations, frequency, editing)
+- [API Reference](/api/overview) — pull-based alternative if you prefer polling
+- [MCP Server](/mcp/overview) — connect mentions to AI agents via MCP
