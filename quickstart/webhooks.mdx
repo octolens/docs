@@ -42,15 +42,14 @@ Octolens sends webhooks as HTTPS `POST` requests with a JSON body.
 - **Timeout**: reply promptly (under a few seconds). If your processing is slow, acknowledge first and queue the work.
 
 <Note>
-**Webhook requests are not signed.** Octolens does not currently send a signature header. If your endpoint is publicly reachable, treat any webhook URL as a secret — and consider adding a hard-to-guess path segment (e.g. `/webhooks/octolens/a8f3...`) that acts as a shared token.
+**Webhook requests are not signed.** Octolens does not currently sign requests or send a signature header. If you want to verify a request came from your Octolens workspace, add a secret as a URL query parameter when you configure the webhook — for example `https://your-endpoint.com/octolens?secret=your_secret_here`. Your endpoint can then check the `secret` query parameter on every incoming request and reject any that don't match.
 </Note>
 
 ## Payload format
 
-Octolens sends one mention per request. The top-level `action` field tells you why it fired:
+Octolens sends one mention per request. The top-level `action` field indicates what triggered the webhook:
 
 - `mention_created` — a new mention matched the view
-- `mention_updated` — an existing mention changed (e.g. its sentiment or tags were re-scored)
 
 ### Example
 
@@ -58,22 +57,30 @@ Octolens sends one mention per request. The top-level `action` field tells you w
 {
   "action": "mention_created",
   "data": {
-    "title": "title",
-    "body": "post body text.",
-    "url": "https://posturl",
+    "title": "...",
+    "body": "...",
+    "url": "https://...",
     "timestamp": "2024-12-04T13:55:32.000Z",
-    "imageUrl": "imageurl",
-    "author": "author",
-    "authorProfileLink": "https://platform.com/author",
-    "source": "platform",
+    "imageUrl": "...",
+    "author": "...",
+    "authorName": "...",
+    "authorAvatarUrl": "...",
+    "authorProfileLink": "https://...",
+    "authorFollowerCount": 1234,
+    "source": "reddit",
     "sourceId": "111111111",
-    "relevanceScore": "0",
-    "relevanceComment": "User is suggesting a feature that could enhance Octolens.",
+    "relevanceScore": "high",
+    "relevanceComment": "...",
     "keyword": "Octolens",
+    "keywords": ["Octolens", "social listening"],
     "sentimentLabel": "Neutral",
+    "tags": ["feature-request"],
+    "bookmarked": false,
+    "language": "en",
     "subreddit": "r/subreddit",
-    "viewId": "111",
-    "viewName": "View name"
+    "viewId": 111,
+    "viewName": "View name",
+    "viewKeywords": ["Octolens"]
   }
 }
 ```
@@ -82,26 +89,34 @@ Octolens sends one mention per request. The top-level `action` field tells you w
 
 | Field | Type | Description |
 |---|---|---|
-| `action` | string | `mention_created` or `mention_updated` |
+| `action` | string | Currently always `mention_created`. |
 | `data.title` | string | Post title, if the platform has one (e.g. Reddit). Can be empty on platforms without titles. |
 | `data.body` | string | The post text. |
 | `data.url` | string | Canonical URL to the post on the source platform. |
 | `data.timestamp` | string | ISO 8601 timestamp of when the post was published. |
 | `data.imageUrl` | string | URL of the attached image, if any. |
 | `data.author` | string | The author's handle or username on the source platform. |
+| `data.authorName` | string | The author's display name. |
+| `data.authorAvatarUrl` | string | URL to the author's avatar image. |
 | `data.authorProfileLink` | string | Link to the author's profile. |
+| `data.authorFollowerCount` | number | The author's follower count on the source platform, if available. |
 | `data.source` | string | The platform the mention came from (e.g. `reddit`, `twitter`, `github`). |
 | `data.sourceId` | string | The platform's native ID for the post. |
-| `data.relevanceScore` | string | Relevance value assigned by the AI. |
+| `data.relevanceScore` | string | Relevance assigned by the AI. One of `high`, `medium`, or `low`. |
 | `data.relevanceComment` | string | One-sentence explanation of why the mention matched. |
-| `data.keyword` | string | The keyword that triggered the match. |
+| `data.keyword` | string | The first (primary) keyword that matched this post. Kept for backward compatibility — new integrations should use `keywords`. |
+| `data.keywords` | string[] | All of your keywords that matched this post. A post can match more than one. |
 | `data.sentimentLabel` | string | `Positive`, `Neutral`, or `Negative`. |
-| `data.subreddit` | string | Subreddit name. **Only present for Reddit mentions.** |
-| `data.viewId` | string | ID of the view that fired this alert. |
+| `data.tags` | string[] | AI-assigned tags on the mention (e.g. `feature-request`, `buy-intent`). See [AI Relevance & Tags](/learn/ai-relevance). |
+| `data.bookmarked` | boolean | Whether this mention is bookmarked in the Octolens workspace. |
+| `data.language` | string | ISO 639-1 language code detected for the post (e.g. `en`, `es`, `de`). |
+| `data.subreddit` | string | Subreddit name. Only present for Reddit mentions. |
+| `data.viewId` | number | ID of the view that fired this alert. |
 | `data.viewName` | string | Name of the view that fired this alert. |
+| `data.viewKeywords` | string[] | The keywords configured on the view that fired this alert. Useful for distinguishing which view-filter matched when one alert covers multiple keywords. |
 
 <Note>
-Webhook field names differ slightly from the [REST API](/api/overview) response. For example, the API returns `sentiment` while webhooks use `sentimentLabel`, and the API returns a `keywords` array while webhooks send a single `keyword` string. If you're wiring up both, map them explicitly.
+Webhook field names differ slightly from the [REST API](/api/overview) response. For example, the API returns `sentiment` while webhooks use `sentimentLabel`, and the API returns `keywords` as an array of objects like `{id, keyword}` while webhooks send `keywords` as an array of strings (plus `keyword` as a single string for backward compatibility). If you're wiring up both, map them explicitly.
 </Note>
 
 ## Use cases
