@@ -34,9 +34,7 @@ https://app.octolens.com/api/v1
 
 #### Rate Limits
 
-500 requests per hour
-
-Check `X-RateLimit-*` headers for usage
+500 requests per hour. Check the `X-RateLimit-*` headers for current usage and reset time.
 
 #### Authentication
 
@@ -70,7 +68,7 @@ Fetch mentions matching your keywords with optional filtering. Returns posts sor
 
 #### Filters (11 options)
 
-**You can also check out our AI Filter Wizard to help construct the filter you want.**
+**You can also use the AI Filter Wizard inside the app to help construct filters.**
 
 | Filter | Type | Description |
 | --- | --- | --- |
@@ -123,7 +121,7 @@ Fetch mentions matching your keywords with optional filtering. Returns posts sor
       "relevanceComment": "Direct mention of product",
       "sentiment": "positive",
       "language": "en",
-      "tags": ["feature-request"],
+      "tags": ["own-brand-mentions"],
       "keywords": [{ "id": 1, "keyword": "YourProduct" }],
       "bookmarked": false,
       "engaged": false
