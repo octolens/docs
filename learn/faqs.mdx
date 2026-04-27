@@ -206,7 +206,7 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "Why are my mentions used up? I see less mentions than my monthly quota in my feed and analytics.",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Both relevant and irrelevant mentions count against your monthly mention limit. Every post that matches your keyword is counted, regardless of whether the AI marks it as relevant or irrelevant. Broad or noisy keywords will use up your quota faster. To see how many mentions are being found, go to the All mentions view or go to Analytics and toggle off only relevant."
+        "text": "Your mention quota counts every post Octolens pulls in for your keywords, not just the ones that pass the AI relevance filter. By default, your feed and Analytics show only relevant mentions, which is why the number you see is much smaller than what's been counted against your quota. To see everything, go to Analytics and toggle off Only relevant. To reduce usage, use include/exclude rules in Keyword Settings such as Posts must ALSO include, Negative terms, Negative authors, or Allowlist/excluded subreddits. Keyword context helps the AI judge relevance but does not stop posts from being pulled in. Workspace admins can also add Flex mentions from Settings → Plans & Billing."
       }
     },
     {
@@ -494,9 +494,34 @@ Find answers to common questions about Octolens below. Can't find what you're lo
   </Accordion>
 
   <Accordion title="Why are my mentions used up? I see less mentions than my monthly quota in my feed and analytics.">
-    Both relevant and irrelevant mentions count against your monthly mention limit. Every post that matches your keyword is counted, regardless of whether the AI marks it as relevant or irrelevant. This is why it's important to set up your keywords carefully. Broad or noisy keywords will use up your quota faster.
+    The short answer: Your mention quota counts every post Octolens pulls in for your keywords, not just the ones that pass our AI relevance filter. By default, your feed and Analytics show only relevant mentions, which is why the number you see is much smaller than what's been counted against your quota.
 
-    To see how many mentions are being found, go to the **All mentions** view or go to [Analytics](/learn/analytics) and toggle off "only relevant."
+    To see everything that's been pulled in:
+
+    1. Go to [Analytics](/learn/analytics) and toggle off "Only relevant" in the top right. You'll now see every post we ingested, including low-relevance ones.
+    2. Switch the graph to bar chart view to see which keywords are driving the most volume.
+    3. From there, drill into the keyword's settings to add guardrails.
+
+    **How to bring your mention usage down**
+
+    Once you've identified the high-volume keywords, open [Keyword Settings](/quickstart/keyword-settings) for each one and use any of:
+
+    - **Posts must ALSO include (ANY OF / ALL OF).** E.g. `Cursor` AND ANY OF `coding, AI, IDE` so generic posts get filtered out before they're pulled.
+    - **Negative terms.** E.g. `Cursor` AND NOT `mouse, click` for common-word brands.
+    - **Negative authors.** Exclude your own company accounts so your own posts don't count against your quota.
+    - **Allowlist or excluded subreddits.** In [Global Keyword Settings](/quickstart/global-keyword-settings) for account-wide cleanup.
+
+    Important: Keyword context helps the AI judge what's relevant, but it does not stop posts from being pulled in. To reduce mention usage, you need to use the include/exclude rules above, not just write better context.
+
+    **A few edge cases worth knowing**
+
+    - **Recently deleted keywords still count.** Mentions pulled in this billing cycle from a keyword you've since deleted still count against your quota, but they won't appear in Analytics (which shows active keywords only). This can make Analytics totals look lower than your "mentions used" counter.
+    - **Onboarding can chew through quota fast.** If you let onboarding add broad keywords (like `instagram` or `tiktok`), the 7-day backfill can use up a big chunk of your monthly quota on day one. If this happens, reach out via in-app chat. We can usually reset your quota once you've cleaned up the noisy keywords.
+    - **Common-word brands (Arc, Modal, Authorization, Railway).** These are the most common reason quotas get burned through. Octolens auto-fills smart defaults during keyword setup, but it's worth reviewing the include/exclude rules in Keyword Settings before letting them run for a full month.
+
+    **Still hitting your limit?**
+
+    Workspace admins can add Flex mentions (and Flex keywords) any time from **Settings → Plans & Billing**. You only pay for what you use, and you can remove them anytime.
   </Accordion>
 </AccordionGroup>
 

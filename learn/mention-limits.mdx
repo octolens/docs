@@ -1,66 +1,111 @@
 ---
-title: Mention Limits
-description: How mention quotas work and what to do if you're not getting mentions
+title: "Mention Limits"
+description: "Understand what counts toward your monthly mention quota, why your feed shows less than your counter, and how to reduce mention burn."
 ---
 
-Every Octolens plan includes a monthly mention quota. Once you've used your quota, new mentions are paused until the next billing cycle. Understanding how mentions work will help you get the most out of your plan.
+Every Octolens plan includes a monthly mention quota. Once you've used it, new mentions are paused until your next billing cycle.
 
 ## What counts toward your limit
 
-**Both relevant and irrelevant mentions count against your monthly mention limit.** Every post that matches your keyword is counted, regardless of whether the AI marks it as relevant or irrelevant. This is why it's important to set up your keywords carefully. Broad or noisy keywords will use up your quota faster.
+**Every post Octolens pulls in for your keywords counts as one mention**, whether the AI later marks it as relevant or not relevant.
+
+That's why your **mentions used** counter (in the sidebar and in **Settings → Plans & Billing**) is almost always higher than what you see in your feed or Analytics. By default, your feed and Analytics show only **relevant** mentions, so low-relevance posts are filtered out of view but still count against your quota.
+
+This way you don't get spam in your inbox and we do the heavy lifting for you.
+
+To see everything that's been pulled in:
+
+<Steps>
+  <Step title="Go to Analytics">
+    From the sidebar.
+  </Step>
+  <Step title='Toggle off "Only relevant"'>
+    Top right of the Analytics page. You'll now see every post we ingested, including low-relevance ones.
+  </Step>
+  <Step title="Switch to bar chart view">
+    Top right of the graph. This breaks down volume by keyword so you can see which keywords are driving the most mentions.
+  </Step>
+</Steps>
+
+<Note>
+**Keyword context doesn't reduce mention intake.** The **Keyword context** field in [Keyword Settings](/quickstart/keyword-settings) helps the AI decide what's relevant, but it does **not** stop posts from being pulled in. To reduce mention usage, use the include/exclude rules below.
+</Note>
+
+## How mention intake works
+
+When you first sign up and choose keywords during onboarding, Octolens looks back **7 days** and pulls up to **100 posts per platform**. For any new keyword you add after onboarding, we also go back 7 days but pull up to **10 posts per platform**.
+
+Each post counts as one mention toward your monthly quota.
+
+<Warning>
+**Watch broad keywords during onboarding.** If you add high-volume keywords like `instagram`, `tiktok`, `marketing`, or `AI` during onboarding, the 7-day backfill of 100 posts per platform can use up a large chunk of your monthly quota on day one. Start narrow and broaden later.
+</Warning>
+
+## Reduce your mention burn
+
+If a keyword is using up too much of your quota, open its **Keyword Settings** from the **···** menu in the sidebar and use any of the following:
+
+- **Posts must ALSO include (ANY OF / ALL OF).** Require additional terms alongside your primary keyword. E.g. `Cursor` ANY OF `coding, AI, IDE` filters out posts about computer mice.
+- **Negative terms.** Exclude posts that contain certain words. E.g. `Cursor` NOT `mouse, click`.
+- **Negative authors.** Exclude posts from specific accounts: your own company accounts, employees, or known noisy posters.
+- **Wildcard negative terms.** Exclude patterns like `beta.*` to filter out version strings or substrings.
+- **Exact match.** Make sure this is **on** for common-word brands so partial matches don't pull in unrelated posts.
+- **Case sensitive.** Turn it on for acronyms (e.g. `RAG`) so you don't catch every use of the lowercase word.
+
+For account-wide cleanup that applies to every keyword, use [Global Keyword Settings](/quickstart/global-keyword-settings) for negative terms, negative authors, allowed subreddits, excluded subreddits, and excluded GitHub repositories.
+
+You can also **pause** any noisy keyword from the **···** menu. The keyword stays in your workspace, but stops pulling new mentions until you resume it.
 
 ## What happens when you run out
 
 When you hit your monthly mention limit, new mentions are paused. You have two options:
 
-- **Turn on flex mentions.** Go to **Plans & Billing** in your settings and enable **flex mentions**. This gives you usage-based mentions beyond your plan's quota, so you never miss a mention. No plan upgrade needed.
-- **Upgrade your plan.** Switch to a higher plan with a larger monthly quota at [Plans & Billing](https://octolens.com/me/settings?tab=plans).
+- **Turn on Flex mentions.** Go to **Settings → Plans & Billing** and enable **Flex mentions** for usage-based overflow. You only pay for what you use, no plan upgrade needed.
+- **Upgrade your plan.** Switch to a higher monthly quota at [Plans & Billing](https://app.octolens.com/me/settings?tab=plans).
 
-## How mention limits work
+## Edge cases worth knowing
 
-When you first sign up and choose keywords during onboarding, Octolens goes as far back as **7 days** and finds up to **100 posts per platform**. For any new keywords you add after onboarding, we also go back 7 days but find up to **10 posts per platform**.
+**Deleted keywords still count this cycle.** Mentions pulled in this billing cycle from a keyword you've since deleted still count against your quota, but they won't appear in Analytics, which only shows your active keywords. This can make Analytics totals look lower than your "mentions used" counter.
 
-Each post that matches your keyword counts as one mention toward your monthly quota.
+**Your own company posts can count.** If posts you publish yourself are matching your keyword, they count too. Add your handles as **Negative authors** in Keyword Settings (or globally in Global Keyword Settings) to exclude them.
+
+---
 
 ## Why am I not getting mentions?
 
-If you're not seeing any mentions, or fewer than expected, it's almost always due to keyword setup. Here are the most common issues to check:
+This is a different question from running out of quota. If you're seeing zero or very few mentions but your counter has plenty of headroom, it's almost always a keyword setup issue.
 
-### 1. Incorrect use of include terms in advanced settings
+### 1. Incorrect use of "Posts must ALSO include" (ANY OF / ALL OF)
 
-This is the most frequent cause. If you're using include terms, read this section carefully.
+The most frequent cause. If you've added include terms, Octolens **only searches for posts where your primary keyword appears together with the additional terms**. It does not look for the primary keyword alone.
 
-**Important:** If you add **include terms**, Octolens **only searches for mentions where your primary keyword appears _together_ with the additional terms**. It does _not_ look for the primary keyword alone.
+Common pitfalls:
 
-**Common pitfalls:**
-
-- **ALL OF instead of ANY OF:** For ALL OF, _all_ additional terms must appear alongside your primary keyword. This is very strict and usually works best with just **one extra term**.
-- **Exact matches only:** All additional terms must match the post content exactly.
-- Avoid using quotation marks. Writing `"AI"` will look for the exact text with quotes included.
-- Use commas to separate terms, e.g. `ai, AI, artificial intelligence`
-- Don't repeat your main keyword in the additional terms. That would require the term to appear multiple times in the same post.
-- Avoid overly broad primary keywords (e.g., "Brand," "Hiring," "Strategy") when using AND/OR. Due to API limitations, we may miss posts that combine these with additional terms. Use more targeted keywords instead.
+- **ALL OF instead of ANY OF.** ALL OF requires every extra term to appear in the post. This is very strict and usually works best with just one extra term.
+- **Exact match on additional terms.** Each extra term must appear in the post exactly as written.
+- **Quotation marks.** Writing `"AI"` looks for the literal text with quotes. Don't quote.
+- **Comma-separated, not space-separated.** Use `ai, AI, artificial intelligence` not `ai AI artificial intelligence`.
+- **Don't repeat your primary keyword as an extra term.** That requires the term to appear twice in the same post.
+- **Broad primaries with AND/OR.** Due to API limitations, very broad primary keywords (e.g. `Brand`, `Hiring`, `Strategy`) combined with extra terms may miss posts. Use a narrower primary keyword instead.
 
 ### 2. You've reached your monthly mention limit
 
-If you've hit your monthly quota, new mentions will be paused. Turn on **flex mentions** in Plans & Billing for usage-based overflow, or [upgrade your plan](https://octolens.com/me/settings?tab=plans).
+If you've hit your quota, new mentions are paused. See [What happens when you run out](#what-happens-when-you-run-out).
 
 ### 3. Keyword spelling or formatting errors
 
-Double-check your keywords for typos, accidental quotation marks, or special characters.
+Check your keyword for typos, accidental quotation marks, or special characters.
 
 ### 4. Case sensitivity is turned on
 
-If **Case Sensitive** is enabled in your [keyword settings](/quickstart/keyword-settings), only exact-case matches will be shown. Unless you're monitoring something case-specific (like a brand acronym), we recommend keeping this **off** to catch more results.
+If **Case sensitive** is enabled in [Keyword Settings](/quickstart/keyword-settings), only exact-case matches will be shown. Unless you're monitoring an acronym (e.g. `RAG`) or a case-specific brand, we recommend keeping it **off**.
 
 ### 5. Broad keywords may hit platform/API limits
 
-Some social platforms and APIs have volume limits that prevent us from returning _every_ result when a keyword is too broad. Try narrowing your keyword (e.g., "brand tracking tool" instead of just "brand") to get more relevant and consistent results.
+Some platforms and APIs cap the volume of results we can return when a keyword is too broad. Narrowing your keyword (e.g. `brand tracking tool` instead of `brand`) gives more relevant and consistent results.
 
 See [Tracked Platforms](/learn/platforms/overview) for platform-specific limitations.
 
-<Tip>
-We're happy to review your keywords and settings. Email [hi@octolens.com](mailto:hi@octolens.com) or write in the in-app chat.
+---
 
-You can also [book a 15-minute call with Charlotte here](https://calendar.app.google/FhJxHk2d1KxCqqay9) and we can do it together!
-</Tip>
+We're happy to review your keywords and settings together. Email [hi@octolens.com](mailto:hi@octolens.com) or write in the in-app chat. You can also [book a 15-minute call with Charlotte](https://calendar.app.google/FhJxHk2d1KxCqqay9) and we'll do it live.
