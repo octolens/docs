@@ -22,7 +22,7 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "How far back does Octolens look for mentions when I sign up or add a new keyword?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Octolens looks back 7 days for new keywords. During onboarding: up to 100 posts per platform per keyword. After onboarding (any new keyword you add): up to 10 posts per platform per keyword. Backfill beyond 7 days is not currently supported."
+        "text": "Octolens looks back 7 days for new keywords. Backfill beyond 7 days is not currently supported. If this is something you need, let the team know in the in-app chat."
       }
     },
     {
@@ -139,14 +139,6 @@ description: "Answers to common questions about Octolens: getting started, plans
     },
     {
       "@type": "Question",
-      "name": "How accurate is Octolens?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "It depends on the platform. For Twitter/X, Reddit, YouTube, and a few others, Octolens gets almost 100% of keyword mentions. For other platforms, mentions are found like a logged-out user searching on Google, so it's possible not every mention is caught."
-      }
-    },
-    {
-      "@type": "Question",
       "name": "Why is LinkedIn returning so few mentions?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -211,6 +203,14 @@ description: "Answers to common questions about Octolens: getting started, plans
     },
     {
       "@type": "Question",
+      "name": "Why are my mentions used up? I see less mentions than my monthly quota in my feed and analytics.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Both relevant and irrelevant mentions count against your monthly mention limit. Every post that matches your keyword is counted, regardless of whether the AI marks it as relevant or irrelevant. Broad or noisy keywords will use up your quota faster. To see how many mentions are being found, go to the All mentions view or go to Analytics and toggle off only relevant."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Do you have a mobile app planned?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -258,59 +258,13 @@ Find answers to common questions about Octolens below. Can't find what you're lo
   </Accordion>
 
   <Accordion title="How far back does Octolens look for mentions when I sign up or add a new keyword?">
-    Octolens looks back 7 days for new keywords:
-
-    - **During onboarding:** up to 100 posts per platform per keyword
-    - **After onboarding (any new keyword you add):** up to 10 posts per platform per keyword
+    Octolens looks back 7 days for new keywords.
 
     We don't currently support backfill beyond 7 days. If this is something you need, let us know in the in-app chat, we track these requests.
   </Accordion>
 
   <Accordion title="How do I change the email address on my account?">
     Reach out via in-app chat or email [hi@octolens.com](mailto:hi@octolens.com) and we'll update it for you.
-  </Accordion>
-</AccordionGroup>
-
-## Plans, billing, and cancellation
-
-<AccordionGroup>
-  <Accordion title="How do I cancel my subscription?">
-    Most billing actions live in **Settings → Plans & Billing**. You can manage your plan, switch to annual billing, and cancel from there. If you can't find the cancel option, reach out via in-app chat or [hi@octolens.com](mailto:hi@octolens.com).
-  </Accordion>
-
-  <Accordion title="How do I unsubscribe from email notifications?">
-    Two paths depending on what you want to stop:
-
-    - **Mention alert emails:** Open **My alerts**, click the **···** next to the alert, and Edit or Delete it. You can also turn off the Email destination toggle without deleting the alert.
-    - **Product / marketing emails:** Click the unsubscribe link at the bottom of any Octolens email.
-  </Accordion>
-
-  <Accordion title="How do I trial the Scale plan?">
-    Reach out via in-app chat or email [hi@octolens.com](mailto:hi@octolens.com) and let us know which business you're requesting it for. We'll set up a Scale trial for you case by case so you can test real-time mention refresh, AI weekly summaries, and the full media/newsletter/podcast coverage.
-  </Accordion>
-
-  <Accordion title="Can I get the keyword add-on (Flex keywords) on the Pro plan?">
-    Yes. Flex keywords are available on every plan. A workspace admin can add or remove extra keywords any time from **Settings → Plans & Billing**. They're billed monthly. See the page for the current per-keyword rate.
-
-    The same applies to Flex mentions if you go over your monthly mention limit.
-  </Accordion>
-
-  <Accordion title="How do I switch from monthly to annual billing?">
-    Go to **Settings → Plans & Billing**. There's a "Change to annual" prompt at the top of the page. Annual billing saves up to 20%.
-  </Accordion>
-
-  <Accordion title="How do I update my payment method or billing address?">
-    In **Settings → Plans & Billing**, click **Manage billing & payments**. You'll be taken to our payment processor's portal where you can update card details, billing address, and invoice email.
-
-    If you need help, please write in-app chat or [hi@octolens.com](mailto:hi@octolens.com).
-  </Accordion>
-
-  <Accordion title="Can I get a discount?">
-    We offer up to 20% off when you switch to annual billing. Beyond that, we don't discount further. If you're between plans, you can use our Flex mentions and Flex keywords add-ons to create the plan that works for you.
-  </Accordion>
-
-  <Accordion title="How do I delete my account and data?">
-    Write to us in the in-app chat or [hi@octolens.com](mailto:hi@octolens.com) and we will delete your account and data.
   </Accordion>
 </AccordionGroup>
 
@@ -360,10 +314,6 @@ Find answers to common questions about Octolens below. Can't find what you're lo
 
   <Accordion title="How often is each platform refreshed?">
     Refresh intervals vary by platform and plan. Reddit, Bluesky, and Podcasts are real-time. Otherwise the Pro plan is hourly across most platforms; the Scale plan is real-time on most platforms. See [Tracked Platforms](/learn/platforms/overview) for the exact interval per platform.
-  </Accordion>
-
-  <Accordion title="How accurate is Octolens?">
-    It depends on the platform. For Twitter/X, Reddit, YouTube, and a few others, we get almost 100% of keyword mentions. For other platforms, we see mentions like a logged-out user searching on Google, so it's possible we won't catch every mention.
   </Accordion>
 
   <Accordion title="Why is LinkedIn returning so few mentions?">
@@ -446,6 +396,49 @@ Find answers to common questions about Octolens below. Can't find what you're lo
   </Accordion>
 </AccordionGroup>
 
+## Plans and billing
+
+<AccordionGroup>
+  <Accordion title="How do I unsubscribe from email notifications?">
+    Two paths depending on what you want to stop:
+
+    - **Mention alert emails:** Open **My alerts**, click the **···** next to the alert, and Edit or Delete it. You can also turn off the Email destination toggle without deleting the alert.
+    - **Product / marketing emails:** Click the unsubscribe link at the bottom of any Octolens email.
+  </Accordion>
+
+  <Accordion title="How do I trial the Scale plan?">
+    Reach out via in-app chat or email [hi@octolens.com](mailto:hi@octolens.com) and let us know which business you're requesting it for. We'll set up a Scale trial for you case by case so you can test real-time mention refresh, AI weekly summaries, and the full media/newsletter/podcast coverage.
+  </Accordion>
+
+  <Accordion title="Can I get the keyword add-on (Flex keywords) on the Pro plan?">
+    Yes. Flex keywords are available on every plan. A workspace admin can add or remove extra keywords any time from **Settings → Plans & Billing**. They're billed monthly. See the page for the current per-keyword rate.
+
+    The same applies to Flex mentions if you go over your monthly mention limit.
+  </Accordion>
+
+  <Accordion title="How do I switch from monthly to annual billing?">
+    Go to **Settings → Plans & Billing**. There's a "Change to annual" prompt at the top of the page. Annual billing saves up to 20%.
+  </Accordion>
+
+  <Accordion title="How do I update my payment method or billing address?">
+    In **Settings → Plans & Billing**, click **Manage billing & payments**. You'll be taken to our payment processor's portal where you can update card details, billing address, and invoice email.
+
+    If you need help, please write in-app chat or [hi@octolens.com](mailto:hi@octolens.com).
+  </Accordion>
+
+  <Accordion title="Can I get a discount?">
+    We offer up to 20% off when you switch to annual billing. Beyond that, we don't discount further. If you're between plans, you can use our Flex mentions and Flex keywords add-ons to create the plan that works for you.
+  </Accordion>
+
+  <Accordion title="How do I delete my account and data?">
+    Write to us in the in-app chat or [hi@octolens.com](mailto:hi@octolens.com) and we will delete your account and data.
+  </Accordion>
+
+  <Accordion title="How do I cancel my subscription?">
+    Most billing actions live in **Settings → Plans & Billing**. You can manage your plan, switch to annual billing, and cancel from there. If you can't find the cancel option, reach out via in-app chat or [hi@octolens.com](mailto:hi@octolens.com).
+  </Accordion>
+</AccordionGroup>
+
 ## Webhooks and developer access
 
 <AccordionGroup>
@@ -498,6 +491,12 @@ Find answers to common questions about Octolens below. Can't find what you're lo
     On any mention card, click **Mark as not relevant** or **Mark as relevant** to give feedback.
 
     You can also adjust the keyword itself. Adding **Negative terms**, **Negative authors**, or sharper **Keyword context** in [Keyword Settings](/quickstart/keyword-settings) usually has a bigger impact than per-mention feedback.
+  </Accordion>
+
+  <Accordion title="Why are my mentions used up? I see less mentions than my monthly quota in my feed and analytics.">
+    Both relevant and irrelevant mentions count against your monthly mention limit. Every post that matches your keyword is counted, regardless of whether the AI marks it as relevant or irrelevant. This is why it's important to set up your keywords carefully. Broad or noisy keywords will use up your quota faster.
+
+    To see how many mentions are being found, go to the **All mentions** view or go to [Analytics](/learn/analytics) and toggle off "only relevant."
   </Accordion>
 </AccordionGroup>
 
