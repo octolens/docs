@@ -74,7 +74,7 @@ Octolens sends one mention per request. The top-level `action` field indicates w
     "keyword": "Octolens",
     "keywords": ["Octolens", "social listening"],
     "sentimentLabel": "Neutral",
-    "tags": ["feature-request"],
+    "tags": ["Own Brand Mention"],
     "bookmarked": false,
     "language": "en",
     "subreddit": "r/subreddit",
@@ -107,7 +107,7 @@ Octolens sends one mention per request. The top-level `action` field indicates w
 | `data.keyword` | string | The first (primary) keyword that matched this post. Kept for backward compatibility; new integrations should use `keywords`. |
 | `data.keywords` | string[] | All of your keywords that matched this post. A post can match more than one. |
 | `data.sentimentLabel` | string | `Positive`, `Neutral`, or `Negative`. |
-| `data.tags` | string[] | AI-assigned tags on the mention (e.g. `feature-request`, `buy-intent`). See [AI Relevance & Tags](/learn/ai-relevance). |
+| `data.tags` | string[] | AI-assigned tags on the mention (e.g. `Own Brand Mention`, `Buy Intent`). See [AI Relevance & Tags](/learn/ai-relevance). |
 | `data.bookmarked` | boolean | Whether this mention is bookmarked in the Octolens workspace. |
 | `data.language` | string | ISO 639-1 language code detected for the post (e.g. `en`, `es`, `de`). |
 | `data.subreddit` | string | Subreddit name. Only present for Reddit mentions. |
