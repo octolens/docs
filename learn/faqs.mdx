@@ -1,64 +1,524 @@
 ---
 title: FAQs
-description: Frequently asked questions about Octolens
+description: "Answers to common questions about Octolens: getting started, plans, keywords, platforms, alerts, team, developer access, and troubleshooting."
 ---
 
-Find answers to common questions about Octolens below. Can't find what you're looking for? Email hi@octolens.com or use our in-app chat.
+<script type="application/ld+json">
+{`
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I sign up and start a free trial?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You get a 7-day free trial with 5,000 mentions and 5 keywords, no credit card required. It takes about 2 minutes. During onboarding, Octolens auto-fills your company context from your website and suggests 4 starter keywords."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How far back does Octolens look for mentions when I sign up or add a new keyword?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Octolens looks back 7 days for new keywords. During onboarding: up to 100 posts per platform per keyword. After onboarding (any new keyword you add): up to 10 posts per platform per keyword. Backfill beyond 7 days is not currently supported."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I change the email address on my account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Reach out via in-app chat or email hi@octolens.com and we'll update it for you."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I cancel my subscription?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most billing actions live in Settings → Plans & Billing. You can manage your plan, switch to annual billing, and cancel from there. If you can't find the cancel option, reach out via in-app chat or hi@octolens.com."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I unsubscribe from email notifications?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For mention alert emails: open My alerts, click the ··· next to the alert, and Edit or Delete it. You can also turn off the Email destination toggle without deleting the alert. For product/marketing emails: click the unsubscribe link at the bottom of any Octolens email."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I trial the Scale plan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Reach out via in-app chat or email hi@octolens.com and let us know which business you're requesting it for. We'll set up a Scale trial for you case by case so you can test real-time mention refresh, AI weekly summaries, and the full media/newsletter/podcast coverage."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I get the keyword add-on (Flex keywords) on the Pro plan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Flex keywords are available on every plan. A workspace admin can add or remove extra keywords any time from Settings → Plans & Billing. They're billed monthly. The same applies to Flex mentions if you go over your monthly mention limit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I switch from monthly to annual billing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Go to Settings → Plans & Billing. There's a Change to annual prompt at the top of the page. Annual billing saves up to 20%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I update my payment method or billing address?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In Settings → Plans & Billing, click Manage billing & payments. You'll be taken to our payment processor's portal where you can update card details, billing address, and invoice email."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I get a discount?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We offer up to 20% off when you switch to annual billing. Beyond that, we don't discount further. If you're between plans, you can use our Flex mentions and Flex keywords add-ons to create the plan that works for you."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I delete my account and data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Write to us in the in-app chat or hi@octolens.com and we will delete your account and data."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where do I edit, pause, or delete a keyword?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In the left sidebar, find the keyword in your Keywords list and click the ··· next to its name. Options include: Keyword settings (edit type, platforms, context, and include/exclude rules), Pause keyword (stop pulling new mentions without deleting), and Delete keyword (permanently remove the keyword and all its mentions)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does a keyword match partial words?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "By default, no. Exact match is on for new keywords, so Octolens won't match partial words like Octolensapi. However, it will catch your keyword within a domain, with 's, or in a handle (e.g. @octolens)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I track all posts from a specific subreddit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Instead of pasting in a keyword, paste in the URL of the subreddit into the keyword input and click save. Then Octolens will track all posts of the subreddit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What platforms does Octolens track?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Octolens tracks mentions across Reddit, Twitter/X, LinkedIn, YouTube, TikTok, Bluesky, Hacker News, GitHub, Stack Overflow, DEV, newsletters, podcasts, and media outlets. Depending on your plan, you'll have access to all or a subset of them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How often is each platform refreshed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Refresh intervals vary by platform and plan. Reddit, Bluesky, and Podcasts are real-time. The Pro plan is hourly across most platforms; the Scale plan is real-time on most platforms."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How accurate is Octolens?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on the platform. For Twitter/X, Reddit, YouTube, and a few others, Octolens gets almost 100% of keyword mentions. For other platforms, mentions are found like a logged-out user searching on Google, so it's possible not every mention is caught."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is LinkedIn returning so few mentions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "LinkedIn is the most restricted platform Octolens monitors. Connect a LinkedIn page admin in Settings → Platforms to get all tagged company mentions. For non-brand keywords, Octolens finds what a logged-out user can see, so some posts may be missed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you have a Slack integration?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can get alerts for new keyword mentions in Slack. You can decide which relevance levels to include. For example, you can get alerted for only posts the AI deems as High relevance, such as buy-intent, engagement opportunities, customer complaints or praise."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can a single alert send to multiple destinations?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. In the Add alert dialog (Step 2), you can toggle on Email, Slack, and Webhook all on the same alert, and each fires off the same view. Each destination has its own frequency: Instantly, Hourly, Daily, or Weekly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I invite a colleague to my workspace?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Go to Settings → Members and click Invite member. Enter their email, they'll get an invite to join your workspace. Choose between member or admin role. Admins have billing rights, can invite members and assign roles, and can create admin-level API keys."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you have an API and webhooks?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, both, on every plan. Octolens also offers an MCP server for AI agents. You can also use automation tools like Zapier, n8n, or Make to send your alerts to your app of choice."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use webhooks with Discord?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Octolens webhooks are Discord-compatible. Paste a Discord channel webhook URL directly into the Webhook URL field and mentions will post into the channel. No middleware needed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "A keyword isn't returning any mentions, what should I check?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Check these in order: 1) Wait at least an hour after adding the keyword. 2) Make sure the keyword isn't too narrow. 3) Confirm all platforms are enabled in Keyword Settings. 4) Check All mentions, not just For you. 5) Make sure the keyword isn't paused. 6) Review your company context for thin descriptions that may cause over-aggressive AI filtering."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why are some mentions tagged Low relevance?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Octolens uses AI to score every mention based on your company context, post content, and source. Low-relevance mentions are ones where the AI isn't confident the post is about your product or industry. You can see them in the All mentions view, filter them out, or help the AI learn by marking mentions as Relevant or Not Relevant."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you have a mobile app planned?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not yet. If we get enough requests, we may build one."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you have an affiliate program?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can sign up at octolens.tolt.io/login. You can earn 50% of the revenue your referrals generate for the first 12 months."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is your privacy policy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Find the Octolens privacy policy at octolens.com/legal/privacy-policy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you have multi-language support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The app UI is in English, but you can search for any word in any language. On Twitter/X, only English results are returned. Make sure you don't have EN only selected in your feed so other languages aren't hidden."
+      }
+    }
+  ]
+}
+`}
+</script>
+
+Find answers to common questions about Octolens below. Can't find what you're looking for? Email [hi@octolens.com](mailto:hi@octolens.com) or use our in-app chat.
+
+## Getting started
 
 <AccordionGroup>
-  <Accordion title="Do you have API access or Webhooks?">
-    Yes. We offer both an [API](/api/overview) and [webhooks](/quickstart/webhooks). You can send mentions to other apps (e.g., email, CRMs, spreadsheets, etc.).
+  <Accordion title="How do I sign up and start a free trial?">
+    You get a 7-day free trial with 5,000 mentions and 5 keywords, no credit card required. Start your free trial onboarding [here](https://app.octolens.com/me/sign-up?selectedPlan=Free_trial), it takes about 2 minutes.
 
-    Webhooks are also directly compatible with Discord.
+    During onboarding, Octolens auto-fills your [company context](/quickstart/company-context) from your website and suggests 4 starter keywords. You can edit any of it before continuing or edit later in your workspace once it's set up.
+  </Accordion>
 
-    You can also use any of the popular automation tools like Zapier, n8n, or Make to send your alerts to your app of choice.
+  <Accordion title="How far back does Octolens look for mentions when I sign up or add a new keyword?">
+    Octolens looks back 7 days for new keywords:
+
+    - **During onboarding:** up to 100 posts per platform per keyword
+    - **After onboarding (any new keyword you add):** up to 10 posts per platform per keyword
+
+    We don't currently support backfill beyond 7 days. If this is something you need, let us know in the in-app chat, we track these requests.
+  </Accordion>
+
+  <Accordion title="How do I change the email address on my account?">
+    Reach out via in-app chat or email [hi@octolens.com](mailto:hi@octolens.com) and we'll update it for you.
+  </Accordion>
+</AccordionGroup>
+
+## Plans, billing, and cancellation
+
+<AccordionGroup>
+  <Accordion title="How do I cancel my subscription?">
+    Most billing actions live in **Settings → Plans & Billing**. You can manage your plan, switch to annual billing, and cancel from there. If you can't find the cancel option, reach out via in-app chat or [hi@octolens.com](mailto:hi@octolens.com).
+  </Accordion>
+
+  <Accordion title="How do I unsubscribe from email notifications?">
+    Two paths depending on what you want to stop:
+
+    - **Mention alert emails:** Open **My alerts**, click the **···** next to the alert, and Edit or Delete it. You can also turn off the Email destination toggle without deleting the alert.
+    - **Product / marketing emails:** Click the unsubscribe link at the bottom of any Octolens email.
+  </Accordion>
+
+  <Accordion title="How do I trial the Scale plan?">
+    Reach out via in-app chat or email [hi@octolens.com](mailto:hi@octolens.com) and let us know which business you're requesting it for. We'll set up a Scale trial for you case by case so you can test real-time mention refresh, AI weekly summaries, and the full media/newsletter/podcast coverage.
+  </Accordion>
+
+  <Accordion title="Can I get the keyword add-on (Flex keywords) on the Pro plan?">
+    Yes. Flex keywords are available on every plan. A workspace admin can add or remove extra keywords any time from **Settings → Plans & Billing**. They're billed monthly. See the page for the current per-keyword rate.
+
+    The same applies to Flex mentions if you go over your monthly mention limit.
+  </Accordion>
+
+  <Accordion title="How do I switch from monthly to annual billing?">
+    Go to **Settings → Plans & Billing**. There's a "Change to annual" prompt at the top of the page. Annual billing saves up to 20%.
+  </Accordion>
+
+  <Accordion title="How do I update my payment method or billing address?">
+    In **Settings → Plans & Billing**, click **Manage billing & payments**. You'll be taken to our payment processor's portal where you can update card details, billing address, and invoice email.
+
+    If you need help, please write in-app chat or [hi@octolens.com](mailto:hi@octolens.com).
+  </Accordion>
+
+  <Accordion title="Can I get a discount?">
+    We offer up to 20% off when you switch to annual billing. Beyond that, we don't discount further. If you're between plans, you can use our Flex mentions and Flex keywords add-ons to create the plan that works for you.
+  </Accordion>
+
+  <Accordion title="How do I delete my account and data?">
+    Write to us in the in-app chat or [hi@octolens.com](mailto:hi@octolens.com) and we will delete your account and data.
+  </Accordion>
+</AccordionGroup>
+
+## Keywords
+
+<AccordionGroup>
+  <Accordion title="Where do I edit, pause, or delete a keyword?">
+    In the left sidebar, find the keyword in your Keywords list and click the **···** next to its name:
+
+    - **Keyword settings.** Edit type, platforms, context, and include/exclude rules.
+    - **Pause keyword.** Stop pulling new mentions without deleting; existing mentions stay in your feed.
+    - **Delete keyword.** Permanently remove the keyword and all its mentions. Can't be undone.
+
+    See [Choose your keywords](/quickstart/keywords) for more.
+  </Accordion>
+
+  <Accordion title="Does a keyword match partial words?">
+    By default, no. **Exact match is on** for new keywords, so Octolens won't match `Octolensapi`. However, we will catch your keyword within a domain, with `'s`, or in a handle (e.g. `@octolens`).
+  </Accordion>
+
+  <Accordion title="How do I rename my workspace without losing keywords or mentions?">
+    If you want to change the business context for which you're tracking keywords, go to **Settings → Company Context** and update the answers in the form. We won't backfill that data, but from then on all incoming posts will use the updated information for AI relevance and tagging.
+  </Accordion>
+
+  <Accordion title="Can I track all posts from a specific subreddit (e.g. all posts in r/yourcompany)?">
+    Yes. Instead of pasting in a keyword, paste in the URL of the subreddit into the keyword input and click save. Then we'll know to track all posts of the subreddit.
+  </Accordion>
+</AccordionGroup>
+
+## Platforms
+
+<AccordionGroup>
+  <Accordion title="What platforms do you track?">
+    [Here are all the platforms we track.](/learn/platforms/overview) Depending on your plan, you'll have access to all or a subset of them.
+  </Accordion>
+
+  <Accordion title="Why am I not seeing mentions from a specific platform?">
+    A few common reasons, in roughly the order to check:
+
+    1. **Backfill window.** Octolens looks back 7 days when you add a new keyword. Older posts won't appear.
+    2. **Refresh interval hasn't run yet.** Each platform has its own refresh interval. See [Tracked Platforms](/learn/platforms/overview) for specifics.
+    3. **Platform is disabled for this keyword.** Check the Platforms field in [Keyword Settings](/quickstart/keyword-settings).
+    4. **Coverage varies by platform.** We get close to 100% coverage on X/Twitter, Reddit, YouTube, and a few others. For LinkedIn, we fetch all tagged brand mentions via the OAuth flow, and for other keywords we find what a logged-out user would see.
+
+    If you've checked all of the above and still don't see mentions, reach out via in-app chat with the post URL and we'll investigate.
+  </Accordion>
+
+  <Accordion title="How often is each platform refreshed?">
+    Refresh intervals vary by platform and plan. Reddit, Bluesky, and Podcasts are real-time. Otherwise the Pro plan is hourly across most platforms; the Scale plan is real-time on most platforms. See [Tracked Platforms](/learn/platforms/overview) for the exact interval per platform.
+  </Accordion>
+
+  <Accordion title="How accurate is Octolens?">
+    It depends on the platform. For Twitter/X, Reddit, YouTube, and a few others, we get almost 100% of keyword mentions. For other platforms, we see mentions like a logged-out user searching on Google, so it's possible we won't catch every mention.
+  </Accordion>
+
+  <Accordion title="Why is LinkedIn returning so few mentions?">
+    LinkedIn is the most restricted platform we monitor. Two things that help:
+
+    - **Connect a LinkedIn page admin.** Go to **Settings → Platforms** to authorize a LinkedIn account. Once connected, you'll get all tagged company mentions.
+    - **Set realistic expectations for non-brand keywords.** For these we find what a logged-out user can see, so we may miss posts you'd otherwise see in LinkedIn.
+  </Accordion>
+
+  <Accordion title="How do I connect LinkedIn for tagged company mentions?">
+    Go to **Settings → Platforms**, find LinkedIn, and click **Connect**. You'll authorize Octolens to read your LinkedIn page activity. Once connected, mentions tagging your company appear in your feed.
+  </Accordion>
+
+  <Accordion title="Can I increase a platform refresh frequency?">
+    If you need a faster refresh than our Scale plan offers for a platform, reach out via chat or [hi@octolens.com](mailto:hi@octolens.com) for an enterprise plan. These begin at $1,000 per month billed annually.
+  </Accordion>
+
+  <Accordion title="Why didn't this specific post show up in my feed?">
+    A few reasons we may not catch a specific post:
+
+    - The post is older than our 7-day backfill window
+    - The keyword is paused or the platform is disabled in [Keyword Settings](/quickstart/keyword-settings)
+    - The post uses your keyword in a way our parser misses (a partial match with Exact match on, or a non-text format like an embedded image)
+
+    Send us the post URL via in-app chat and we'll check.
   </Accordion>
 
   <Accordion title="Do you have multi-language support?">
-    The app UI is in English, but you can search for any word in any language. On Twitter/X, we only return English results. Make sure you don't have "EN only" selected in your feed, so other languages aren't hidden.
+    The app UI is in English, but you can search for any word in any language. On Twitter/X, we only return English results. Make sure you don't have "EN only" selected in your feed so other languages aren't hidden.
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="How can I reach support?">
-    Use the in-app chat, or email hi@octolens.com. We'll get back to you ASAP.
+## Alerts and notifications
 
-    Note: We are a two-person team based in Europe. If there's a delay, it's usually the time difference. Otherwise, we try to respond within the hour.
-  </Accordion>
-
-  <Accordion title="Do you have an affiliate program?">
-    Yes we do. You can sign up here: [https://octolens.tolt.io/login](https://octolens.tolt.io/login)
-
-    You can earn 50% of the revenue your referrals generate for the first 12 months! If you have any questions about our affiliate program or would like to partner, please reach out in our in-app chat.
-  </Accordion>
-
-  <Accordion title="What is your privacy policy?">
-    Find our privacy policy here: [https://octolens.com/legal/privacy-policy](https://octolens.com/legal/privacy-policy)
-  </Accordion>
-
-  <Accordion title="What platforms do you track?">
-    [Here are all the platforms we track](/learn/platforms/overview). Depending on your plan, you'll have access to all or a subset of them.
-  </Accordion>
-
+<AccordionGroup>
   <Accordion title="Do you have a Slack integration?">
-    Yes. You can get alerts for new keyword mentions in Slack. [Here is how to connect Slack](/quickstart/connect-slack) and [set up alerts](/quickstart/alerts).
+    Yes. You can get alerts for new keyword mentions in Slack. See [Connect Slack](/quickstart/connect-slack) and [set up alerts](/quickstart/alerts).
 
     You can decide which relevance levels we should include. For example, you can get alerted for only posts our AI deems as High relevance (e.g. with buy-intent, great engagement opportunities, customer complaints or praise).
   </Accordion>
 
-  <Accordion title="Can I invite teammates to Octolens?">
-    Yes. You can add teammates on all Octolens plans. Go to **Settings → Members**, then add their email. See [Team Members](/quickstart/team-members) for more details.
+  <Accordion title="Can a single alert send to multiple destinations?">
+    Yes. In the Add alert dialog (Step 2), you can toggle on Email, Slack, and Webhook all on the same alert, and each fires off the same view.
 
-    They will then be able to enter your workspace and collaborate.
+    Each destination has its own frequency (Instantly, Hourly, Daily, Weekly).
   </Accordion>
 
+  <Accordion title="Why isn't my Slack alert posting?">
+    Most often it's one of three things:
+
+    1. The Slack channel is private and Octolens doesn't have access.
+    2. The view filter isn't matching anything. Open the view in your feed and check that mentions appear there. If the view is empty, the alert has nothing to send.
+    3. The Slack integration disconnected. Go to **Settings → Integration for Slack** and check the status. If it's not Active, remove and reconnect.
+  </Accordion>
+
+  <Accordion title="Why isn't the Slack channel I just created showing up in Octolens?">
+    Octolens caches your Slack channel list when you connect. Newly created channels sometimes don't appear until you reconnect.
+
+    To refresh: **Settings → Integration for Slack** → click **Remove integration for Slack**, then connect again. The new channel will now show up in alert setup.
+
+    The channel also needs to be a public channel that you're a part of.
+  </Accordion>
+</AccordionGroup>
+
+## Team and workspace
+
+<AccordionGroup>
+  <Accordion title="How do I invite a colleague to my workspace?">
+    Go to **Settings → Members** and click **Invite member**. Enter their email, they'll get an invite to join your workspace. Choose between member or admin role. Admins have billing rights, can invite members and assign roles, and can create admin-level API keys.
+
+    See [Team Members](/quickstart/team-members) for more details.
+  </Accordion>
+
+  <Accordion title="How do I transfer admin to another team member?">
+    Workspace admin transfer is currently handled by our team. Reach out via in-app chat or [hi@octolens.com](mailto:hi@octolens.com) and we'll transfer admin to a new email. We may ask you to verify ownership.
+  </Accordion>
+
+  <Accordion title="How do I close or merge a duplicate workspace?">
+    If you ended up with two workspaces (for example, one from a personal email trial and one from a team plan invitation), email [hi@octolens.com](mailto:hi@octolens.com) and we'll close or merge them for you.
+  </Accordion>
+</AccordionGroup>
+
+## Webhooks and developer access
+
+<AccordionGroup>
+  <Accordion title="Do you have an API and webhooks?">
+    Yes, both, on every plan. We also offer an MCP server for AI agents.
+
+    - **API.** See [API Reference](/api/overview) for endpoints, auth, and examples.
+    - **Webhooks.** See [Webhooks](/quickstart/webhooks).
+    - **MCP.** See [MCP Server](/mcp/overview) for setup with Claude, Cursor, ChatGPT.
+
+    You can also use any of the popular automation tools like Zapier, n8n, or Make to send your alerts to your app of choice.
+  </Accordion>
+
+  <Accordion title="Can I use webhooks with Discord?">
+    Yes. Octolens webhooks are Discord-compatible. Paste a Discord channel webhook URL directly into the Webhook URL field and mentions will post into the channel. No middleware needed.
+  </Accordion>
+
+  <Accordion title="Where can I find the webhook payload format?">
+    Full payload reference is in [Webhooks → Payload format](/quickstart/webhooks#payload-format), including every field, its type, and when it's populated.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="A keyword isn't returning any mentions, what should I check?">
+    Run through this checklist:
+
+    1. **Wait at least an hour after adding the keyword.** Initial backfill and platform refresh take time.
+    2. **Is it too narrow?** Check out [Keyword Settings](/quickstart/keyword-settings). Your keyword may be too narrow, long-tail, or have too many settings to be finding any results.
+    3. **Are all platforms enabled?** Check the Platforms field in Keyword Settings. By default they all should be, but it's worth confirming.
+    4. **Check All mentions, not just For you.** Your filter or default view might be hiding the post. **All mentions** shows everything Octolens has pulled in, including low-relevance.
+    5. **Is the keyword paused?** A paused keyword stops pulling new mentions. Resume it from the **···** menu.
+    6. **Is your company context strong?** Thin context leads to over-aggressive AI filtering. See [Company Context](/quickstart/company-context).
+
+    If you've checked all of the above and still see nothing, reach out via in-app chat with the keyword and an example post URL we should have caught.
+  </Accordion>
+
+  <Accordion title="Why are some mentions tagged Low relevance?">
+    Octolens uses AI to score every mention as relevant or not relevant based on your company context, the post content, and the source. Low-relevance mentions are ones where the AI isn't confident the post is actually about your product or industry. For example, a generic mention of a common-word brand, or a post in a language or context unrelated to your business.
+
+    You can:
+
+    - See low-relevance mentions in the **All mentions** view
+    - Filter them out of any custom view or alert
+    - Help the AI learn by marking mentions as Relevant or Not Relevant on individual cards
+  </Accordion>
+
+  <Accordion title="How do I update a wrongly tagged or scored mention?">
+    On any mention card, click **Mark as not relevant** or **Mark as relevant** to give feedback.
+
+    You can also adjust the keyword itself. Adding **Negative terms**, **Negative authors**, or sharper **Keyword context** in [Keyword Settings](/quickstart/keyword-settings) usually has a bigger impact than per-mention feedback.
+  </Accordion>
+</AccordionGroup>
+
+## Other
+
+<AccordionGroup>
   <Accordion title="Do you have a mobile app planned?">
     Not yet. If we get enough requests, we may build one. Let us know.
   </Accordion>
 
-  <Accordion title="How high is the accuracy of Octolens?">
-    It depends on the platform. For Twitter/X, Reddit, YouTube, and a few others, we get almost 100% of keyword mentions. For other platforms, we see mentions like a logged-out user searching on Google. So it's possible we won't catch every mention.
+  <Accordion title="Do you have an affiliate program?">
+    Yes we do. You can sign up here: [octolens.tolt.io/login](https://octolens.tolt.io/login). You can earn 50% of the revenue your referrals generate for the first 12 months.
+
+    If you have any questions about our affiliate program or would like to partner, please reach out in our in-app chat.
   </Accordion>
 
-  <Accordion title="Will I be able to cancel my subscription?">
-    Yes, you can cancel your subscription at any time.
+  <Accordion title="What is your privacy policy?">
+    Find our privacy policy here: [octolens.com/legal/privacy-policy](https://octolens.com/legal/privacy-policy).
   </Accordion>
 </AccordionGroup>
+
+## Still need help?
+
+Use the in-app chat or email [hi@octolens.com](mailto:hi@octolens.com). We're a small Europe-based team, so depending on your timezone there may be a few hours' delay, but we typically respond within the hour during our day.
