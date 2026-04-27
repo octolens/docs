@@ -3,9 +3,7 @@ title: Overview
 description: Connect AI agents to your Octolens social listening data
 ---
 
-**Octolens MCP** lets AI agents securely access your social listening data. MCP (Model Context Protocol) is a standard that allows AI tools to connect with third-party APIs in a secure, consistent way. In this case, it connects AI tools with Octolens, enabling workflows like:
-
-**Example use cases:** "Using Octolens.."
+**Octolens MCP** lets AI agents securely access your social listening data. MCP (Model Context Protocol) is a standard that allows AI tools to connect with third-party APIs in a secure, consistent way. In this case, MCP connects AI tools to your Octolens workspace, so you can query mentions, analyze conversations, and build custom reports from your existing monitoring data.
 
 - "Generate a share of voice graph using my BRAND, COMPETITOR 1, COMPETITOR2, and COMPETITOR3, and include percentage share, mention volume, as well as sentiment breakdown"
 - "Show me all Reddit mentions from the last week where sentiment is negative"
@@ -25,6 +23,10 @@ You will need to **generate your MCP URL** to connect your Octolens account and 
 - Choose an expiration date for your API key from the dropdown
 - Click **Create**
 - Copy the URL
+
+<Note>
+MCP is intended for interactive AI-client workflows. For scripts, backend jobs, or production integrations, use the [REST API](/api/overview).
+</Note>
 
 <Frame>
   <img src="/images/mcp-generate-url.png" alt="Generate MCP URL in Octolens settings" />
