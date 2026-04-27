@@ -1,38 +1,94 @@
 ---
-title: Analytics
-description: See keyword trends over time by platform, relevance, and more
+title: "Analytics"
+description: "Visualize mention trends, see what's driving conversation, and track your Conversation Rank on Reddit."
 ---
 
-Octolens Analytics lets you visualize your mention data over time. Open **Analytics** from the sidebar to view and download graphs.
+Analytics is where you understand what's happening across your keywords over time. Open **Analytics** from the sidebar.
+
+## The three tabs
+
+<Frame caption="Analytics has three tabs at the top of the page.">
+  <img src="/images/analytics-overview.png" alt="Analytics page showing General Analytics, AI Summaries, and Conversation Rank tabs" />
+</Frame>
+
+- **General Analytics.** Trends and breakdowns across all your tracked keywords. The default tab.
+- **AI Summaries.** Weekly AI-generated brief on your brand and competitors. Scale plan only. See [AI Summaries](/learn/ai-summaries).
+- **Conversation Rank.** A 0 to 100 score measuring how often your brand appears in Reddit conversations.
+
+## General Analytics
+
+### Page-level filters
+
+These controls apply to every chart on the General Analytics tab:
+
+- **Time range.** Last 7 days (default), Last 30 days, Last 90 days, Last 6 months, Last 1 year, or Custom.
+- **Keywords.** Filter to one or more of your tracked keywords. Defaults to All keywords.
+- **Only relevant** toggle. **On** by default. Hides low-relevance mentions across every chart so you focus on the conversations that matter.
+
+<Note>
+**What Analytics shows by default.** Two scope rules worth knowing:
+
+- **Only relevant mentions are included by default.** Toggle off **Only relevant** in the top right to include low-relevance mentions in every chart.
+- **Deleted keywords are not included.** Analytics only shows your currently active keywords. Mentions from keywords you've since deleted won't appear here, even if they were pulled in during the time range you're viewing.
+</Note>
 
 <Tip>
-To download any graph, click the **arrow** in the top-right corner of the graph.
+Compare time ranges to spot trends. Switch from Last 7 days to Last 90 days to see whether a spike is part of a longer pattern, and use the Keywords picker to isolate one brand or competitor at a time.
 </Tip>
 
-## Total mentions
+### Total mentions
 
-Mentions over time, filterable by **relevance**, **platform**, and **keyword**.
+Mentions over time as a line chart by default. Use the chart-level filters to slice by **platform**, **tag**, or **sentiment**.
 
-<Frame>
-  <img src="/images/analytics-total-mentions.png" alt="Total mentions: line chart or bar chart" />
+<Frame caption="Total mentions chart in line view.">
+  <img src="/images/analytics-total-mentions.png" alt="Total mentions line chart with platform, tag, and sentiment filters" />
 </Frame>
 
-## Mentions by relevance
+Switch to **bar view** (top right of the chart) to break down volume by keyword, with each keyword shown in its assigned color. A clear way to see which keywords are generating the most conversation.
 
-See how your mentions break down by AI relevance score.
+Click the **download** icon (top right) to export any chart as an image.
 
-<Frame>
-  <img src="/images/analytics-by-relevance.png" alt="Mentions by relevance" />
-</Frame>
+### Mentions by Tag
 
-## Mentions by platform
+Bar chart showing how mentions break down across AI-assigned tags (Own Brand Mention, Competitor Mention, Industry Insights, Buy Intent, Bug Report, and so on). Useful for understanding the *kind* of conversations happening around your keywords.
 
-See which platforms are generating the most mentions for your keywords.
+See [AI Relevance & Tags](/learn/ai-relevance) for what each tag means.
 
-<Frame>
-  <img src="/images/analytics-by-platform.png" alt="Mentions by platform" />
-</Frame>
+### Mentions by Platform
 
-<Info>
-For a deeper analysis across all your mentions, you can also use the [Octolens API](/api/overview) or [MCP Server](/mcp/overview) to build custom analytics and graphs.
-</Info>
+A breakdown showing the share of your mentions coming from each platform, with both percentage and raw count. Useful for spotting platforms you should pay more (or less) attention to.
+
+## Conversation Rank
+
+Conversation Rank (CR) is a 0 to 100 score measuring how often your brand appears in Reddit conversations. Think of it as Domain Rating (DR) for the AI age: instead of backlinks, CR tracks how often real people bring up your brand when they discuss tools, compare products, or share advice.
+
+Conversation Rank is **Reddit-only by design**. Reddit is the platform where buying decisions and recommendations get hashed out in real text, which is exactly the signal CR is measuring.
+
+### Score and supporting metrics
+
+The Conversation Rank tab shows:
+
+- **Conversation Rank.** Your brand's score from 0 to 100, calculated for one keyword at a time. Use the keyword picker next to the score to switch.
+- **Mentions (last 30 days).** Total Reddit mentions of the keyword in the last 30 days.
+- **Unique subreddits (last 30 days).** How many distinct subreddits your brand showed up in. Wider distribution generally means a higher rank.
+
+### Supporting charts
+
+Below the score:
+
+- **Reddit Mentions Over Time.** Line chart of Reddit-only mentions for the selected keyword. Independent time range and keyword controls.
+- **Mentions by Subreddit.** Which subreddits your brand is showing up in, ranked by share of mentions.
+- **Mentions by Sentiment.** Donut chart showing the Positive / Neutral / Negative split for your Reddit mentions.
+
+## Build your own analytics
+
+For deeper analysis or custom dashboards, you can pull mention data programmatically:
+
+- [API Reference](/api/overview) for REST access
+- [MCP Server](/mcp/overview) to connect mentions to AI agents like Claude, Cursor, and ChatGPT
+
+## Next steps
+
+- [AI Summaries](/learn/ai-summaries): weekly AI-generated brief on the AI Summaries tab
+- [AI Relevance & Tags](/learn/ai-relevance): what each tag in the Mentions by Tag chart means
+- [Tracked Platforms](/learn/platforms/overview): what feeds into Mentions by Platform
