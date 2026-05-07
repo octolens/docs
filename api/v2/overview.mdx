@@ -1,0 +1,101 @@
+---
+title: API Reference
+description: Use the Octolens REST API v2 to query mentions, manage keywords and feeds, run analytics, and pipe social listening data into your own apps, dashboards, and internal automations.
+---
+
+With the Octolens API, you can use data from your Octolens workspace to create custom integrations and automations. Every action available in the Octolens UI is available here.
+
+The Octolens API, MCP server, and webhooks are available on every plan.
+
+---
+
+## How to use the Octolens API
+
+#### Create an API Key
+
+In Octolens, navigate to Settings and then the API tab.
+
+- Click "Add new key"
+- Choose a name for your API key
+- Choose a scope: `read`, `write` (implies read), or `admin` (implies write)
+- Choose an expiration date for your API key from the dropdown
+- Click **Create**
+
+You can revoke access to an API key at any time by clicking the three dots next to it.
+
+---
+
+## Quick Start
+
+#### Base URL
+
+```
+https://app.octolens.com/api/v2
+```
+
+#### Authentication
+
+Bearer token in the Authorization header. Each endpoint documents the scope it requires.
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+#### Rate Limits
+
+500 requests per hour per organization (across all keys). Every 2xx response returns three headers so clients can pace themselves:
+
+- `X-RateLimit-Limit` — the hourly cap (500)
+- `X-RateLimit-Remaining` — requests left in the current window
+- `X-RateLimit-Reset` — Unix timestamp (seconds) when the window resets
+
+When the cap is hit, the endpoint returns **429** with a `Retry-After` header.
+
+#### Example Request
+
+```bash
+curl -X POST "https://app.octolens.com/api/v2/mentions" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"limit": 10}'
+```
+
+<Tip>
+  Building filters by hand can be tedious. Call `POST /api/v2/ai/filter-wizard` with a natural-language prompt to get a ready-to-paste `filters` object.
+</Tip>
+
+---
+
+## Error Handling
+
+All non-2xx responses share the same envelope:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Human-readable explanation",
+    "status": 400,
+    "details": []
+  }
+}
+```
+
+The `code` field is a stable `ApiErrorCode` enum — branch on it programmatically instead of parsing `message`. `VALIDATION_ERROR` (400) responses include a `details` array with per-field issues; inspect `details[i].path` to pinpoint which input was rejected.
+
+#### Common error codes
+
+| HTTP | Code | Meaning |
+| --- | --- | --- |
+| 400 | `VALIDATION_ERROR` | Request body or query is malformed |
+| 401 | `UNAUTHORIZED` | Missing or invalid API key |
+| 403 | `FORBIDDEN` | Key lacks the required scope or permission |
+| 404 | `NOT_FOUND` | Resource does not exist |
+| 429 | `RATE_LIMITED` | Hourly cap hit — see `Retry-After` |
+| 500 | `INTERNAL_ERROR` | Unexpected error — retry or contact support |
+
+---
+
+## Endpoints
+
+Browse the full endpoint reference in the sidebar, organized by resource: **Feeds**, **Keywords**, **Mentions**, **Analytics**, **Organization**, **Feedback**, **AI**, **Members**, and **Filters**. Each endpoint page includes a live "Try it" playground.

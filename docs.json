@@ -54,7 +54,12 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Reference",
+            "group": "API v2",
+            "root": "api/v2/overview",
+            "openapi": "https://app.octolens.com/api/v2/openapi.json"
+          },
+          {
+            "group": "API v1 (Legacy)",
             "pages": [
               "api/overview"
             ]
