@@ -1,0 +1,47 @@
+@media (min-width: 1024px) {
+  #navbar-transition-maple {
+    width: calc(100vw - 19rem) !important;
+    max-width: calc(100vw - 19rem) !important;
+  }
+
+  .nav-tabs {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding-right: 8rem;
+  }
+
+  #octolens-go-to-app {
+    position: fixed;
+    right: 1.5rem;
+    top: 0.5rem;
+    z-index: 50;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: #553788;
+    color: #fff;
+    padding: 0.375rem 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  #octolens-go-to-app:hover {
+    background: #7551B5;
+    color: #fff;
+  }
+
+  #octolens-go-to-app svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  #octolens-go-to-app {
+    display: none;
+  }
+}

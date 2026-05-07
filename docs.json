@@ -102,6 +102,20 @@
   "feedback": {
     "thumbsRating": true
   },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      {
+        "title": "Copy all docs as Markdown",
+        "description": "Full documentation including every API endpoint, for pasting into AI tools",
+        "icon": "books",
+        "href": "/llms-full.txt"
+      }
+    ]
+  },
   "footer": {
     "socials": {
       "x": "https://x.com/Octolens",
