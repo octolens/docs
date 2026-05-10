@@ -27,9 +27,9 @@
               "quickstart/keywords",
               "quickstart/keyword-settings",
               "quickstart/global-keyword-settings",
-              "quickstart/views",
+              "quickstart/feeds",
+              "quickstart/destinations",
               "quickstart/connect-slack",
-              "quickstart/alerts",
               "quickstart/webhooks",
               "quickstart/csv-export",
               "quickstart/team-members"
@@ -38,13 +38,12 @@
           {
             "group": "Learn",
             "pages": [
+              "learn/dashboard",
               "learn/mention-limits",
               "learn/ai-relevance",
               "learn/sentiment",
               "learn/platforms/overview",
               "learn/platforms/newsletter-list",
-              "learn/analytics",
-              "learn/ai-summaries",
               "learn/faqs"
             ]
           }
@@ -81,6 +80,24 @@
       }
     ]
   },
+  "redirects": [
+    {
+      "source": "/quickstart/views",
+      "destination": "/quickstart/feeds"
+    },
+    {
+      "source": "/quickstart/alerts",
+      "destination": "/quickstart/destinations"
+    },
+    {
+      "source": "/learn/analytics",
+      "destination": "/learn/dashboard"
+    },
+    {
+      "source": "/learn/ai-summaries",
+      "destination": "/learn/faqs"
+    }
+  ],
   "navbar": {
     "links": [
       {

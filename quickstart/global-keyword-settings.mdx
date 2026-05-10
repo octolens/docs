@@ -5,13 +5,13 @@ description: Account-wide filters. Cut noise across every keyword without editin
 
 Global keyword settings apply to **every keyword** in your workspace. Use them when the same noise keeps showing up across all your keywords (job posts, generic subreddits, bot accounts, internal repos) and you don't want to configure each keyword separately.
 
-<Frame caption="Settings → Global Settings. The same fields also appear at the bottom of any Keyword Settings panel.">
-  <img src="/images/settings-global-settings.png" alt="Settings Global Settings tab showing Global negative terms, Global negative authors, Allowed subreddits, Excluded subreddits, and Global negative GitHub repositories" />
+<Frame caption="The Global keyword settings sheet, opened from the top right of the Keywords page.">
+  <img src="/images/global-keyword-settings-sheet.png" alt="Global keyword settings sheet showing Global negative terms, Global negative authors, Allowed subreddits, Excluded subreddits, and Global negative GitHub repositories" />
 </Frame>
 
 ## How global settings combine with keyword settings
 
-A post must pass **both** the global filters *and* the keyword's own filters to land in your feed. Global settings can only **reduce** results, they can't expand them.
+A post must pass **both** the global filters *and* the keyword's own filters to land in your feeds. Global settings can only **reduce** results, they can't expand them.
 
 > **Example.** You add `r/health` to Excluded subreddits globally, and your `mental health` keyword also has its own `beta` negative term. A post in `r/health` that mentions `mental health` is excluded globally; a post in `r/productivity` that mentions `mental health beta release` is excluded by the keyword. Both filters apply, always.
 
@@ -19,12 +19,9 @@ If you want filtering that's specific to one keyword, use [Keyword Settings](/qu
 
 ## Where to edit global settings
 
-You can edit every global setting from either of two entry points. The fields are identical:
+Open the **Keywords** page from the sidebar and click **Global keyword settings** in the top right. The settings open as a sheet over the Keywords page.
 
-- **Settings → Global Settings:** the dedicated tab on the main Settings page
-- **Any Keyword Settings panel:** scroll to the **Global settings** section at the bottom of the panel
-
-Either way, your changes apply to every keyword.
+This is the only place global settings live now. They no longer have a dedicated tab on the main Settings page.
 
 ## Available global settings
 
@@ -80,11 +77,11 @@ Exclude posts from these GitHub repos across **all keywords**.
 ## Saving changes
 
 <Note>
-Global settings apply to **new** mentions going forward. Existing mentions in your feed keep their original scoring.
+Global settings apply to **new** mentions going forward. Existing mentions in your feeds keep their original scoring.
 </Note>
 
 ## Next steps
 
 - [Keyword Settings](/quickstart/keyword-settings): per-keyword platforms, context, and include/exclude rules
-- [Views](/quickstart/views): organize mentions across keywords into saved filters
+- [Feeds](/quickstart/feeds): organize mentions across keywords into saved filters
 - [Mention Limits](/learn/mention-limits): how filters affect your monthly quota

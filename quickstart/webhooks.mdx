@@ -1,37 +1,33 @@
 ---
 title: Webhooks
-description: Pipe any view into your own systems. Send new mentions as JSON to any URL.
+description: Pipe any feed into your own systems. Send new mentions as JSON to any URL.
 ---
 
-A webhook is an alert destination that sends matching mentions to a URL you control. Every [view](/quickstart/views) can fan out to a webhook. Point it at Zapier, an internal API, a Discord webhook, or anything else that accepts an HTTPS POST.
+A webhook is a [destination](/quickstart/destinations) that sends matching mentions to a URL you control. Every [feed](/quickstart/feeds) can fan out to a webhook. Point it at Zapier, an internal API, a Discord webhook, or anything else that accepts an HTTPS POST.
 
-Webhooks are available on every plan, alongside [Email and Slack](/quickstart/alerts) destinations.
+Webhooks are available on every plan, alongside email and Slack [destinations](/quickstart/destinations).
 
 ## Set up a webhook
 
-The setup flow is the same as any other alert. See [Alerts](/quickstart/alerts) for the full walkthrough. The short version:
+The setup flow is the same as any other destination. See [Destinations](/quickstart/destinations) for the full walkthrough. The short version:
 
 <Steps>
-  <Step title="Open any view and click Set up alert">
-    Or go to **My alerts → + Add alert**.
+  <Step title="Open any feed and click Set up alert">
+    In the top-right of the feed.
   </Step>
-  <Step title="Pick the saved view">
-    In Step 1 of the Add alert dialog, select the view you want to forward.
-  </Step>
-  <Step title="Toggle on Webhook in Step 2">
+  <Step title="Toggle on Webhook">
     Enter your **Webhook URL**, click **Test** to verify it's reachable, and choose a **Frequency**: Instantly, Hourly, Daily, or Weekly.
   </Step>
+  <Step title="Save">
+    Click **Add alert** to start delivery.
+  </Step>
 </Steps>
-
-<Frame caption="Webhook config inside the Add alert dialog.">
-  <img src="/images/alerts-webhook.png" alt="Webhook panel with Webhook URL input, Test button, and Frequency radio buttons" />
-</Frame>
 
 <Tip>
 **Discord-compatible.** Octolens webhooks work directly with Discord channel webhook URLs. Create a webhook in your Discord channel settings, copy the URL, paste it into the Webhook URL field, and mentions will post straight into the channel. No Zapier or middleware needed.
 </Tip>
 
-You can enable the webhook alongside Email and Slack on the same alert. All three fire off the same view.
+You can enable the webhook alongside Email and Slack on the same feed. All three fire off the same feed.
 
 ## Receiving webhook requests
 
@@ -49,7 +45,7 @@ Webhook signing is not currently available. For now, we recommend using a unique
 
 Octolens sends one mention per request. The top-level `action` field indicates what triggered the webhook:
 
-- `mention_created`: a new mention matched the view
+- `mention_created`: a new mention matched the feed
 
 ### Example
 
@@ -75,11 +71,10 @@ Octolens sends one mention per request. The top-level `action` field indicates w
     "keywords": ["Octolens", "social listening"],
     "sentimentLabel": "Neutral",
     "tags": ["Own Brand Mention"],
-    "bookmarked": false,
     "language": "en",
     "subreddit": "r/subreddit",
     "viewId": 111,
-    "viewName": "View name",
+    "viewName": "Feed name",
     "viewKeywords": ["Octolens"]
   }
 }
@@ -108,15 +103,14 @@ Octolens sends one mention per request. The top-level `action` field indicates w
 | `data.keywords` | string[] | All of your keywords that matched this post. A post can match more than one. |
 | `data.sentimentLabel` | string | `Positive`, `Neutral`, or `Negative`. |
 | `data.tags` | string[] | AI-assigned tags on the mention (e.g. `Own Brand Mention`, `Buy Intent`). See [AI Relevance & Tags](/learn/ai-relevance). |
-| `data.bookmarked` | boolean | Whether this mention is bookmarked in the Octolens workspace. |
 | `data.language` | string | ISO 639-1 language code detected for the post (e.g. `en`, `es`, `de`). |
 | `data.subreddit` | string | Subreddit name. Only present for Reddit mentions. |
-| `data.viewId` | number | ID of the view that fired this alert. |
-| `data.viewName` | string | Name of the view that fired this alert. |
-| `data.viewKeywords` | string[] | The keywords configured on the view that fired this alert. Useful for distinguishing which view-filter matched when one alert covers multiple keywords. |
+| `data.viewId` | number | ID of the feed that fired this webhook. (Field name kept for backward compatibility — feeds were previously called views.) |
+| `data.viewName` | string | Name of the feed that fired this webhook. |
+| `data.viewKeywords` | string[] | The keywords configured on the feed that fired this webhook. Useful for distinguishing which feed-filter matched when one feed covers multiple keywords. |
 
 <Note>
-Webhook field names differ slightly from the [REST API](/api/overview) response. For example, the API returns `sentiment` while webhooks use `sentimentLabel`, and the API returns `keywords` as an array of objects like `{id, keyword}` while webhooks send `keywords` as an array of strings (plus `keyword` as a single string for backward compatibility). If you're wiring up both, map them explicitly.
+Webhook field names differ slightly from the [REST API](/api/v2/overview) response. For example, the API returns `sentiment` while webhooks use `sentimentLabel`, and the API returns `keywords` as an array of objects like `{id, keyword}` while webhooks send `keywords` as an array of strings (plus `keyword` as a single string for backward compatibility). If you're wiring up both, map them explicitly.
 </Note>
 
 ## Use cases
@@ -129,6 +123,7 @@ Webhooks turn mentions into events in the rest of your stack. Common patterns:
 - **Chat:** Microsoft Teams, or extra Slack workspaces beyond your primary connection
 - **Databases:** append to Notion, Airtable, or Google Sheets for custom reporting
 - **Support:** auto-create Intercom or Zendesk conversations from product questions
+- **AI agents:** trigger an agent run via [MCP](/mcp/overview) or your own orchestrator on every new buy-intent mention
 
 Don't have a direct integration? Point the webhook at **Zapier**, **n8n**, or **Make** and fan out from there to hundreds of other apps.
 
@@ -152,6 +147,6 @@ If you want more control than a direct webhook gives (custom message formatting,
 
 ## Next steps
 
-- [Alerts](/quickstart/alerts): the full alert setup flow (destinations, frequency, editing)
-- [API Reference](/api/overview): pull-based alternative if you prefer polling
+- [Destinations](/quickstart/destinations): the full destination setup flow (recipients, frequency, editing)
+- [API Reference](/api/v2/overview): pull-based alternative if you prefer polling
 - [MCP Server](/mcp/overview): connect mentions to AI agents via MCP

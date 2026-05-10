@@ -1,6 +1,6 @@
 ---
 title: FAQs
-description: "Answers to common questions about Octolens: getting started, plans, keywords, platforms, alerts, team, developer access, and troubleshooting."
+description: "Answers to common questions about Octolens: getting started, plans, keywords, platforms, destinations, team, developer access, and troubleshooting."
 ---
 
 <script type="application/ld+json">
@@ -46,7 +46,7 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "How do I unsubscribe from email notifications?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "For mention alert emails: open My alerts, click the ··· next to the alert, and Edit or Delete it. You can also turn off the Email destination toggle without deleting the alert. For product/marketing emails: click the unsubscribe link at the bottom of any Octolens email."
+        "text": "For mention notification emails: open the feed that's sending them, click Set up alert, and toggle off the Email destination (or update the recipients/frequency). For product or marketing emails: click the unsubscribe link at the bottom of any Octolens email."
       }
     },
     {
@@ -54,7 +54,7 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "How do I trial the Scale plan?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Reach out via in-app chat or email hi@octolens.com and let us know which business you're requesting it for. We'll set up a Scale trial for you case by case so you can test real-time mention refresh, AI weekly summaries, and the full media/newsletter/podcast coverage."
+        "text": "Reach out via in-app chat or email hi@octolens.com and let us know which business you're requesting it for. We'll set up a Scale trial for you case by case so you can test real-time mention refresh and the full media/newsletter/podcast coverage."
       }
     },
     {
@@ -102,7 +102,7 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "Where do I edit, pause, or delete a keyword?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "In the left sidebar, find the keyword in your Keywords list and click the ··· next to its name. Options include: Keyword settings (edit type, platforms, context, and include/exclude rules), Pause keyword (stop pulling new mentions without deleting), and Delete keyword (permanently remove the keyword and all its mentions)."
+        "text": "Open the Keywords page from the sidebar. Find the keyword in the table and click Edit (or use the ··· menu at the end of the row). Options include: Keyword settings (edit tag, platforms, context, and include/exclude rules), Pause keyword (stop pulling new mentions without deleting), and Delete keyword (permanently remove the keyword and all its mentions)."
       }
     },
     {
@@ -150,15 +150,15 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "Do you have a Slack integration?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. You can get alerts for new keyword mentions in Slack. You can decide which relevance levels to include. For example, you can get alerted for only posts the AI deems as High relevance, such as buy-intent, engagement opportunities, customer complaints or praise."
+        "text": "Yes. Any feed in Octolens can be sent to one or more Slack channels via the destination sheet. You decide which keywords, tags, sentiment, and relevance levels are included by editing the feed itself. Connect Slack once in Settings → Integration for Slack and Slack will appear as a destination on every feed."
       }
     },
     {
       "@type": "Question",
-      "name": "Can a single alert send to multiple destinations?",
+      "name": "Can a single feed send to multiple destinations?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. In the Add alert dialog (Step 2), you can toggle on Email, Slack, and Webhook all on the same alert, and each fires off the same view. Each destination has its own frequency: Instantly, Hourly, Daily, or Weekly."
+        "text": "Yes. In the Set up alert destination sheet, you can toggle on Email, Slack, and Webhook all on the same feed. Each destination has its own recipients and frequency: Instantly, Hourly, Daily, or Weekly."
       }
     },
     {
@@ -174,7 +174,7 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "Do you have an API and webhooks?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes, both, on every plan. Octolens also offers an MCP server for AI agents. You can also use automation tools like Zapier, n8n, or Make to send your alerts to your app of choice."
+        "text": "Yes, both, on every plan. Octolens also offers an MCP server for AI agents like Claude, Cursor, and ChatGPT. You can also use automation tools like Zapier, n8n, or Make to send your feeds to your app of choice."
       }
     },
     {
@@ -190,7 +190,7 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "A keyword isn't returning any mentions, what should I check?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Check these in order: 1) Wait at least an hour after adding the keyword. 2) Make sure the keyword isn't too narrow. 3) Confirm all platforms are enabled in Keyword Settings. 4) Check All mentions, not just For you. 5) Make sure the keyword isn't paused. 6) Review your company context for thin descriptions that may cause over-aggressive AI filtering."
+        "text": "Check these in order: 1) Wait at least an hour after adding the keyword. 2) Make sure the keyword isn't too narrow. 3) Confirm all platforms are enabled in Keyword Settings. 4) Check All mentions, not just one of your default feeds. 5) Make sure the keyword isn't paused. 6) Review your company context for thin descriptions that may cause over-aggressive AI filtering."
       }
     },
     {
@@ -198,15 +198,15 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "Why are some mentions tagged Low relevance?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Octolens uses AI to score every mention based on your company context, post content, and source. Low-relevance mentions are ones where the AI isn't confident the post is about your product or industry. You can see them in the All mentions view, filter them out, or help the AI learn by marking mentions as Relevant or Not Relevant."
+        "text": "Octolens uses AI to score every mention based on your company context, post content, and source. Low-relevance mentions are ones where the AI isn't confident the post is about your product or industry. You can see them in the All mentions feed, filter them out of any other feed, or help the AI learn by marking mentions as Relevant or Not Relevant."
       }
     },
     {
       "@type": "Question",
-      "name": "Why are my mentions used up? I see less mentions than my monthly quota in my feed and analytics.",
+      "name": "Why are my mentions used up? I see less mentions than my monthly quota in my feeds and dashboard.",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Your mention quota counts every post Octolens pulls in for your keywords, not just the ones that pass the AI relevance filter. By default, your feed and Analytics show only relevant mentions, which is why the number you see is much smaller than what's been counted against your quota. To see everything, go to Analytics and toggle off Only relevant. To reduce usage, use include/exclude rules in Keyword Settings such as Posts must ALSO include, Negative terms, Negative authors, or Allowlist/excluded subreddits. Keyword context helps the AI judge relevance but does not stop posts from being pulled in. Workspace admins can also add Flex mentions from Settings → Plans & Billing."
+        "text": "Your mention quota counts every post Octolens pulls in for your keywords, not just the ones that pass the AI relevance filter. By default, your feeds and the Dashboard chart show only relevant mentions, which is why the number you see is much smaller than what's been counted against your quota. To see everything, open the Dashboard and switch the Mentions over time chart breakdown to Relevance. To reduce usage, use include/exclude rules in Keyword Settings such as Posts must ALSO include, Negative terms, Negative authors, or Allowlist/excluded subreddits. Keyword context helps the AI judge relevance but does not stop posts from being pulled in. Workspace admins can also add Flex mentions from Settings → Plans & Billing."
       }
     },
     {
@@ -238,7 +238,7 @@ description: "Answers to common questions about Octolens: getting started, plans
       "name": "Do you have multi-language support?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The app UI is in English, but you can search for any word in any language. On Twitter/X, only English results are returned. Make sure you don't have EN only selected in your feed so other languages aren't hidden."
+        "text": "The app UI is in English, but you can search for any word in any language. On Twitter/X, only English results are returned. Make sure you don't have EN only selected in your feeds so other languages aren't hidden."
       }
     }
   ]
@@ -272,10 +272,10 @@ Find answers to common questions about Octolens below. Can't find what you're lo
 
 <AccordionGroup>
   <Accordion title="Where do I edit, pause, or delete a keyword?">
-    In the left sidebar, find the keyword in your Keywords list and click the **···** next to its name:
+    Open the **Keywords** page from the sidebar, find the keyword in the table, and click **Edit** (or use the **···** at the end of the row):
 
-    - **Keyword settings.** Edit type, platforms, context, and include/exclude rules.
-    - **Pause keyword.** Stop pulling new mentions without deleting; existing mentions stay in your feed.
+    - **Keyword settings.** Edit tag, platforms, context, and include/exclude rules.
+    - **Pause keyword.** Stop pulling new mentions without deleting; existing mentions stay in your feeds.
     - **Delete keyword.** Permanently remove the keyword and all its mentions. Can't be undone.
 
     See [Choose your keywords](/quickstart/keywords) for more.
@@ -286,7 +286,7 @@ Find answers to common questions about Octolens below. Can't find what you're lo
   </Accordion>
 
   <Accordion title="How do I rename my workspace without losing keywords or mentions?">
-    If you want to change the business context for which you're tracking keywords, go to **Settings → Company Context** and update the answers in the form. We won't backfill that data, but from then on all incoming posts will use the updated information for AI relevance and tagging.
+    If you want to change the business context for which you're tracking keywords, go to **Settings → Company Profile** and update the answers in the form. We won't backfill that data, but from then on all incoming posts will use the updated information for AI relevance and tagging.
   </Accordion>
 
   <Accordion title="Can I track all posts from a specific subreddit (e.g. all posts in r/yourcompany)?">
@@ -324,14 +324,14 @@ Find answers to common questions about Octolens below. Can't find what you're lo
   </Accordion>
 
   <Accordion title="How do I connect LinkedIn for tagged company mentions?">
-    Go to **Settings → Platforms**, find LinkedIn, and click **Connect**. You'll authorize Octolens to read your LinkedIn page activity. Once connected, mentions tagging your company appear in your feed.
+    Go to **Settings → Platforms**, find LinkedIn, and click **Connect**. You'll authorize Octolens to read your LinkedIn page activity. Once connected, mentions tagging your company appear in your feeds.
   </Accordion>
 
   <Accordion title="Can I increase a platform refresh frequency?">
     If you need a faster refresh than our Scale plan offers for a platform, reach out via chat or [hi@octolens.com](mailto:hi@octolens.com) for an enterprise plan. These begin at $1,000 per month billed annually.
   </Accordion>
 
-  <Accordion title="Why didn't this specific post show up in my feed?">
+  <Accordion title="Why didn't this specific post show up in my feeds?">
     A few reasons we may not catch a specific post:
 
     - The post is older than our 7-day backfill window
@@ -342,37 +342,39 @@ Find answers to common questions about Octolens below. Can't find what you're lo
   </Accordion>
 
   <Accordion title="Do you have multi-language support?">
-    The app UI is in English, but you can search for any word in any language. On Twitter/X, we only return English results. Make sure you don't have "EN only" selected in your feed so other languages aren't hidden.
+    The app UI is in English, but you can search for any word in any language. On Twitter/X, we only return English results. Make sure you don't have "EN only" selected in your feeds so other languages aren't hidden.
   </Accordion>
 </AccordionGroup>
 
-## Alerts and notifications
+## Feeds and destinations
 
 <AccordionGroup>
-  <Accordion title="Do you have a Slack integration?">
-    Yes. You can get alerts for new keyword mentions in Slack. See [Connect Slack](/quickstart/connect-slack) and [set up alerts](/quickstart/alerts).
-
-    You can decide which relevance levels we should include. For example, you can get alerted for only posts our AI deems as High relevance (e.g. with buy-intent, great engagement opportunities, customer complaints or praise).
+  <Accordion title="What happened to Views and Alerts?">
+    We rolled them into one concept. **Views** are now called **Feeds**, and the standalone **Alerts** page is gone. To send mentions to email, Slack, or a webhook, open the [feed](/quickstart/feeds) you care about and click **Set up alert** in the top right. The [destination sheet](/quickstart/destinations) opens with email, Slack, and webhook toggles.
   </Accordion>
 
-  <Accordion title="Can a single alert send to multiple destinations?">
-    Yes. In the Add alert dialog (Step 2), you can toggle on Email, Slack, and Webhook all on the same alert, and each fires off the same view.
+  <Accordion title="Do you have a Slack integration?">
+    Yes. Any feed in Octolens can be sent to one or more Slack channels. See [Connect Slack](/quickstart/connect-slack) for the one-time workspace connection, then [Destinations](/quickstart/destinations) to wire a feed up.
 
-    Each destination has its own frequency (Instantly, Hourly, Daily, Weekly).
+    You decide which keywords, tags, sentiment, and relevance levels to include by editing the feed itself. For example, send only High-relevance posts with `Buy Intent` to your sales channel.
+  </Accordion>
+
+  <Accordion title="Can a single feed send to multiple destinations?">
+    Yes. In the **Set up alert destination** sheet, you can toggle on Email, Slack, and Webhook all on the same feed. Each destination has its own recipients/channels/URL and its own frequency (Instantly, Hourly, Daily, Weekly).
   </Accordion>
 
   <Accordion title="Why isn't my Slack alert posting?">
     Most often it's one of three things:
 
     1. The Slack channel is private and Octolens doesn't have access.
-    2. The view filter isn't matching anything. Open the view in your feed and check that mentions appear there. If the view is empty, the alert has nothing to send.
+    2. The feed isn't matching anything. Open the feed and check that mentions appear there. If it's empty, the destination has nothing to send.
     3. The Slack integration disconnected. Go to **Settings → Integration for Slack** and check the status. If it's not Active, remove and reconnect.
   </Accordion>
 
   <Accordion title="Why isn't the Slack channel I just created showing up in Octolens?">
     Octolens caches your Slack channel list when you connect. Newly created channels sometimes don't appear until you reconnect.
 
-    To refresh: **Settings → Integration for Slack** → click **Remove integration for Slack**, then connect again. The new channel will now show up in alert setup.
+    To refresh: **Settings → Integration for Slack** → click **Remove integration for Slack**, then connect again. The new channel will now show up in destination setup.
 
     The channel also needs to be a public channel that you're a part of.
   </Accordion>
@@ -402,12 +404,12 @@ Find answers to common questions about Octolens below. Can't find what you're lo
   <Accordion title="How do I unsubscribe from email notifications?">
     Two paths depending on what you want to stop:
 
-    - **Mention alert emails:** Open **My alerts**, click the **···** next to the alert, and Edit or Delete it. You can also turn off the Email destination toggle without deleting the alert.
+    - **Mention notification emails:** Open the [feed](/quickstart/feeds) sending them, click **Set up alert**, and toggle off the Email destination (or update recipients/frequency).
     - **Product / marketing emails:** Click the unsubscribe link at the bottom of any Octolens email.
   </Accordion>
 
   <Accordion title="How do I trial the Scale plan?">
-    Reach out via in-app chat or email [hi@octolens.com](mailto:hi@octolens.com) and let us know which business you're requesting it for. We'll set up a Scale trial for you case by case so you can test real-time mention refresh, AI weekly summaries, and the full media/newsletter/podcast coverage.
+    Reach out via in-app chat or email [hi@octolens.com](mailto:hi@octolens.com) and let us know which business you're requesting it for. We'll set up a Scale trial for you case by case so you can test real-time mention refresh and the full media/newsletter/podcast coverage.
   </Accordion>
 
   <Accordion title="Can I get the keyword add-on (Flex keywords) on the Pro plan?">
@@ -439,17 +441,23 @@ Find answers to common questions about Octolens below. Can't find what you're lo
   </Accordion>
 </AccordionGroup>
 
-## Webhooks and developer access
+## API, MCP, and webhooks
 
 <AccordionGroup>
   <Accordion title="Do you have an API and webhooks?">
     Yes, both, on every plan. We also offer an MCP server for AI agents.
 
-    - **API.** See [API Reference](/api/overview) for endpoints, auth, and examples.
-    - **Webhooks.** See [Webhooks](/quickstart/webhooks).
     - **MCP.** See [MCP Server](/mcp/overview) for setup with Claude, Cursor, ChatGPT.
+    - **API.** See [API Reference](/api/v2/overview) for endpoints, auth, and examples.
+    - **Webhooks.** See [Webhooks](/quickstart/webhooks).
 
-    You can also use any of the popular automation tools like Zapier, n8n, or Make to send your alerts to your app of choice.
+    You can also use any of the popular automation tools like Zapier, n8n, or Make to send your feeds to your app of choice.
+  </Accordion>
+
+  <Accordion title="What can I do with the MCP server?">
+    Connect Octolens to Claude, ChatGPT, Cursor, or any other MCP-compatible client and ask questions of your mention data in natural language. For example: "Show me last week's buy-intent posts on Reddit," or "Summarize what people are saying about \[Competitor] on X this month."
+
+    See [MCP Server](/mcp/overview) for setup, scopes, and example prompts.
   </Accordion>
 
   <Accordion title="Can I use webhooks with Discord?">
@@ -470,8 +478,8 @@ Find answers to common questions about Octolens below. Can't find what you're lo
     1. **Wait at least an hour after adding the keyword.** Initial backfill and platform refresh take time.
     2. **Is it too narrow?** Check out [Keyword Settings](/quickstart/keyword-settings). Your keyword may be too narrow, long-tail, or have too many settings to be finding any results.
     3. **Are all platforms enabled?** Check the Platforms field in Keyword Settings. By default they all should be, but it's worth confirming.
-    4. **Check All mentions, not just For you.** Your filter or default view might be hiding the post. **All mentions** shows everything Octolens has pulled in, including low-relevance.
-    5. **Is the keyword paused?** A paused keyword stops pulling new mentions. Resume it from the **···** menu.
+    4. **Check All mentions, not a narrower feed.** Your filter or default feed might be hiding the post. **All mentions** shows everything Octolens has pulled in, including low-relevance.
+    5. **Is the keyword paused?** A paused keyword stops pulling new mentions. Resume it from the **···** menu on the Keywords page.
     6. **Is your company context strong?** Thin context leads to over-aggressive AI filtering. See [Company Context](/quickstart/company-context).
 
     If you've checked all of the above and still see nothing, reach out via in-app chat with the keyword and an example post URL we should have caught.
@@ -482,8 +490,8 @@ Find answers to common questions about Octolens below. Can't find what you're lo
 
     You can:
 
-    - See low-relevance mentions in the **All mentions** view
-    - Filter them out of any custom view or alert
+    - See low-relevance mentions in the **All mentions** feed
+    - Filter them out of any custom feed or destination
     - Help the AI learn by marking mentions as Relevant or Not Relevant on individual cards
   </Accordion>
 
@@ -493,13 +501,13 @@ Find answers to common questions about Octolens below. Can't find what you're lo
     You can also adjust the keyword itself. Adding **Negative terms**, **Negative authors**, or sharper **Keyword context** in [Keyword Settings](/quickstart/keyword-settings) usually has a bigger impact than per-mention feedback.
   </Accordion>
 
-  <Accordion title="Why are my mentions used up? I see less mentions than my monthly quota in my feed and analytics.">
-    The short answer: Your mention quota counts every post Octolens pulls in for your keywords, not just the ones that pass our AI relevance filter. By default, your feed and Analytics show only relevant mentions, which is why the number you see is much smaller than what's been counted against your quota.
+  <Accordion title="Why are my mentions used up? I see less mentions than my monthly quota in my feeds and dashboard.">
+    The short answer: Your mention quota counts every post Octolens pulls in for your keywords, not just the ones that pass our AI relevance filter. By default, your feeds and the Dashboard chart show only relevant mentions, which is why the number you see is much smaller than what's been counted against your quota.
 
     To see everything that's been pulled in:
 
-    1. Go to [Analytics](/learn/analytics) and toggle off "Only relevant" in the top right. You'll now see every post we ingested, including low-relevance ones.
-    2. Switch the graph to bar chart view to see which keywords are driving the most volume.
+    1. Open the [Dashboard](/learn/dashboard) and switch the **Mentions over time** chart breakdown to **Relevance**. You'll see how the bars split between relevant and not-relevant.
+    2. Use the keyword picker above the chart to isolate the noisiest keywords.
     3. From there, drill into the keyword's settings to add guardrails.
 
     **How to bring your mention usage down**
@@ -515,7 +523,7 @@ Find answers to common questions about Octolens below. Can't find what you're lo
 
     **A few edge cases worth knowing**
 
-    - **Recently deleted keywords still count.** Mentions pulled in this billing cycle from a keyword you've since deleted still count against your quota, but they won't appear in Analytics (which shows active keywords only). This can make Analytics totals look lower than your "mentions used" counter.
+    - **Recently deleted keywords still count.** Mentions pulled in this billing cycle from a keyword you've since deleted still count against your quota, but they won't appear on the Dashboard (which shows active keywords only). This can make Dashboard totals look lower than your "mentions used" counter.
     - **Common-word brands (Arc, Modal, Authorization, Railway).** These are the most common reason quotas get burned through. Octolens auto-fills smart defaults during keyword setup, but it's worth reviewing the include/exclude rules in Keyword Settings before letting them run for a full month.
 
     **Still hitting your limit?**

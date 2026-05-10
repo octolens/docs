@@ -9,25 +9,20 @@ For [common words](/quickstart/keywords#add-a-keyword), Octolens pre-fills conte
 
 ## Open Keyword Settings
 
-Click the **···** next to any keyword in the sidebar and choose **Keyword settings**. (See [Manage an existing keyword](/quickstart/keywords#manage-an-existing-keyword) for the full row menu.)
+Open the **Keywords** page from the sidebar, find the keyword in the table, and click **Edit** (or use the **···** menu at the end of the row and choose **Keyword settings**). The settings open as a side sheet.
 
-<Frame caption="Opening Keyword settings from the sidebar row menu.">
-  <img src="/images/keyword-row-actions.png" alt="Keyword row dropdown menu with Keyword settings option highlighted" />
+<Frame caption="The Keyword Settings sheet, opened from the Keywords page.">
+  <img src="/images/keyword-add-sheet.png" alt="Keyword Settings sheet showing Keyword, Platforms, Keyword context, Posts must ALSO include, Negative terms, Negative authors, Wildcard negative terms, and Matching criteria fields" />
 </Frame>
 
-## Panel anatomy
+## Sheet anatomy
 
-The settings panel is grouped into four sections from top to bottom:
+The settings sheet is grouped into four sections from top to bottom:
 
-<Frame caption="The Keyword Settings panel: keyword, type, color, platforms, context, include/exclude, and matching criteria.">
-  <img src="/images/keyword-settings-panel.png" alt="Keyword Settings panel showing all fields" />
-</Frame>
-
-### Header: keyword, type, color
+### Header: keyword and tag
 
 - **Keyword:** the term you're tracking. You can edit it here, but changing the keyword only affects new mentions going forward.
-- **Type:** **Own Brand**, **Competitor**, or **Industry Term**. Auto-assigned by AI, editable if wrong.
-- **Color:** the dot you see next to the keyword in the sidebar and on mention cards. Auto-assigned, pick any color you like.
+- **Tag:** **Own Brand**, **Competitor**, or **Industry Term**. Auto-assigned by AI, editable from the **Select tag** dropdown if it's wrong.
 
 ### Platforms
 
@@ -80,7 +75,7 @@ Comma-separated terms that **exclude** posts when they appear alongside your key
 
 Comma-separated author handles to exclude. Matching is exact. Use this to filter out your own company accounts, employees, or known spammers.
 
-You can also add negative authors directly from your feed. Click on the **author name** of any post and select **Add as negative author** from the dropdown. You'll be asked whether to exclude them for just the keyword of that mention or for all keywords (global).
+You can also add negative authors directly from any feed. Click on the **author name** of any post and select **Add as negative author** from the dropdown. You'll be asked whether to exclude them for just the keyword of that mention or for all keywords (global).
 
 For X/Twitter handles, don't include the `@`. Just the handle itself (e.g. `OctolensHQ`, not `@OctolensHQ`).
 
@@ -111,11 +106,11 @@ Turn it **off** for broad matching. Your keyword will also match when it appears
 ## Saving changes
 
 <Note>
-Keyword Settings changes apply to **new** mentions going forward. Existing mentions in your feed keep their original scoring.
+Keyword Settings changes apply to **new** mentions going forward. Existing mentions in your feeds keep their original scoring.
 </Note>
 
 ## Next steps
 
 - [Global Keyword Settings](/quickstart/global-keyword-settings): exclusions that apply to every keyword at once
-- [Views](/quickstart/views): organize mentions across keywords into saved filters
+- [Feeds](/quickstart/feeds): organize mentions across keywords into saved filters
 - [AI Relevance & Tags](/learn/ai-relevance): how Octolens scores and tags each mention

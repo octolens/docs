@@ -1,0 +1,89 @@
+---
+title: Destinations
+description: Send any feed to email, Slack, or a webhook. Pick recipients and frequency per destination.
+---
+
+A destination is where a [feed](/quickstart/feeds) gets sent. Every feed can fan out to one or more destinations: email, Slack, or webhook. Turn on as many as you want — they all fire off the same feed.
+
+This page is the new home for what used to be called "alerts." Alerts no longer have a separate sidebar entry. Instead, you set up destinations from inside the feed they're for.
+
+## Open the destination sheet
+
+<Steps>
+  <Step title="Open any feed">
+    Click a default feed (like Brand mentions or Buy Intent) or any custom feed in the sidebar.
+  </Step>
+  <Step title="Click Set up alert">
+    In the top-right of the feed.
+  </Step>
+</Steps>
+
+The **Set up alert destination** sheet opens with three toggles.
+
+<Frame caption="The destination sheet. Toggle on email, Slack, webhook, or any combination.">
+  <img src="/images/destinations-set-up.png" alt="Set up alert destination sheet with Email notification, Slack notification, and Webhook toggles" />
+</Frame>
+
+## The three destinations
+
+### Email
+
+- **Email recipient(s):** enter one email per field. Click **+ Add recipient** to send to multiple addresses.
+- **Frequency:** Instantly, Hourly, Daily, or Weekly. Hourly, Daily, and Weekly are batched. You get one digest per interval with all matching mentions.
+
+### Slack
+
+- **Slack channel(s):** multi-select the channels the feed should post to.
+- **Frequency:** same options as email, with batched delivery for Hourly/Daily/Weekly.
+
+Slack requires a connected workspace. See [Connect Slack](/quickstart/connect-slack) if the Slack toggle isn't available.
+
+### Webhook
+
+- **Webhook URL:** the endpoint Octolens will POST to.
+- **Test:** send a sample payload to your endpoint to verify it's reachable before you save.
+- **Frequency:** Instantly, Hourly, Daily, or Weekly.
+
+For payload format, signature recommendations, and integration patterns, see [Webhooks](/quickstart/webhooks).
+
+## Frequency explained
+
+All three destinations support the same four frequencies:
+
+- **Instantly:** each matching mention is sent as soon as Octolens ingests it
+- **Hourly:** one batched delivery per hour with all matches from that hour
+- **Daily:** one batched delivery per day
+- **Weekly:** one batched delivery per week
+
+<Tip>
+Use **Instantly** for time-sensitive feeds like **Negative brand mentions** and **Buy Intent** where minutes matter. Use a batched frequency for noisier feeds (e.g. **Industry insights**) so you're not interrupted all day.
+</Tip>
+
+## Multiple destinations on one feed
+
+A single feed can drive email, Slack, and webhook all at once. For example:
+
+- Email **Buy Intent** mentions to your sales lead, **and**
+- Post the same mentions to your `#buy-intent` Slack channel, **and**
+- Webhook them to a Linear automation that opens a "Reach out" task.
+
+Toggle on as many destinations as you need. Each has its own recipients/channels/URL and its own frequency.
+
+## Edit or remove a destination
+
+Open the same feed, click **Set up alert** again, and toggle off any destination you no longer want, or update the recipients, channels, URL, or frequency. Save to apply.
+
+To stop deliveries entirely without deleting your settings, toggle off all three destinations on the feed.
+
+## Common patterns
+
+- Send **Brand mentions** to a dedicated `#brand-watch` channel
+- Send **Buy Intent** to your sales team's channel and as a webhook to your CRM
+- Send **Negative brand mentions** to a leadership or comms channel **instantly**
+- Send a custom feed (e.g. "negative mentions of our pricing") to the product team **daily**
+
+## Next steps
+
+- [Feeds](/quickstart/feeds): build the feeds your destinations send from
+- [Connect Slack](/quickstart/connect-slack): prerequisite for Slack destinations
+- [Webhooks](/quickstart/webhooks): payload format and integration patterns

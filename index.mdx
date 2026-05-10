@@ -5,8 +5,8 @@ description: Learn how to use Octolens to monitor brand, competitor, and keyword
 
 Octolens is a social listening tool for developer and B2B SaaS brands. It monitors mentions across [13+ platforms](/learn/platforms/overview), including Reddit, X, LinkedIn, Hacker News, GitHub, YouTube, Bluesky, TikTok, podcasts, and newsletters. AI filters out the noise so you only see mentions that matter.
 
-<Frame caption="The Octolens feed, showing mentions across every tracked platform filtered for relevance.">
-  <img src="/images/octolens-feed.png" alt="Octolens feed showing relevant mentions from Bluesky, Reddit, and podcasts with sentiment and tag labels" />
+<Frame caption="The Octolens dashboard, with mentions over time, plan and API/MCP usage, and a recent mentions feed.">
+  <img src="/images/dashboard-overview.png" alt="Octolens dashboard showing mentions over time chart, plan usage and filtering ratio cards, and a recent mentions feed" />
 </Frame>
 
 ## What you can do with Octolens
@@ -34,19 +34,18 @@ Each mention comes with an AI-assigned [sentiment](/learn/sentiment), [relevance
     Show up in developer conversations on GitHub, Hacker News, Reddit, and DEV.to. Correct misinformation before it spreads.
   </Card>
   <Card title="AI agent builders" icon="robot">
-    Pipe real-time social data into your agents via [MCP](/mcp/overview), [API](/api/overview), or [webhooks](/quickstart/webhooks).
+    Pipe real-time social data into your agents via [MCP](/mcp/overview), [API](/api/v2/overview), or [webhooks](/quickstart/webhooks).
   </Card>
 </Columns>
 
 ## What's in the app
 
-- **Feed:** every mention across every platform, organized into [views](/quickstart/views)
-- **Bookmarks:** mentions you've saved to come back to
-- **Analytics:** trends, conversation ranks, and mention volume over time. See [Analytics](/learn/analytics).
-- **My alerts:** email, Slack, and webhook alerts. See [Alerts](/quickstart/alerts).
-- **API / MCP:** generate API keys and MCP URLs. See [API Reference](/api/overview) and [MCP Server](/mcp/overview).
-- **Settings:** company context, keywords, team members, integrations, and billing
-- **Keywords:** the list of keywords you're tracking. Click any keyword to filter the feed.
+- **Dashboard:** mentions over time, plan and API/MCP usage, and a recent mentions feed. See [Dashboard](/learn/dashboard).
+- **Keywords:** the dedicated page where you add, edit, and tune every keyword you track, plus global keyword settings. See [Keywords](/quickstart/keywords).
+- **Feeds:** saved filters over your mentions, like Brand Mentions, Competitor Mentions, or Buy Intent. Each feed can be sent to a [destination](/quickstart/destinations). See [Feeds](/quickstart/feeds).
+- **API:** generate API keys and use the REST API to query mentions, keywords, and feeds. See [API Reference](/api/v2/overview).
+- **MCP:** connect Octolens to Claude, ChatGPT, Cursor, and other AI tools to ask questions of your mention data in natural language. See [MCP Server](/mcp/overview).
+- **Settings:** company context, plans and billing, members, platforms, and the Slack integration.
 
 ## Getting started
 
@@ -59,39 +58,39 @@ Each mention comes with an AI-assigned [sentiment](/learn/sentiment), [relevance
     Add your brand name, competitors, and industry terms. Start with 3 to 5 keywords. You can always add more.
     [Choose keywords →](/quickstart/keywords)
   </Step>
-  <Step title="Organize mentions with views">
-    Views are saved filters over your feed. Think "Buy intent this week" or "Competitor mentions on Reddit." Octolens ships with presets like For you, Brand monitoring, and Competitor intelligence.
-    [Set up views →](/quickstart/views)
+  <Step title="Organize mentions into feeds">
+    Feeds are saved filters over your mentions. Think "Buy intent this week" or "Competitor mentions on Reddit." Octolens ships with presets like Brand Mentions, Competitor Mentions, and Buy Intent.
+    [Set up feeds →](/quickstart/feeds)
   </Step>
-  <Step title="Set up alerts">
-    Get alerted by email, Slack, or webhook when new mentions match a view.
-    [Set up alerts →](/quickstart/alerts)
+  <Step title="Send feeds to a destination">
+    Pick where each feed goes: email, Slack, or a webhook. One feed can fan out to all three.
+    [Set up destinations →](/quickstart/destinations)
   </Step>
   <Step title="(Optional) Connect to your stack">
-    Pull mentions into your own tools via [API](/api/overview), [webhooks](/quickstart/webhooks), or [MCP](/mcp/overview). All three are available on every plan.
+    Pull mentions into your own tools and AI agents via [MCP](/mcp/overview), [API](/api/v2/overview), or [webhooks](/quickstart/webhooks). All three are available on every plan.
   </Step>
 </Steps>
 
 ## Explore the docs
 
 <Columns cols={2}>
+  <Card title="MCP Server" icon="plug" href="/mcp/overview">
+    Connect Octolens to Claude, Cursor, ChatGPT, and other AI tools.
+  </Card>
+  <Card title="API Reference" icon="terminal" href="/api/v2/overview">
+    Query mentions, keywords, and feeds programmatically.
+  </Card>
   <Card title="Tracked platforms" icon="globe" href="/learn/platforms/overview">
     Every platform Octolens monitors and how often.
   </Card>
   <Card title="AI Relevance & Tags" icon="sparkles" href="/learn/ai-relevance">
     How Octolens decides what's relevant and how tags work.
   </Card>
-  <Card title="API Reference" icon="terminal" href="/api/overview">
-    Query mentions, keywords, and views programmatically.
-  </Card>
-  <Card title="MCP Server" icon="plug" href="/mcp/overview">
-    Connect Octolens to Claude, Cursor, ChatGPT, and other AI tools.
+  <Card title="Dashboard" icon="chart-line" href="/learn/dashboard">
+    What every card and chart on the dashboard means.
   </Card>
   <Card title="FAQs" icon="circle-question" href="/learn/faqs">
     Answers to the most common questions.
-  </Card>
-  <Card title="Analytics" icon="chart-line" href="/learn/analytics">
-    Trends, conversation rank, and mention volume over time.
   </Card>
 </Columns>
 
