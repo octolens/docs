@@ -1,0 +1,88 @@
+---
+title: Tools Reference
+description: Every tool exposed by the Octolens MCP v2 server — mentions, analytics, keywords, feeds, destinations, workspace, and usage — with what each does and when your AI assistant uses it.
+---
+
+The v2 server exposes 23 tools. You don't call these directly — your AI assistant picks the right tool based on your request. This reference is for understanding what the assistant can do and for writing precise prompts.
+
+Tools marked <Icon icon="pen" /> **write** mutate workspace state (create or change keywords, feeds, and destinations). Everything else is read-only.
+
+---
+
+## Mentions & analytics
+
+| Tool | What it does |
+| --- | --- |
+| `list_mentions` | Fetch posts the pipeline collected for your workspace. Filter by source, sentiment, date range, keyword IDs, tags, language, follower counts, or engagement. Supports AND-only and advanced AND/OR filter logic, plus pagination. Returns newest-first. |
+| `analytics` | Run a read-only SQL `SELECT` against your mentions data for aggregations, counts, trends, and breakdowns (e.g. share of voice, sentiment over time). Not for listing individual mentions. |
+| `analytics_context` | Returns the analytics schema and valid values (sources, etc.). The assistant calls this before composing an `analytics` query. |
+
+**Example prompts**
+
+- "Show me the latest 20 negative mentions from Reddit and Hacker News."
+- "Plot mention volume by week for the last quarter, split by sentiment."
+
+---
+
+## Keywords
+
+A **keyword** is a phrase (brand, competitor, product, or topic) Octolens continuously searches for across your enabled platforms. Each has a numeric `id` used as a filter and as the target of keyword writes.
+
+| Tool | What it does |
+| --- | --- |
+| `list_keywords` | List every keyword the workspace monitors, with IDs, platforms, tag, and status. |
+| `get_keyword` | Fetch one keyword's full configuration by ID. |
+| `add_keyword` <Icon icon="pen" /> | Start monitoring a new phrase. Only the phrase is required — the AI fills in context, exclusions, and platforms from your company profile. Counts against your keyword limit. |
+| `update_keyword` <Icon icon="pen" /> | Change a keyword's configuration (platforms, exclusions, context, tag, etc.). |
+| `pause_keyword` <Icon icon="pen" /> | Pause or resume collection for a keyword without deleting it. |
+| `delete_keyword` <Icon icon="pen" /> | Permanently remove a keyword. |
+| `list_keyword_suggestions` | List AI-proposed keyword tweaks pending your review. |
+| `accept_keyword_suggestion` <Icon icon="pen" /> | Accept a pending keyword suggestion. |
+| `reject_keyword_suggestion` <Icon icon="pen" /> | Reject a pending keyword suggestion. |
+
+**Example prompts**
+
+- "Add 'vercel deployment' as a new keyword, Reddit only."
+- "Pause the keyword for our old product name."
+- "Show me the pending keyword suggestions and accept the competitor ones."
+
+---
+
+## Feeds & destinations
+
+A **feed** is a saved filter preset (a "view"), optionally wired to one or more notification **destinations** — each an email list, a Slack channel set, or a webhook URL with its own cadence. Pass a feed's `id` to `list_mentions` (as `view`) to reuse its filters.
+
+| Tool | What it does |
+| --- | --- |
+| `list_feeds` | List saved feeds with their filters and any wired-up destinations. |
+| `create_feed` <Icon icon="pen" /> | Create a feed with simple (AND) or advanced (AND/OR) filters, optionally with notification destinations. |
+| `update_feed` <Icon icon="pen" /> | Change a feed's name, icon, or filters. |
+| `delete_feed` <Icon icon="pen" /> | Permanently delete a feed. |
+| `add_feed_destination` <Icon icon="pen" /> | Attach an email, Slack, or webhook destination (with its own cadence) to a feed. |
+| `remove_feed_destination` <Icon icon="pen" /> | Remove a destination from a feed. |
+| `search_slack_channels` | Resolve a Slack channel name to the channel ID that Slack destinations require. |
+
+<Note>
+Slack destinations need channel **IDs**, not names — the assistant calls `search_slack_channels` first to resolve them. Slack must be connected to your workspace, or writes are rejected.
+</Note>
+
+**Example prompts**
+
+- "Create a 'Buy intent on Reddit' feed and send a daily 9am digest to #leads in Slack."
+- "Add a webhook destination to my Competitor Activity feed pointing at https://example.com/hook."
+
+---
+
+## Workspace & usage
+
+| Tool | What it does |
+| --- | --- |
+| `get_workspace` | Return workspace context — name, plan, enabled platforms — and the monitored company profile (industry, description, competitors, relevance guidelines). The assistant calls this once at the start of a session to ground tone and disambiguate mentions. |
+| `get_usage` | Return current usage against your plan limits (e.g. keyword and mention headroom). |
+| `get_global_filters` | Return the workspace-wide global filters applied across all queries. |
+| `list_tags` | List valid tag values (AI-assigned topical labels like `competitor_mention`, `buy_intent`, `bug_report`) for use in mention filters. |
+
+**Example prompts**
+
+- "What plan am I on and how many keywords can I still add?"
+- "What tags are available, and how many bug reports came in this week?"

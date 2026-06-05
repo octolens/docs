@@ -1,0 +1,90 @@
+---
+title: MCP Server
+description: Connect Claude, ChatGPT, Cursor, and other AI agents to your Octolens workspace via MCP v2 — query mentions, run analytics, and manage keywords and feeds in natural language.
+---
+
+**Octolens MCP** lets AI assistants like Claude, ChatGPT, and Cursor access your Octolens workspace directly. Instead of switching between tabs and dashboards, just ask questions in natural language — your AI assistant browses mentions, filters by source or sentiment, runs analytics, and manages your monitoring setup on your behalf.
+
+MCP (Model Context Protocol) is an open standard that connects AI tools to third-party services in a secure, consistent way.
+
+- "Generate a share of voice graph using my BRAND, COMPETITOR 1, and COMPETITOR 2, with percentage share, mention volume, and sentiment breakdown."
+- "Show me all Reddit mentions from the last week where sentiment is negative."
+- "Add 'next.js deployment' as a new keyword and route buy-intent mentions to my #leads Slack channel."
+- "Summarize the feature requests from the last 7 days."
+
+---
+
+## What's new in v2
+
+v2 exposes the **full Octolens surface** — every action available in the app is available to your AI assistant.
+
+**Reads:** mentions, keywords, feeds, tags, keyword suggestions, workspace and company profile, usage, and global filters, plus a SQL analytics tool for aggregations and trends.
+
+**Writes:** create and manage keywords and feeds — including wiring up Slack, email, and webhook notification destinations.
+
+<Note>
+v2 is the default for everyone signing in to or signing up for Octolens. If you're still on the v1 endpoint, see the [migration note](#migrating-from-v1) below.
+</Note>
+
+---
+
+## Authentication
+
+v2 uses **OAuth** — there's no API key or token to paste. On first use, your MCP client opens a browser tab, you sign in to Octolens and approve the connection, and you're ready. Your token never lives in a URL or config file.
+
+This is a change from v1, which embedded an API token in the connection URL.
+
+#### Connection URL
+
+```
+https://app.octolens.com/api/mcp/v2
+```
+
+Add this URL in your AI client and complete the OAuth sign-in. Step-by-step instructions for each tool are in the [Setup Guides](/mcp/v2/setup-guides).
+
+<Note>
+MCP is intended for interactive AI-client workflows. For scripts, backend jobs, or production integrations, use the [REST API](/api/v2/overview).
+</Note>
+
+---
+
+## Setup Guides
+
+Most popular AI tools support connecting to the remote MCP server directly. Follow our step-by-step guides:
+
+- [**Claude Code**](/mcp/v2/setup-guides#claude-code)
+- [**Claude Desktop / Web**](/mcp/v2/setup-guides#claude-desktop--web)
+- [**ChatGPT**](/mcp/v2/setup-guides#chatgpt)
+- [**Cursor**](/mcp/v2/setup-guides#cursor)
+
+You can also generate setup snippets from inside the app under **Settings → MCP**, and try the server live in the **Playground**.
+
+---
+
+## Tools
+
+v2 ships 23 tools across mentions, keywords, feeds, tags, suggestions, workspace, usage, and analytics. See the full [Tools Reference](/mcp/v2/tools) for what each one does and when your assistant will reach for it.
+
+For ready-to-paste prompts and workflows, see [Use Cases](/mcp/v2/use-cases).
+
+---
+
+## Migrating from v1
+
+The v1 MCP server is still available for existing users but is no longer the default. To move to v2:
+
+1. Remove the old v1 connection (the URL containing `?token=...`).
+2. Add the new v2 URL `https://app.octolens.com/api/mcp/v2` following the [Setup Guides](/mcp/v2/setup-guides).
+3. Complete the OAuth sign-in when prompted.
+
+v2 covers everything v1 did, plus feeds, analytics, keyword management, and notification destinations. See the [v1 docs](/mcp/overview) if you need to reference the legacy setup.
+
+---
+
+## Terms of Use
+
+The Octolens MCP server is intended for use with MCP-compatible AI clients (such as ChatGPT, Claude, and Cursor) for interactive, AI-driven workflows.
+
+**Not permitted:** Using the MCP endpoint via custom scripts, bridges, or standalone HTTP/JSON-RPC clients is unsupported and not permitted. The MCP server is not a general-purpose programmatic API.
+
+**For programmatic access:** Use the Octolens API instead — see the [API documentation](/api/v2/overview).

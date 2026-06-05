@@ -69,7 +69,16 @@
         "tab": "MCP Server",
         "groups": [
           {
-            "group": "MCP Server",
+            "group": "MCP v2",
+            "pages": [
+              "mcp/v2/overview",
+              "mcp/v2/setup-guides",
+              "mcp/v2/tools",
+              "mcp/v2/use-cases"
+            ]
+          },
+          {
+            "group": "MCP v1 (Legacy)",
             "pages": [
               "mcp/overview",
               "mcp/setup-guides",
