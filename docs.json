@@ -46,6 +46,12 @@
               "learn/platforms/newsletter-list",
               "learn/faqs"
             ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/attio"
+            ]
           }
         ]
       },
