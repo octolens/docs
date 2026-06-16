@@ -1,0 +1,62 @@
+---
+title: Agent Skill
+description: Install the official Octolens Agent Skill to give Claude Code, Cursor, and other AI coding agents built-in expertise for working with your Octolens workspace via MCP or the REST API.
+---
+
+The **Octolens Agent Skill** is a drop-in package of expertise that teaches AI coding agents how to work with Octolens correctly — which tools to call, how to filter mentions, how to set up keywords and alerts, and the gotchas to avoid. Once installed, your agent reaches for it automatically whenever a task involves Octolens.
+
+It's an [open Agent Skill](https://agentskills.io) — one `SKILL.md` plus a reference doc — so it works in any compatible agent (Claude Code, Cursor, and more).
+
+<Note>
+The skill is the *knowledge layer*; the [MCP server](/mcp/v2/overview) and [REST API](/api/v2/overview) are the *connection*. The skill tells your agent to prefer MCP for interactive work and the REST API for scripting and exports — and how to use each.
+</Note>
+
+---
+
+## Install
+
+```bash
+npx skills add octolens/skill
+```
+
+That's it — the skill installs into your agent's skills directory and activates on its own when you ask anything Octolens-related. You can also browse it on [skills.sh](https://skills.sh/octolens/skill) or view the source on [GitHub](https://github.com/octolens/skill).
+
+---
+
+## What it does
+
+With the skill installed, you can ask your agent things like:
+
+- "Pull the last week of negative Reddit mentions and summarize the top complaints."
+- "Add 'next.js deployment' as a keyword and route buy-intent mentions to my #leads Slack channel."
+- "Export all competitor mentions from this quarter to CSV."
+- "Chart share of voice for my brand vs. its two top competitors."
+
+The agent knows to:
+
+- **Choose the right surface** — MCP for interactive questions and setup, REST v2 for scripts, CI, and bulk export.
+- **Filter mentions correctly** — the simple and advanced filter grammar, valid platforms/sentiment/tag values, and ID-based keyword filtering.
+- **Manage your workspace** — create and update keywords and feeds, wire up Slack / email / webhook destinations, and run analytics.
+- **Avoid common mistakes** — stale v1 filter fields, timestamp formats, scope errors, and more.
+
+---
+
+## How it works
+
+Agent Skills use *progressive disclosure*: the agent loads only a short description at startup, then pulls in the full instructions when a task matches. Your context window stays lean until Octolens is actually relevant.
+
+<CardGroup cols={2}>
+  <Card title="MCP Server" icon="plug" href="/mcp/v2/overview">
+    The preferred connection for interactive AI workflows. OAuth sign-in, no API key.
+  </Card>
+  <Card title="REST API" icon="code" href="/api/v2/overview">
+    For scripts, backend jobs, and bulk export. Bearer auth with an API key.
+  </Card>
+</CardGroup>
+
+---
+
+## Requirements
+
+- An Octolens plan with API access (Pro, Scale, or Enterprise).
+- An MCP-capable agent (for the MCP path) or an API key from **Settings → API** (for the REST path).

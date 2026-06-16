@@ -75,6 +75,12 @@
         "tab": "MCP Server",
         "groups": [
           {
+            "group": "Agent Skill",
+            "pages": [
+              "skill/overview"
+            ]
+          },
+          {
             "group": "MCP v2",
             "pages": [
               "mcp/v2/overview",
