@@ -74,6 +74,34 @@ Exclude posts from these GitHub repos across **all keywords**.
 
 > Example: `For-Hives/beswib, facebook/react`
 
+### Allowed web domains (allowlist)
+
+When set, Octolens only includes Web mentions from these domains across every keyword.
+
+- Leave empty to include all domains, except those in Excluded web domains
+- Applies to the Web source only
+
+> Example: `news.ycombinator.com`
+
+### Excluded web domains
+
+Exclude Web mentions from these domains across **all keywords**.
+
+- Use this for domains you do not want counted toward Web results
+- Applies to the Web source only
+
+> Example: `idea2.work`
+
+### Minimum Domain Rating (Web)
+
+Only include Web mentions from pages on domains with a Domain Rating at or above the selected threshold.
+
+- **Default:** 30
+- Use **Custom override** to set your own threshold
+- Applies to the Web source only
+
+See [Web](/learn/platforms/web) for how Web monitoring works and when it is enabled by default.
+
 ## Saving changes
 
 <Note>
