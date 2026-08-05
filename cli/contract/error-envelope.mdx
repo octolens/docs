@@ -9,163 +9,154 @@ Every failure renders one envelope: `{ "error": { "code", "message", "status" } 
 
 ## Every error code
 
-Branch on the envelope's `code` (or the exit code), never on message text. `fixed` codes are minted by the CLI itself, `service-minted` codes come from the service layer through the API, and `status-derived` codes are derived from an HTTP status.
+Branch on the envelope's `code` (or the exit code), never on message text. The heading each table sits under is the exit its codes produce.
+
+Every code pins that exit except `KEYWORD_LIMIT_EXCEEDED`, `ORG_NOT_FOUND` and `WRITE_FAILED`, whose exit is computed at runtime — from the failure itself, or from the HTTP status the API answered with — which is why they sit under their own heading rather than promising an exit they do not choose.
+
+One case is deliberately absent. This build also rejects flags it does not carry, and that rejection is a usage error (exit 2) whose code is not published here — naming it would advertise the flags the rejection hides. So treat an exit-2 code you cannot find on this page as exactly what its exit says: a usage error, not a broken contract.
 
 ### Exit 1 — unexpected
 
-| Code | Family | Resolution |
-|---|---|---|
-| `CONFIG_INVALID` | — | fixed |
-| `INTERNAL_ERROR` | — | fixed |
-| `INVALID_RESPONSE` | — | fixed |
-| `REQUEST_TIMEOUT` | — | fixed |
-| `SLACK_CONNECT_TIMEOUT` | — | fixed |
-| `UNEXPECTED_ERROR` | — | fixed |
+| Code | Auth family |
+|---|---|
+| `CONFIG_INVALID` | — |
+| `INTERNAL_ERROR` | — |
+| `INVALID_RESPONSE` | — |
+| `REQUEST_TIMEOUT` | — |
+| `SLACK_CONNECT_TIMEOUT` | — |
+| `UNEXPECTED_ERROR` | — |
 
 ### Exit 2 — usage
 
-| Code | Family | Resolution |
-|---|---|---|
-| `AMBIGUOUS_KEYWORD` | — | fixed |
-| `AMBIGUOUS_MEMBER` | — | fixed |
-| `AMBIGUOUS_ORG` | — | fixed |
-| `AUTHOR_FILTERS_UNSUPPORTED` | — | fixed |
-| `AUTHOR_NEEDS_SOURCE` | — | fixed |
-| `AUTHOR_REQUIRED` | — | fixed |
-| `BROWSER_LOGIN_REQUIRES_TTY` | — | fixed |
-| `CLEAR_NOT_CONFIRMED` | — | fixed |
-| `COMMAND_NOT_FOUND` | — | fixed |
-| `CONFLICTING_DESTINATION` | — | fixed |
-| `CONFLICTING_FILTER_FLAGS` | — | fixed |
-| `CONFLICTING_FLAGS` | — | fixed |
-| `CONFLICTING_TERM` | — | fixed |
-| `CONFLICTING_VALUE_FLAGS` | — | fixed |
-| `DIRECT_UNAVAILABLE` | — | fixed |
-| `INCOMPLETE_WINDOW` | — | fixed |
-| `INTERNAL_ONLY_FLAG` | — | fixed |
-| `INTERNAL_ONLY_TRANSPORT` | — | fixed |
-| `INVALID_ARGUMENT` | — | fixed |
-| `INVALID_BASE_URL` | — | fixed |
-| `INVALID_DATE` | — | fixed |
-| `INVALID_DAY_OF_WEEK` | — | fixed |
-| `INVALID_DELIVERY_MODE` | — | fixed |
-| `INVALID_DESTINATIONS_JSON` | — | fixed |
-| `INVALID_DESTINATION_TYPE` | — | fixed |
-| `INVALID_EMAIL` | — | fixed |
-| `INVALID_FILTER_JSON` | — | fixed |
-| `INVALID_FLAG_COMBINATION` | — | fixed |
-| `INVALID_FORMAT` | — | fixed |
-| `INVALID_FREQUENCY` | — | fixed |
-| `INVALID_INTERVAL` | — | fixed |
-| `INVALID_LIMIT` | — | fixed |
-| `INVALID_ORG_CHOICE` | — | fixed |
-| `INVALID_ORG_ID` | — | fixed |
-| `INVALID_PROFILE_CHOICE` | — | fixed |
-| `INVALID_RELEVANCE` | — | fixed |
-| `INVALID_SENTIMENT` | — | fixed |
-| `INVALID_STORED_BASE_URL` | — | fixed |
-| `INVALID_TIMEOUT` | — | fixed |
-| `INVALID_VALUES_JSON` | — | fixed |
-| `INVALID_WINDOW` | — | fixed |
-| `JSON_NOT_SUPPORTED` | — | fixed |
-| `LOCAL_STACK_UNREACHABLE` | — | fixed |
-| `LOGIN_TIMEOUT` | — | fixed |
-| `MISSING_DESTINATION` | — | fixed |
-| `MISSING_DESTINATION_TARGET` | — | fixed |
-| `MISSING_KEYWORD` | — | fixed |
-| `MISSING_KEY_VALUE` | — | fixed |
-| `MISSING_PROFILE` | non-auth | fixed |
-| `MISSING_REQUIRED_ARGS` | — | fixed |
-| `MISSING_REQUIRED_FLAGS` | — | fixed |
-| `NOTHING_TO_UPDATE` | — | fixed |
-| `NOTIFICATION_TEST_NO_DESTINATIONS` | — | fixed |
-| `NO_ORG_AVAILABLE` | — | fixed |
-| `NO_ORG_SELECTED` | — | fixed |
-| `NO_PROFILE_SELECTED` | — | fixed |
-| `NO_STORED_PROFILE` | non-auth | fixed |
-| `NO_UPDATE_FIELDS` | — | fixed |
-| `NO_WEB_PAGE` | — | fixed |
-| `ORG_ALIAS_UNRESOLVED` | — | fixed |
-| `ORG_SELECTION_REQUIRED` | — | fixed |
-| `PROFILE_URL_LINKEDIN_ONLY` | — | fixed |
-| `REJECT_TARGET_CONFLICT` | — | fixed |
-| `REJECT_TARGET_REQUIRED` | — | fixed |
-| `TRANSPORT_LOGIN_CONFLICT` | — | fixed |
-| `TRANSPORT_UNAVAILABLE` | — | fixed |
-| `UNKNOWN_FEED` | — | fixed |
-| `UNKNOWN_FILTER_LIST` | — | fixed |
-| `UNKNOWN_KEYWORD` | — | fixed |
-| `USAGE_ERROR` | — | fixed |
-| `VALIDATION_ERROR` | — | fixed |
-| `WATCH_REQUIRED` | — | fixed |
-| `WINDOW_TOO_LARGE` | — | fixed |
+| Code | Auth family |
+|---|---|
+| `AMBIGUOUS_KEYWORD` | — |
+| `AMBIGUOUS_MEMBER` | — |
+| `AUTHOR_FILTERS_UNSUPPORTED` | — |
+| `AUTHOR_NEEDS_SOURCE` | — |
+| `AUTHOR_REQUIRED` | — |
+| `BROWSER_LOGIN_REQUIRES_TTY` | — |
+| `CLEAR_NOT_CONFIRMED` | — |
+| `COMMAND_NOT_FOUND` | — |
+| `CONFLICTING_DESTINATION` | — |
+| `CONFLICTING_FILTER_FLAGS` | — |
+| `CONFLICTING_FLAGS` | — |
+| `CONFLICTING_TERM` | — |
+| `CONFLICTING_VALUE_FLAGS` | — |
+| `INCOMPLETE_WINDOW` | — |
+| `INVALID_ARGUMENT` | — |
+| `INVALID_BASE_URL` | — |
+| `INVALID_DATE` | — |
+| `INVALID_DAY_OF_WEEK` | — |
+| `INVALID_DELIVERY_MODE` | — |
+| `INVALID_DESTINATIONS_JSON` | — |
+| `INVALID_DESTINATION_TYPE` | — |
+| `INVALID_EMAIL` | — |
+| `INVALID_FILTER_JSON` | — |
+| `INVALID_FLAG_COMBINATION` | — |
+| `INVALID_FORMAT` | — |
+| `INVALID_FREQUENCY` | — |
+| `INVALID_INTERVAL` | — |
+| `INVALID_LIMIT` | — |
+| `INVALID_PROFILE_CHOICE` | — |
+| `INVALID_RELEVANCE` | — |
+| `INVALID_SENTIMENT` | — |
+| `INVALID_STORED_BASE_URL` | — |
+| `INVALID_TIMEOUT` | — |
+| `INVALID_VALUES_JSON` | — |
+| `INVALID_WINDOW` | — |
+| `JSON_NOT_SUPPORTED` | — |
+| `LOGIN_TIMEOUT` | — |
+| `MISSING_DESTINATION` | — |
+| `MISSING_DESTINATION_TARGET` | — |
+| `MISSING_KEYWORD` | — |
+| `MISSING_KEY_VALUE` | — |
+| `MISSING_PROFILE` | non-auth |
+| `MISSING_REQUIRED_ARGS` | — |
+| `MISSING_REQUIRED_FLAGS` | — |
+| `NOTHING_TO_UPDATE` | — |
+| `NOTIFICATION_TEST_NO_DESTINATIONS` | — |
+| `NO_PROFILE_SELECTED` | — |
+| `NO_STORED_PROFILE` | non-auth |
+| `NO_UPDATE_FIELDS` | — |
+| `NO_WEB_PAGE` | — |
+| `PROFILE_URL_LINKEDIN_ONLY` | — |
+| `REJECT_TARGET_CONFLICT` | — |
+| `REJECT_TARGET_REQUIRED` | — |
+| `UNKNOWN_FEED` | — |
+| `UNKNOWN_FILTER_LIST` | — |
+| `UNKNOWN_KEYWORD` | — |
+| `USAGE_ERROR` | — |
+| `VALIDATION_ERROR` | — |
+| `WATCH_REQUIRED` | — |
+| `WINDOW_TOO_LARGE` | — |
 
 ### Exit 3 — auth
 
-| Code | Family | Resolution |
-|---|---|---|
-| `CONFLICTING_CREDENTIALS` | non-auth | fixed |
-| `INVALID_API_KEY` | non-auth | fixed |
-| `MISSING_API_KEY` | auth | fixed |
-| `NOT_LOGGED_IN` | auth | fixed |
-| `NO_CREDENTIALS` | auth | fixed |
-| `NO_PROFILES` | auth | fixed |
-| `UNAUTHORIZED` | non-auth | fixed |
+| Code | Auth family |
+|---|---|
+| `CONFLICTING_CREDENTIALS` | non-auth |
+| `INVALID_API_KEY` | non-auth |
+| `MISSING_API_KEY` | auth |
+| `NOT_LOGGED_IN` | auth |
+| `NO_CREDENTIALS` | auth |
+| `NO_PROFILES` | auth |
+| `UNAUTHORIZED` | non-auth |
 
 ### Exit 4 — not found
 
-| Code | Family | Resolution |
-|---|---|---|
-| `KEYWORD_NOT_FOUND` | — | fixed |
-| `MEMBER_NOT_FOUND` | — | fixed |
-| `NOT_FOUND` | — | fixed |
-| `PROFILE_NOT_FOUND` | — | fixed |
+| Code | Auth family |
+|---|---|
+| `KEYWORD_NOT_FOUND` | — |
+| `MEMBER_NOT_FOUND` | — |
+| `NOT_FOUND` | — |
+| `PROFILE_NOT_FOUND` | — |
 
 ### Exit 5 — permission/scope
 
-| Code | Family | Resolution |
-|---|---|---|
-| `ADMIN_SCOPE_REQUIRED` | — | fixed |
-| `FORBIDDEN` | — | fixed |
-| `INVITER_REQUIRED` | — | fixed |
+| Code | Auth family |
+|---|---|
+| `ADMIN_SCOPE_REQUIRED` | — |
+| `FORBIDDEN` | — |
+| `INVITER_REQUIRED` | — |
 
 ### Exit 6 — plan/limit
 
-| Code | Family | Resolution |
-|---|---|---|
-| `PLAN_LIMIT_EXCEEDED` | — | fixed |
+| Code | Auth family |
+|---|---|
+| `PLAN_LIMIT_EXCEEDED` | — |
 
 ### Exit 7 — rate-limited
 
-| Code | Family | Resolution |
-|---|---|---|
-| `RATE_LIMITED` | — | fixed |
+| Code | Auth family |
+|---|---|
+| `RATE_LIMITED` | — |
 
 ### Exit 8 — cancelled (a human aborted a prompt with EOF/Ctrl-C)
 
-| Code | Family | Resolution |
-|---|---|---|
-| `CANCELLED` | — | fixed |
+| Code | Auth family |
+|---|---|
+| `CANCELLED` | — |
 
 ### Exit 9 — the command ran and the operation did not succeed at its target
 
-| Code | Family | Resolution |
-|---|---|---|
-| `FILTERS_ADD_PARTIALLY_REFUSED` | — | fixed |
-| `FILTERS_ADD_REFUSED` | — | fixed |
-| `NOTIFICATION_TEST_FAILED` | — | fixed |
-| `NOTIFICATION_TEST_PARTIAL_FAILURE` | — | fixed |
+| Code | Auth family |
+|---|---|
+| `FILTERS_ADD_PARTIALLY_REFUSED` | — |
+| `FILTERS_ADD_REFUSED` | — |
+| `NOTIFICATION_TEST_FAILED` | — |
+| `NOTIFICATION_TEST_PARTIAL_FAILURE` | — |
 
 ### Exit 10 — a write was accepted and its answer lost — verify, do not retry
 
-| Code | Family | Resolution |
-|---|---|---|
-| `RESPONSE_LOST` | — | fixed |
+| Code | Auth family |
+|---|---|
+| `RESPONSE_LOST` | — |
 
 ### Exit derived from the failure (not pinned)
 
-| Code | Family | Resolution |
-|---|---|---|
-| `KEYWORD_LIMIT_EXCEEDED` | — | service-minted |
-| `ORG_NOT_FOUND` | — | service-minted |
-| `WRITE_FAILED` | — | status-derived |
+| Code | Auth family |
+|---|---|
+| `KEYWORD_LIMIT_EXCEEDED` | — |
+| `ORG_NOT_FOUND` | — |
+| `WRITE_FAILED` | — |

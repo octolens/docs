@@ -60,9 +60,10 @@
         "tab": "CLI",
         "groups": [
           {
-            "group": "Overview",
+            "group": "Get started",
             "pages": [
-              "cli/overview"
+              "cli/overview",
+              "cli/install"
             ]
           },
           {

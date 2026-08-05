@@ -9,7 +9,7 @@ Flags and arguments below are the contract as the binary states it. The global f
 
 ## `octolens login`
 
-Authenticate the CLI (browser handoff, API key, or org select)
+Authenticate the CLI (browser handoff or API key)
 
 **Arguments**
 
@@ -36,7 +36,7 @@ octolens login --with-key ak_live_xxx
 
 **Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE · `8` CANCELLED. The full map is on [Exit codes](/cli/contract/exit-codes).
 
-**Error codes** — `BROWSER_LOGIN_REQUIRES_TTY`, `DIRECT_UNAVAILABLE`, `INVALID_ORG_ID`, `LOGIN_TIMEOUT`, `MISSING_KEY_VALUE`, `NO_ORG_AVAILABLE`, `ORG_ALIAS_UNRESOLVED`, `ORG_SELECTION_REQUIRED`, `TRANSPORT_LOGIN_CONFLICT`. Every code is listed on [The error envelope](/cli/contract/error-envelope).
+**Error codes** — `BROWSER_LOGIN_REQUIRES_TTY`, `LOGIN_TIMEOUT`, `MISSING_KEY_VALUE`. Every code is listed on [The error envelope](/cli/contract/error-envelope).
 
 ## `octolens logout`
 

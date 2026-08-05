@@ -10,9 +10,9 @@ description: "The octolens command-line interface: 62 commands, the --json contr
   binary does. Nothing here is hand-written — corrections belong in the CLI, not in this site.
 </Note>
 
-The `octolens` CLI is the terminal interface to Octolens: 62 commands across 11 groups, 11 exit codes and 104 error codes, all described below.
+The `octolens` CLI is the terminal interface to Octolens: 62 commands across 11 groups, 11 exit codes and 91 error codes, all described below.
 
-**Transport** — `rest`.
+New here? [Install the CLI](/cli/install) — `npm install -g octolens` — then come back.
 
 ## The contract
 
@@ -23,7 +23,7 @@ These hold for every command; read them before scripting against the CLI.
 - [The error envelope](/cli/contract/error-envelope) — Every failure renders one envelope: &#123; "error": &#123; "code", "message", "status" &#125; &#125;.
 - [Retries and timeouts](/cli/contract/retries-and-timeouts) — Every request runs under a per-operation deadline (default 30s; override with the global --timeout).
 - [RESPONSE_LOST — the indeterminate write](/cli/contract/response-lost) — A state-changing request whose 2xx status line arrived but whose response body was lost answers RESPONSE_LOST (status 502, exit 10): the server accepted the write and the outcome…
-- [The auth preflight](/cli/contract/auth-preflight) — Credentials are resolved per run (an API key via OCTOLENS_API_KEY or a stored profile; the internal edition may also run in-process).
+- [The auth preflight](/cli/contract/auth-preflight) — Credentials are resolved per run: an API key in OCTOLENS_API_KEY, or a profile stored by octolens login.
 - [Global flags](/cli/contract/global-flags) — the 6 flags every command accepts.
 
 ## Commands
