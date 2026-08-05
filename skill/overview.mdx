@@ -1,15 +1,17 @@
 ---
 title: Agent Skill
-description: Install the official Octolens Agent Skill to give Claude Code, Cursor, and other AI coding agents built-in expertise for working with your Octolens workspace via MCP or the REST API.
+description: Install the official Octolens Agent Skill to give Claude Code, Cursor, and other AI coding agents built-in expertise for working with your Octolens workspace via the CLI or the REST API.
 ---
 
-The **Octolens Agent Skill** is a drop-in package of expertise that teaches AI coding agents how to work with Octolens correctly — which tools to call, how to filter mentions, how to set up keywords and alerts, and the gotchas to avoid. Once installed, your agent reaches for it automatically whenever a task involves Octolens.
+The **Octolens Agent Skill** is a drop-in package of expertise that teaches AI coding agents how to work with Octolens correctly — which commands and endpoints to reach for, how to filter mentions, how to set up keywords and alerts, and the gotchas to avoid. Once installed, your agent reaches for it automatically whenever a task involves Octolens.
 
-It's an [open Agent Skill](https://agentskills.io) — one `SKILL.md` plus a reference doc — so it works in any compatible agent (Claude Code, Cursor, and more).
+It's an [open Agent Skill](https://agentskills.io) — one `SKILL.md` plus a reference doc per surface — so it works in any compatible agent (Claude Code, Cursor, and more).
 
 <Note>
-The skill is the *knowledge layer*; the [MCP server](/mcp/v2/overview) and [REST API](/api/v2/overview) are the *connection*. The skill tells your agent to prefer MCP for interactive work and the REST API for scripting and exports — and how to use each.
+The skill is the *knowledge layer*; the [CLI](/cli/overview) and [REST API](/api/v2/overview) are the *connection*. The skill tells your agent to prefer the CLI for shell work, scripting and CI, and REST v2 for raw programmatic access — and how to use each.
 </Note>
+
+The skill does **not** document the [MCP server](/mcp/v2/overview). MCP is still a first-class Octolens surface with [its own docs](/mcp/v2/overview) — it is simply self-documenting: an agent that can call the tools can already read their schemas, so a skill teaching them adds nothing. The skill earns its keep on the two surfaces an agent *cannot* introspect: the CLI's command surface and the REST v2 endpoint surface.
 
 ---
 
@@ -34,10 +36,23 @@ With the skill installed, you can ask your agent things like:
 
 The agent knows to:
 
-- **Choose the right surface** — MCP for interactive questions and setup, REST v2 for scripts, CI, and bulk export.
+- **Choose the right surface** — the CLI for shells, scripts, cron jobs, CI and bulk export; REST v2 for application code, non-Node runtimes, and anything the CLI doesn't cover.
+- **Script against the CLI contract** — `--json` purity, the frozen [exit-code map](/cli/contract/exit-codes), the [error envelope](/cli/contract/error-envelope), and [`RESPONSE_LOST`](/cli/contract/response-lost) (verify, don't retry).
 - **Filter mentions correctly** — the simple and advanced filter grammar, valid platforms/sentiment/tag values, and ID-based keyword filtering.
 - **Manage your workspace** — create and update keywords and feeds, wire up Slack / email / webhook destinations, and run analytics.
-- **Avoid common mistakes** — stale v1 filter fields, timestamp formats, scope errors, and more.
+- **Avoid common mistakes** — stale v1 filter fields, timestamp formats, scope errors, paginated lists that quietly return one page, and more.
+
+---
+
+## Which surface, when
+
+| You are… | Use |
+|---|---|
+| Writing a shell script, a CI job or a cron, working in a terminal, or exporting in bulk | **CLI** |
+| Calling from application code, a non-Node runtime, a box where you can't install a binary, or reaching for something the CLI doesn't cover | **REST v2** |
+| Working interactively inside an MCP-capable agent | **[MCP server](/mcp/v2/overview)** (not covered by the skill — its tools describe themselves) |
+
+The CLI is a client of the same REST v2 API, but it adds guarantees the raw endpoints don't: a frozen exit-code map you can branch on instead of parsing message text, exactly one JSON document on stdout under `--json`, automatic rate-limit retry, a per-request `--timeout` that guarantees termination, and name→id resolution (`--keyword 'acme corp'` rather than a lookup call first).
 
 ---
 
@@ -46,11 +61,11 @@ The agent knows to:
 Agent Skills use *progressive disclosure*: the agent loads only a short description at startup, then pulls in the full instructions when a task matches. Your context window stays lean until Octolens is actually relevant.
 
 <CardGroup cols={2}>
-  <Card title="MCP Server" icon="plug" href="/mcp/v2/overview">
-    The preferred connection for interactive AI workflows. OAuth sign-in, no API key.
+  <Card title="CLI" icon="terminal" href="/cli/overview">
+    The preferred surface for shells, scripts, CI and bulk export. Browser login or an API key.
   </Card>
   <Card title="REST API" icon="code" href="/api/v2/overview">
-    For scripts, backend jobs, and bulk export. Bearer auth with an API key.
+    For application code, backend jobs and non-Node runtimes. Bearer auth with an API key.
   </Card>
 </CardGroup>
 
@@ -59,4 +74,5 @@ Agent Skills use *progressive disclosure*: the agent loads only a short descript
 ## Requirements
 
 - An Octolens plan with API access (Pro, Scale, or Enterprise).
-- An MCP-capable agent (for the MCP path) or an API key from **Settings → API** (for the REST path).
+- For the CLI path: a shell you can run `octolens` in — sign in with `octolens login`, or set `OCTOLENS_API_KEY` on headless boxes.
+- For the REST path: an API key from **Settings → API**.

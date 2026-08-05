@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Browser/agent tooling logs
+.gstack/
+
+# Mintlify CLI
+.mintlify/
+.mint/
+node_modules/
+
+# Editor / OS noise
+Thumbs.db

@@ -57,6 +57,45 @@
         ]
       },
       {
+        "tab": "CLI",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "cli/overview"
+            ]
+          },
+          {
+            "group": "Contract",
+            "pages": [
+              "cli/contract/json-output",
+              "cli/contract/exit-codes",
+              "cli/contract/error-envelope",
+              "cli/contract/retries-and-timeouts",
+              "cli/contract/response-lost",
+              "cli/contract/auth-preflight",
+              "cli/contract/global-flags"
+            ]
+          },
+          {
+            "group": "Commands",
+            "pages": [
+              "cli/commands/admin",
+              "cli/commands/analytics",
+              "cli/commands/auth",
+              "cli/commands/core",
+              "cli/commands/feeds",
+              "cli/commands/filters",
+              "cli/commands/init",
+              "cli/commands/keywords",
+              "cli/commands/mentions",
+              "cli/commands/notifications",
+              "cli/commands/watch"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {
