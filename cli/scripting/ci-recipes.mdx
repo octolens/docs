@@ -1,0 +1,161 @@
+---
+title: "CI recipes"
+description: "Run octolens from GitHub Actions: API-key auth from a secret, a pinned CLI version, a weekly CSV export uploaded as an artifact, and a scheduled triage digest."
+---
+
+{/* AUTHORED page (OCT-1512) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/scripting/ and published by `pnpm cli:docs:site`. Every
+    `octolens` line below is docs-lint-verified against the live command
+    registry; the workflows are complete files, not fragments, so they can be
+    committed as-is. */}
+
+The CLI is built to run unattended: auth comes from one environment
+variable, `--json` runs never prompt, every run is bounded by a deadline,
+and non-zero exits carry a machine-readable envelope — so a failing step
+fails the job with a reason, not a hang. This page gives you two complete
+GitHub Actions workflows and the conventions that make them boring. The
+guarantees they lean on are on
+[The agent contract](/cli/scripting/agent-contract).
+
+## Auth: one secret, no files
+
+Set an API key as a repository secret (create the key in the app under
+**Settings → API**) and export it as `OCTOLENS_API_KEY`. No login step, no
+config files written, and the env var takes precedence over any stored
+profile. Scope the key to what the job does: a `read` key is enough for
+exports and digests, and a leaked read key cannot mutate your workspace
+([Keys & scopes](/cli/concepts/keys-scopes)).
+
+Give jobs a preflight so a rotated or mis-scoped secret fails on the first
+step with a clear answer, not mid-export:
+
+```yaml
+      - name: Verify credentials
+        env:
+          OCTOLENS_API_KEY: ${{ secrets.OCTOLENS_API_KEY }}
+        run: |
+          octolens whoami --json | jq -e '.scope | index("read")' >/dev/null
+```
+
+An auth failure exits `3` — in CI that almost always means the secret is
+missing on this trigger (forks and Dependabot PRs do not receive secrets)
+or was rotated. Branch on the family of codes, not one:
+[Handling failure in scripts](/cli/scripting/handling-failure).
+
+## Pin the npm version
+
+`npx octolens` resolves to the latest release at run time — fine on a
+workstation, wrong in CI, where an unattended job should not pick up a new
+major on its own. Install a pinned version in its own step and let your
+normal dependency-update tooling propose bumps:
+
+```yaml
+      - name: Install the octolens CLI
+        run: npm install -g octolens@0.1.0
+```
+
+Pin the exact version you validated (releases are listed on
+[npm](https://www.npmjs.com/package/octolens), and the tarball ships its own
+`CHANGELOG.md`). A pinned CLI plus the frozen exit map means a green job
+today is a green job tomorrow unless your data changed.
+
+## Recipe: weekly CSV export as an artifact
+
+Every Monday at 08:00 UTC, export the last week of mentions server-side
+(headers included, never truncated mid-record) and attach the CSV to the
+run as an artifact:
+
+```yaml
+name: weekly-mentions-export
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch: {}
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install the octolens CLI
+        run: npm install -g octolens@0.1.0
+      - name: Export the last 7 days
+        env:
+          OCTOLENS_API_KEY: ${{ secrets.OCTOLENS_API_KEY }}
+        run: |
+          octolens mentions export --since "$(date -u -d '7 days ago' +%F)" -o mentions.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weekly-mentions
+          path: mentions.csv
+          retention-days: 90
+```
+
+Notes:
+
+- `date -d '7 days ago'` is GNU date syntax — it works on `ubuntu-latest`;
+  on a macOS runner use `date -u -v-7d +%F` instead.
+- The export composes with every `mentions list` filter flag
+  (`--source`, `--sentiment`, `--keyword`, …) if you want a narrower file —
+  see [Export & report](/cli/guides/export-and-report).
+- A week with zero matching mentions still exits `0` — an empty range is an
+  answer, not an error — and the run says so explicitly (a `warning` field in
+  the `--json` summary, a trailing warning line otherwise), so the schedule
+  keeps running and a silently-empty file cannot masquerade as a good week.
+
+## Recipe: a scheduled triage digest
+
+Every weekday morning, post yesterday's mentions into the run's job summary
+— a zero-infrastructure digest your team can open from the Actions tab:
+
+```yaml
+name: daily-triage-digest
+on:
+  schedule:
+    - cron: "0 7 * * 1-5"
+  workflow_dispatch: {}
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install the octolens CLI
+        run: npm install -g octolens@0.1.0
+      - name: Build the digest
+        env:
+          OCTOLENS_API_KEY: ${{ secrets.OCTOLENS_API_KEY }}
+        run: |
+          octolens mentions list --since "$(date -u -d '1 day ago' +%F)" --all --json > mentions.json
+          count=$(jq '.data | length' mentions.json)
+          {
+            echo "## Mentions digest — $count new since yesterday"
+            echo ""
+            jq -r '.data[] | "- [\(.source)] \(.title) — \(.sentiment) — \(.url)"' mentions.json
+          } >> "$GITHUB_STEP_SUMMARY"
+```
+
+Variations that stay one-line changes:
+
+- **Negative-only escalation**: add `--sentiment negative` to the list call
+  and make the job fail loudly when `count` is non-zero, so the run itself
+  becomes the alert.
+- **Per-keyword counts** instead of raw rows:
+  `octolens analytics keywords --json` piped through the recipes in the
+  [jq cookbook](/cli/scripting/jq-cookbook).
+- **Slack instead of a job summary**: skip the workflow — the product
+  already delivers scheduled digests natively via
+  `octolens notifications create`
+  ([Notifications](/cli/guides/notifications)). Reach for CI only when you
+  need a custom projection.
+
+## Timeouts and flakiness
+
+Every backend call already carries its own deadline, so a stuck deployment
+surfaces as a typed failure within seconds, not a 6-hour hung job — you do
+not need `timeout` wrappers around `octolens`. If you retry failed steps,
+exclude exit `10` from the retry: the one exit that means "the write may
+have landed" must be verified, never blindly re-run
+([Handling failure in scripts](/cli/scripting/handling-failure)).

@@ -1,0 +1,92 @@
+---
+title: "API keys & scopes"
+sidebarTitle: "Keys & scopes"
+description: "The cumulative read, write, admin scope ladder — where keys are minted, which scope each endpoint requires, and how to preflight a credential instead of discovering its limits through failures."
+---
+
+{/* AUTHORED page (OCT-1511) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/concepts/ and published by `pnpm cli:docs:site`. Every
+    `octolens` line below is docs-lint-verified against the live command
+    registry; contract facts (the login flag table, per-endpoint scope
+    requirements, error codes) are imported from generated snippets or
+    linked, never restated by hand. */}
+
+Every credential the CLI uses is an API key, and every API key carries a
+**scope**. The scope is decided when the key is minted, is enforced
+server-side on every request, and is the reason a command can fail with a
+permission error even though you are correctly logged in.
+
+## The ladder is cumulative
+
+There are three scopes, and each includes everything below it:
+
+- **read** — list and inspect: mentions, feeds, keywords, analytics, the
+  workspace itself.
+- **write** — everything read allows, plus mutations: triage mentions, create
+  and edit feeds, manage keywords, filters and notifications.
+- **admin** — everything write allows, plus workspace administration:
+  members, organization settings, the admin-gated surfaces.
+
+Because the ladder is cumulative, a key never needs two scopes: an `admin`
+key passes every `write` and `read` gate, and a `write` key passes every
+`read` gate. Minting works the same way — asking for `write` grants read and
+write together.
+
+## Where keys are minted
+
+Two places, nowhere else:
+
+- **`octolens login`** — the browser handoff mints a key scoped by
+  `--scope` (see the flag table on [Install & login](/cli/install) for the
+  choices and the default) and stores it as a profile.
+- **The web app** — create standalone keys for CI and agents under
+  Settings → API at
+  [https://app.octolens.com/me/api](https://app.octolens.com/me/api), then
+  supply one via `OCTOLENS_API_KEY` or `octolens login --with-key`.
+
+The CLI itself never mints keys, and there is deliberately no key-management
+API — a key cannot create more keys. Ask for the scope the job actually
+needs at mint time, and prefer the smallest one that suffices.
+
+Keys that predate scoping carry no explicit scope and are enforced as
+read-only — they report `read` and behave exactly like a read key.
+
+## What each endpoint requires
+
+The CLI is a client of the public v2 REST API, and the *endpoint* declares
+the scope it needs: read endpoints require `read`, mutating endpoints
+`write`, and admin-gated capability (member management, flex limits) stays
+`admin` over the API exactly as it is admin-gated in the app. The
+machine-readable form is the `x-required-scope` field each operation carries
+in the OpenAPI document (`/api/v2/openapi.json`, browsable under the API
+tab of these docs) — an agent deciding whether its key can perform an
+operation should read that field rather than guess from the verb.
+
+## Insufficient scope, on the wire
+
+A request beyond the key's scope is refused by the server with a `FORBIDDEN`
+envelope, and the CLI exits `5` — the permission exit. Two things follow:
+
+- **It is not an authentication failure.** The key is valid and the
+  workspace is right; re-running `octolens login` in a loop cannot fix it.
+  The remedy is a key with a higher scope.
+- **It is not retryable.** The same request with the same key will be
+  refused again, every time.
+
+The full refusal taxonomy is on
+[The error envelope](/cli/contract/error-envelope) and
+[Exit codes](/cli/contract/exit-codes).
+
+## Preflight, don't probe
+
+A script that discovers it holds a read-only key by watching its first
+mutation fail has already done half a run's work for nothing. Check first:
+
+```bash
+octolens whoami --json
+```
+
+reports the credential's effective scope alongside the workspace it is bound
+to, so "can this run write?" is answerable before the first mutating call.
+Under the hood this is the API's own auth introspection — the same answer
+the scope gate will give — not a guess from the key's shape.

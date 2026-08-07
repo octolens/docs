@@ -1,0 +1,102 @@
+---
+title: "Using with AI agents"
+description: "Give an AI coding agent working knowledge of Octolens: install the Agent Skill, point LLMs at llms.txt, and choose between the CLI, MCP and REST for the task at hand."
+---
+
+{/* AUTHORED page (OCT-1512) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/scripting/ and published by `pnpm cli:docs:site`. Every
+    `octolens` line below is docs-lint-verified against the live command
+    registry; the surface-selection guidance here is aligned with the Agent
+    Skill overview page (/skill/overview) — change one, check the other. */}
+
+The CLI's guarantees — one JSON document on stdout, a frozen exit map,
+bounded runs, no prompts — exist precisely so that an AI agent can drive
+Octolens the way it drives `git` or `gh`: from a shell, with no SDK, no
+schema discovery, and failure modes it can branch on. This page is how to
+hand those guarantees to your agent.
+
+## Install the Agent Skill
+
+The fastest path is the official
+[Octolens Agent Skill](/skill/overview) — a drop-in package of expertise
+that teaches Claude Code, Cursor, and other compatible agents which commands
+to reach for, how to filter mentions, and the gotchas to avoid:
+
+```bash
+npx skills add octolens/skill
+```
+
+The skill activates on its own whenever a task involves Octolens. It covers
+the two surfaces an agent cannot introspect — the CLI's command surface and
+the REST v2 endpoint surface — and tells the agent which to prefer when.
+With it installed, you can ask for outcomes ("pull last week's negative
+Reddit mentions and summarize the top complaints") instead of dictating
+commands.
+
+## `llms.txt`
+
+Two machine-readable summaries exist for agents that read docs rather than
+install skills:
+
+- This docs site publishes an `llms.txt` index at
+  [octolens.com/docs/llms.txt](https://octolens.com/docs/llms.txt), so an
+  agent can discover every page here — including the
+  [contract pages](/cli/contract/json-output) — without scraping HTML.
+- The npm package ships one inside the tarball
+  (`node_modules/octolens/llms.txt`) alongside `COMMANDS.md`, the generated
+  command reference — readable offline, always matching the installed
+  version. `octolens help <command>` prints the same contract from the
+  binary itself.
+
+## CLI, MCP, or REST?
+
+Octolens has three programmable surfaces. They call the same platform; pick
+by where the caller runs:
+
+| The caller is… | Use |
+|---|---|
+| A shell — scripts, cron, CI, an agent running terminal commands, bulk export | **The CLI** (these docs) |
+| An MCP-capable agent working interactively | **The [MCP server](/mcp/v2/overview)** — its tools describe themselves, so no skill or doc reading is needed |
+| Application code, a non-Node runtime, a box where you cannot install a binary | **The [REST v2 API](/api/v2/overview)** |
+
+The CLI is a client of the same REST v2 API, but it adds the guarantees raw
+endpoints do not have: the frozen [exit-code map](/cli/contract/exit-codes)
+you can branch on instead of parsing message text, exactly one JSON document
+on stdout under `--json`, automatic rate-limit retry, a per-request
+`--timeout` that guarantees termination, and name-to-id resolution
+(`--keyword 'acme corp'` instead of a lookup call first). For an agent that
+can run shell commands, the CLI is the highest-leverage surface — the
+[Agent Skill](/skill/overview) makes the same recommendation.
+
+## Ground rules for an agent loop
+
+Whether or not the skill is installed, an agent driving the CLI should
+follow four rules — each backed by a guarantee on
+[The agent contract](/cli/scripting/agent-contract):
+
+1. **Always pass `--json`.** It guarantees pure output *and* forces
+   non-interactive mode, so the run can never hang on a prompt — missing
+   input fails fast with exit `2` naming the flags to pass.
+2. **Verify credentials once, with `octolens whoami --json`.** It reports
+   the workspace, auth source and key scope — do not scrape config files.
+   Branch on the auth **family** of codes, not one code
+   ([Handling failure in scripts](/cli/scripting/handling-failure)).
+3. **Branch on exit codes and `error.code`, never on message text.** The
+   codes are frozen; the wording is not.
+4. **Never auto-retry exit `10`.** The write may have landed — verify with
+   the matching `list`/`get` first. A generic retry-on-failure policy must
+   carve this one exit out.
+
+For live streams, add the tail-only flag — `octolens feeds watch --backlog none --json`
+gives an agent a forward-only stream with no pre-existing backlog to filter
+out ([Watch a feed live](/cli/guides/watch-live)).
+
+## Recipes to hand your agent
+
+The pages in this section are written to be pasted into an agent's context
+as much as read by you: the
+[agent contract](/cli/scripting/agent-contract) states the invariants, the
+[jq cookbook](/cli/scripting/jq-cookbook) gives working projections, and
+[Handling failure in scripts](/cli/scripting/handling-failure) gives the
+branch logic. An agent that has those three pages — or the skill, which
+distills them — will drive Octolens correctly on the first try.

@@ -1,0 +1,161 @@
+---
+title: "Keywords & AI suggestions"
+description: "Manage the terms Octolens monitors — add, tune, pause and remove keywords from the terminal, and work through the AI's keyword-tuning suggestions."
+---
+
+{/* AUTHORED page (OCT-1510) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/ and published by `pnpm cli:docs:site`. Every `octolens`
+    line below is docs-lint-verified against the live command registry; the
+    add/list flag tables are imported from generated, manifest-derived
+    snippets, never restated by hand. */}
+
+import KeywordsAddUsage from '/snippets/cli/usage/keywords-add.mdx';
+import KeywordsListUsage from '/snippets/cli/usage/keywords-list.mdx';
+import SuggestionsListUsage from '/snippets/cli/usage/suggestions-list.mdx';
+
+Keywords are the terms Octolens monitors — the configuration surface
+everything else hangs off. This guide covers the keyword lifecycle from the
+terminal, and the review loop for the AI's keyword-tuning suggestions.
+
+Everywhere a command targets a keyword, you can pass the numeric **id or the
+name**: a numeric token is an id, anything else matches a name
+case-insensitively. An unknown target exits `4` (`KEYWORD_NOT_FOUND`) with a
+sample of what you *do* track; a name two keywords share exits `2`
+(`AMBIGUOUS_KEYWORD`) — pass the id instead.
+
+## Add a keyword
+
+```bash
+octolens keywords add 'acme corp' --source reddit --source twitter --json
+```
+
+Omit `--source` to monitor every platform your plan allows. On a terminal
+with no term, a short wizard asks;
+[headless](/cli/concepts/output-modes#headless) runs pass the term. Optional
+flags seed the AI's matching config up front — `--context` (a one-sentence
+disambiguation for relevance scoring), `--tag`, `--exclude-words`,
+`--additional-terms`.
+
+Adding is **safe to re-run**: a term you already track is a no-op that
+returns the existing keyword with `alreadyExisted: true`, exit `0` — no
+keyword slot or AI-enrichment call is spent, even when two identical adds
+race. At your plan's keyword cap the add exits `6` (`KEYWORD_LIMIT_EXCEEDED`)
+pointing at `octolens org usage`.
+
+<KeywordsAddUsage />
+
+## See what you track — and the `--no-volume` speed-up
+
+```bash
+octolens keywords list
+```
+
+Each row carries `status` (active/paused) and `volume` — the keyword's recent
+mention count. That volume ride-along is an analytics aggregation and is
+**the slow part of the command**: typically seconds, against a sub-second
+keyword read. When you only need the configuration, skip it:
+
+```bash
+octolens keywords list --no-volume --json   # fast path: config only
+```
+
+Volumes then read `null` (`-` on a terminal). In a normal run, `0` is a
+genuinely quiet keyword; `null` plus a top-level `warning` means the volume
+lookup itself failed this run — the list is still complete either way.
+
+<KeywordsListUsage />
+
+## Tune, pause, resume
+
+`keywords update` rewrites **only the fields you pass** — a
+concurrent change to a field you did not mention survives. Pass an empty
+string to clear a text-list field:
+
+```bash
+octolens keywords update 42 --exclude-words 'jobs,hiring'
+octolens keywords update 42 --exclude-words ''    # clear it again
+```
+
+`pause` stops data collection without deleting anything; `resume` turns it
+back on. Both are idempotent absolute writes — `pause` on an already-paused
+keyword is a safe no-op, and a retry after a timeout can never flip the state
+back:
+
+```bash
+octolens keywords pause 42
+octolens keywords resume 42
+```
+
+## Remove a keyword — the `--yes` gate and the cascade
+
+Deletion is destructive twice over: it removes the keyword, **and** it
+removes every feed whose filters reference only that keyword — each of which
+takes its notification with it. On a terminal the confirmation names exactly
+what goes; headless (piped or `--json`) the command requires `--yes`, and
+without it exits `2` naming the flag with nothing deleted — a script can
+never delete by accident:
+
+```bash
+octolens keywords rm 'acme corp' --yes --json
+```
+
+The response reports the cascade explicitly: `deletedFeeds` and
+`deletedNotifications` are always present (empty arrays when nothing else was
+destroyed), so branch on their length. To look before you leap, the REST API
+offers a read-only deletion preview — see the
+[Keywords reference](/cli/commands/keywords).
+
+## The AI suggestions review loop
+
+Octolens continuously proposes keyword-tuning changes — "add this exclude
+word", "disable this noisy source" — as **suggestions** you accept or reject.
+The loop is three commands:
+
+```bash
+# 1. What is pending? Each row leads with the id the next two commands take.
+octolens suggestions list
+
+# 2. Apply one — or accept the direction and tweak the value
+octolens suggestions accept 123
+octolens suggestions accept 123 --value 'jobs,careers'
+
+# 3. Dismiss one, or everything pending for a keyword at once
+octolens suggestions reject 124
+octolens suggestions reject --keyword 'acme corp'
+```
+
+`suggestions list --keyword 'acme corp'` narrows to one keyword's pending
+suggestions and includes a snapshot of its current matching config, so you
+can judge a proposal in context.
+
+<SuggestionsListUsage />
+
+Three semantics that make the loop safe to script:
+
+- **Each suggestion is answered at most once.** `accept` and `reject` act
+  only on a `pending` suggestion; one that was already answered exits `4`
+  (`SUGGESTION_NOT_FOUND`) with the id echoed — of two racing accepts,
+  exactly one wins. Treat exit `4` from `accept` as "somebody already
+  answered this", not as an error to retry.
+- **A concurrent keyword edit is a retryable conflict, never a silent
+  overwrite.** If the keyword changed while a suggestion was being applied,
+  nothing is written and the suggestion stays pending (`KEYWORD_CHANGED`,
+  HTTP 409) — retry to merge onto the current state.
+- **What was applied is reported.** `accept` returns `appliedChanges` with
+  the exact values written, in the same canonical comma-separated form
+  `keywords update` accepts, so values round-trip between the two commands.
+
+A worked bulk pass — apply everything pending for one keyword:
+
+```bash
+octolens suggestions list --keyword 'acme corp' --json | jq -r '.data[].id' | xargs -rn1 octolens suggestions accept
+```
+
+## Where to go next
+
+- Watch a new keyword's mentions arrive: `octolens feeds watch --keyword 'acme corp'`
+  ([Feeds reference](/cli/commands/feeds)).
+- The full flag tables for every command here:
+  [Keywords reference](/cli/commands/keywords).
+- Keyword-level analytics — volume, co-mentions, sentiment:
+  [Export & report](/cli/guides/export-and-report).

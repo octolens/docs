@@ -1,0 +1,124 @@
+---
+title: "Workspace admin"
+description: "Run the workspace from the terminal — members and invitations, the company profile that steers the AI, and usage against your plan."
+---
+
+{/* AUTHORED page (OCT-1510) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/ and published by `pnpm cli:docs:site`. Every `octolens`
+    line below is docs-lint-verified against the live command registry; the
+    invite/update/usage flag tables are imported from generated,
+    manifest-derived snippets, never restated by hand. */}
+
+import MembersInviteUsage from '/snippets/cli/usage/members-invite.mdx';
+import CompanyUpdateUsage from '/snippets/cli/usage/company-update.mdx';
+import OrgUsageUsage from '/snippets/cli/usage/org-usage.mdx';
+
+Four admin surfaces live in the CLI: team membership (`members`), the
+monitored **company profile** that steers AI relevance (`company`), the
+workspace itself (`org`), and consumption vs plan (`org usage`, `billing`).
+Payment operations are deliberately not among them — `billing --web` hands
+off to the browser for anything that touches a card.
+
+## Members and invitations — where admin scope bites
+
+Reading the roster needs no special scope; **changing it does**.
+`members invite` and `members rm` require a credential with
+the `admin` scope — a non-admin caller exits `5` (`ADMIN_SCOPE_REQUIRED`),
+and on `members rm` that gate is checked **first**, so a non-admin gets the
+`5` whether or not the target exists and is never shown the confirm prompt.
+Preflight before scripting either:
+
+```bash
+octolens whoami --json | jq -e '.scope | index("admin")'    # exit 0 = admin scope present
+```
+
+The everyday roster loop:
+
+```bash
+# Who is in the workspace (any scope may read this)
+octolens members list
+
+# Invite a teammate — they appear in the roster once they accept
+octolens members invite --email ana@acme.com --role member --json
+
+# Invitations sent but not yet accepted (any scope may read this too)
+octolens members invitations
+
+# Remove a member by email or membership id — or revoke a pending
+# invitation the same way (admin scope; --yes required headless)
+octolens members rm ana@acme.com --yes --json
+```
+
+<MembersInviteUsage />
+
+Behaviour that keeps automation honest:
+
+- **Inviting is idempotent.** Re-inviting an address with an outstanding
+  invitation returns that invitation with `alreadyInvited: true`, exit `0`,
+  and sends **no second email** — concurrent invites cannot stack duplicates.
+- A personal-mail domain (gmail and friends) is refused with exit `2`
+  (`GENERIC_EMAIL_DOMAIN`); an unknown member or invitation token exits `4`
+  (`MEMBER_NOT_FOUND`) naming both lists.
+- The API refuses to remove the only remaining admin (`LAST_ADMIN`) — a
+  workspace can never be orphaned from the terminal.
+- Removals and revocations prompt on a TTY; a
+  [headless](/cli/concepts/output-modes#headless) run must pass `--yes`.
+- Scope is not the only prerequisite for inviting: the identity must carry an
+  inviter **user**. When it does not, the command exits `5`
+  (`INVITER_REQUIRED`) naming the fix — different code than a scope denial,
+  because the repair is different.
+
+## The company profile — your AI steering wheel
+
+`octolens company get` shows the **monitored** company (distinct from the
+workspace itself): name, domain, description, and the guideline fields that
+are injected into every AI relevance and classification prompt. Editing those
+fields is the main terminal lever for tuning how mentions get scored:
+
+```bash
+# Disambiguate a brand name the AI keeps mis-scoring
+octolens company update --relevance-context 'Vercel is a cloud platform for frontend deployments, not a vehicle brand' --json
+
+# Steer the relevance and tagging prompts directly
+octolens company update --relevance-guidelines 'Posts about self-hosting alternatives are relevant; job postings are not.'
+octolens company update --classification-guidelines 'Tag migration stories as switching-intent.'
+```
+
+Any member with a `write` key can do this. Changes take effect for newly
+scored mentions — tune, then watch the next batch in `octolens mentions list`
+and iterate.
+
+<CompanyUpdateUsage />
+
+Workspace-level settings (display name, org-wide monitored platforms) live
+on `octolens org get` / `octolens org update` — the
+[Admin reference](/cli/commands/admin) has the full field list.
+
+## Usage and billing
+
+```bash
+octolens org usage
+```
+
+One shared block — mention and keyword consumption against your plan's
+limits, with reset dates, meters on a terminal and stable ISO timestamps when
+piped. The same numbers ride `octolens dashboard` and `octolens billing`, so
+the three can never disagree.
+
+<OrgUsageUsage />
+
+```bash
+# Alert when mention usage crosses 90% of the cap
+octolens org usage --json | jq -e '.mentions.count / .mentions.limit > 0.9' >/dev/null && echo 'Near mention cap'
+```
+
+`octolens billing` adds the read-only plan summary; to change plan or payment
+method, `octolens billing --web` opens the subscription page in the browser —
+the CLI itself has no payment surface.
+
+## Where to go next
+
+- Scopes, key minting and the login flow: [Install & login](/cli/install).
+- How a scope refusal surfaces in scripts: [Exit codes](/cli/contract/exit-codes).
+- The full command tables for `org`, `company`, `members` and `billing`:
+  [Admin reference](/cli/commands/admin).

@@ -1,0 +1,157 @@
+---
+title: "JSON output & jq cookbook"
+sidebarTitle: "jq cookbook"
+description: "Real payload shapes and copy-pasteable jq recipes for the common asks — new mentions since a date, sentiment slices, per-keyword counts, CSV — plus the TSV pipe contract for quick shell work."
+---
+
+{/* AUTHORED page (OCT-1512) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/scripting/ and published by `pnpm cli:docs:site`. Every
+    `octolens` line below is docs-lint-verified against the live command
+    registry, and the pipelines here actually run; payload shapes come from
+    each command's own Returns section (schema-validated in the generator),
+    linked rather than restated. */}
+
+Every command's `--json` output is one JSON document with a stable shape:
+lists put their records in `data` and their cursor in `pagination.nextCursor`
+([Pagination & time windows](/cli/concepts/pagination-windows)); single
+resources are one object. The exact field table for any command — with a
+schema-validated example payload — is the **Returns** section of its
+[command page](/cli/commands/mentions). This page is the cookbook: what to
+pipe into `jq` for the asks that come up every week.
+
+Two habits make every recipe below reliable:
+
+- **`-r`** prints raw strings instead of JSON-quoted ones — use it whenever
+  the output feeds a shell loop, a file, or another tool.
+- **`-e`** makes `jq` itself exit non-zero when the filter produces `null` or
+  `false` — which turns a jq projection into a branchable test.
+
+## New mentions since a point in time
+
+Server-side filtering beats client-side: `--since` (and `--until`) narrow
+before anything crosses the wire, and each accepts a date or a full
+timestamp.
+
+```bash
+# Every mention URL since August 1, newest first
+octolens mentions list --since 2026-08-01 --all --json | jq -r '.data[].url'
+
+# Compact triage lines: timestamp, source, headline
+octolens mentions list --since 2026-08-01 --all --json | jq -r '.data[] | "\(.timestamp)\t\(.source)\t\(.title)"'
+```
+
+For an incremental poll ("what is new since my last run?"), persist your own
+high-water mark and pass it back:
+
+```bash
+last=$(cat .octolens-watermark 2>/dev/null)
+octolens mentions list --since "${last:-2026-08-01}" --all --json > new.json
+jq -r '.data[0].timestamp // empty' new.json > .octolens-watermark
+jq -r '.data[].url' new.json
+```
+
+## Sentiment slices
+
+Filter server-side with `--sentiment`; use `jq` when you want to split one
+already-fetched payload several ways:
+
+```bash
+# Negative mentions only, straight from the API
+octolens mentions list --sentiment negative --since 2026-08-01 --all --json | jq -r '.data[] | "\(.url)\t\(.title)"'
+
+# One fetch, split client-side: count per sentiment
+octolens mentions list --since 2026-08-01 --all --json | jq 'reduce .data[].sentiment as $s ({}; .[$s] += 1)'
+```
+
+The payload's `sentiment` values are the canonical `Positive` / `Neutral` /
+`Negative` (capitalized); the `--sentiment` flag takes lowercase input.
+
+## Per-keyword counts
+
+`octolens analytics keywords` answers this directly — no client-side
+counting needed. One rule is specific to the `analytics` group: the window
+is all-or-nothing. Pass `--since` and `--until` **together**, or omit both
+for the default window (the last 30 days); a half-specified window exits
+`2` (`INCOMPLETE_WINDOW`) before any request is made — see
+[Pagination & time windows](/cli/concepts/pagination-windows).
+
+```bash
+octolens analytics keywords --since 2026-07-01 --until 2026-07-31 --json | jq -r '.data[] | "\(.keyword)\t\(.count)"'
+```
+
+Sort it, take a top five:
+
+```bash
+octolens analytics keywords --since 2026-07-01 --until 2026-07-31 --json | jq -r '.data | sort_by(-.count) | .[:5][] | "\(.count)\t\(.keyword)"'
+```
+
+The other analytics commands (`volume`, `sentiment`, `sources`) follow the
+same `data`-array pattern — see their Returns sections on
+[Analytics](/cli/commands/analytics).
+
+## CSV via `@csv`
+
+`jq -r` plus `@csv` turns any projection into well-formed CSV (quoting
+included):
+
+```bash
+octolens mentions list --sentiment negative --since 2026-08-01 --all --json | jq -r '.data[] | [.timestamp, .source, .author, .sentiment, .url] | @csv' > negative.csv
+```
+
+For a full export, prefer `octolens mentions export` — the CSV is built
+server-side (up to 50,000 rows, headers included) and the download is
+validated before a byte is written, so it composes with the same filter
+flags and never truncates mid-record. The jq form earns its keep when you
+want columns the export does not emit, or a projection of a payload you
+already fetched. See [Export & report](/cli/guides/export-and-report).
+
+```bash
+octolens mentions export --sentiment negative --since 2026-08-01 -o negative.csv
+```
+
+## Branchable tests with `jq -e`
+
+`jq -e` exits `1` when the filter yields `null`/`false`, `0` otherwise — so
+a projection becomes an `if`:
+
+```bash
+# Preflight: does this key have write scope?
+if octolens whoami --json | jq -e '.scope | index("write")' >/dev/null; then
+  echo "write scope confirmed"
+fi
+
+# Is there anything new at all?
+octolens mentions list --since 2026-08-06 --json | jq -e '.data | length > 0' >/dev/null && echo "new mentions"
+```
+
+## The TSV pipe contract (no jq at all)
+
+The moment stdout is a pipe or a redirect, every tabular list drops the
+human layout and emits header-free TSV — one row per record, cells joined by
+a single TAB, no header, no trailer, and an empty result is zero bytes. That
+makes classic shell tools reliable with no JSON parser in sight:
+
+```bash
+# Keyword terms only (columns: id, status, volume, keyword)
+octolens keywords list | cut -f4
+
+# How many feeds exist?
+octolens feeds list | wc -l
+
+# Which notifications are paused?
+octolens notifications list | grep paused
+```
+
+Each group's column order is frozen — it is a compatibility contract, like
+`--json` field names. The full pipe contract is described on
+[Output modes](/cli/concepts/output-modes). Prefer `--json` for anything
+structured; the TSV form is the convenience contract for one-liners.
+
+## When the pipeline fails
+
+Any of these pipelines can fail at the `octolens` stage — auth, rate limit,
+network. Under `--json` the error is a single envelope on stderr and a
+non-zero exit, so your `jq` stage never sees half a document. Set
+`set -o pipefail` in scripts so the pipeline reports the CLI's exit instead
+of `jq`'s, then branch on it:
+[Handling failure in scripts](/cli/scripting/handling-failure).

@@ -1,0 +1,153 @@
+---
+title: "The agent contract"
+description: "The behavioral guarantees every octolens command honors for scripts and agents — JSON purity, a machine-parseable stderr, bounded runs, no prompts, guarded deletes, and exit codes that report outcomes rather than data."
+---
+
+{/* AUTHORED page (OCT-1512) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/scripting/ and published by `pnpm cli:docs:site`. Every
+    `octolens` line below is docs-lint-verified against the live command
+    registry; contract facts (the exit map, flag tables) are imported from
+    generated snippets or linked, never restated by hand. The numeric facts
+    this page does state (the default deadline) are pinned to the CLI's own
+    constants by `src/cli/lib/docs-scripting.test.ts`, so they cannot drift
+    silently. */}
+
+import ExitCodeTable from '/snippets/cli/exit-code-table.mdx';
+
+The `octolens` CLI treats agents and scripts as first-class users. That is
+not a slogan; it is a set of behavioral guarantees every command honors, so
+you can build on them without defensive scaffolding. This page states each
+guarantee and what it lets your code skip. The mechanical contract pages —
+[The --json contract](/cli/contract/json-output),
+[Exit codes](/cli/contract/exit-codes),
+[The error envelope](/cli/contract/error-envelope) — hold the exact shapes;
+this page is what they add up to.
+
+## One JSON document, and a disciplined stderr
+
+With `--json`, stdout carries **exactly one JSON document and nothing else**
+— no banner, no color, no progress frames, no "Next:" hints. You can pipe it
+straight into `jq` with no cleanup pass (recipes in
+[JSON output & jq](/cli/scripting/jq-cookbook)).
+
+stderr holds its own discipline: nothing lands there by accident, and in a
+`--json` run **every line it carries is one parseable JSON object**. A
+failing run leaves exactly one machine-readable
+[error envelope](/cli/contract/error-envelope) there, first byte `{`, so
+`2>` capture plus `jq` is always safe. On success stderr is silent for
+almost every command — but do **not** turn "stderr was empty" into a
+success check. A few commands write a declared, JSON-shaped advisory there
+on a successful run: `octolens mentions export -o report.csv --json` notes
+on stderr that `--json` shaped the summary while the file stayed CSV,
+`octolens login` hands off its authorize URL there so headless callers
+never wait blind, and a `feeds watch` stream reports each transient poll
+failure there mid-stream. Diagnostics you explicitly ask for with the
+global `--verbose` flag (or `OCTOLENS_DEBUG=1`) land there too — that
+opt-in stream is the one that reads like `curl -v`, so filter it out before
+parsing if you asked for it. Branch on the **exit code** and parse stdout;
+treat stderr as the diagnostics channel it is, never as a second success
+signal.
+
+The one streaming command, `octolens feeds watch --json`, emits NDJSON — one
+document per line — under the same purity rules; see
+[Watch a feed live](/cli/guides/watch-live) for its stream contract.
+
+## A `--json` run never prompts
+
+`--json` forces non-interactive mode. A prompt opens only when stdin and
+stdout are both a terminal *and* `--json` was not passed — so an agent run
+never sees a prompt, not even on a real TTY, and never hangs waiting for a
+keyboard. When required input is missing, the run fails deterministically
+with exit `2` and an envelope **naming the flags to pass**:
+
+```bash
+octolens keywords add --json
+# exit 2, code MISSING_REQUIRED_FLAGS — the message names --term
+```
+
+This is also why exit `8` (a human aborted a prompt) is **unreachable in a
+`--json` run**: no prompt ever opens, so there is nothing to cancel. Do not
+write a branch for it in agent code —
+[Handling failure in scripts](/cli/scripting/handling-failure) covers what to
+branch on instead.
+
+## Deletion needs `--yes`
+
+Every command that deletes a resource (`keywords rm`, `feeds rm`,
+`notifications rm`, `feedback rm`, `members rm`) confirms on a TTY and
+**requires `--yes`** on a
+[headless](/cli/concepts/output-modes#headless) run. Without it, the run
+exits `2` (`MISSING_REQUIRED_FLAGS`) **before any request is sent** —
+nothing is deleted, and the message names the resource it refused to touch.
+A cleanup loop over N ids can therefore never delete by accident, and can
+tell exactly which id it left behind:
+
+```bash
+octolens feeds rm 42 --yes --json
+```
+
+One gate in the CLI's base command covers every deletion — including any
+`rm` command added later — so this is a property of the CLI, not a
+convention per command.
+
+## Every run is bounded
+
+Every backend call carries a deadline — **30 seconds by default**, longer
+for a few documented long operations (export, AI calls, notification test),
+and overridable everywhere with the global `--timeout <seconds>`. A
+deployment that accepts the connection and never answers produces a typed
+`REQUEST_TIMEOUT` envelope within the budget, instead of a process that
+blocks forever with nothing on either stream. You do not need to wrap
+`octolens` in your own watchdog — and on long-running commands SIGINT and
+SIGTERM are both honored, so `timeout 60 octolens feeds watch --json` ends
+cleanly too. Details on
+[Retries and timeouts](/cli/contract/retries-and-timeouts).
+
+## Pagination is a cursor, and `--limit` means what it says
+
+Every list command's `--json` document includes `pagination.nextCursor` —
+`null` when the collection is exhausted — and every list command takes
+`--limit N` / `--all` (mutually exclusive; combining them is exit `2`,
+raised before any request). On cursor-paginated lists (`mentions list`,
+`mentions by-author`, …) `--limit N` is the first N items across pages and
+`--all` drains every page; on bounded lists (`keywords`, `feeds`, `tags`,
+`members`, `notifications`) the whole collection returns by default and the
+flags are a client-side head of it. The full semantics are on
+[Pagination & time windows](/cli/concepts/pagination-windows).
+
+## Bad ids fail before the network
+
+Id arguments are validated client-side, before any request. A blank id —
+`""` or whitespace-only, the classic miss of an empty shell variable — and
+malformed ids like `.` or `..` exit `2` (`INVALID_ARGUMENT`) naming the
+argument and the list command that shows valid ids. Surrounding whitespace
+on a real id is trimmed, so a padded paste still resolves. The same rule
+covers every positional and every resource-addressing flag (`--keyword`,
+`--feed`, …): an unset variable can never silently widen a query or reach
+the server as garbage.
+
+## An id you cannot see does not exist
+
+An id that belongs to **another workspace** answers exactly like an id that
+exists nowhere: the resource's not-found code, exit `4` — never a
+distinguishable 403, and nothing is mutated. You cannot probe which ids
+exist across workspaces, and your scripts need only one branch: exit `4`
+means "not in this workspace", whatever the reason.
+
+## Exit codes report outcomes — never data
+
+A run that produced its payload exits `0`, even when the payload says work
+remains: `octolens init --json` on a half-onboarded workspace exits `0` and
+carries the signal in `fullyOnboarded: false`. No command repurposes an exit
+code as a data channel, so a non-zero exit always means the same thing — no
+result on stdout, one `{"error":…}` envelope on stderr — with a single
+bounded exception: a `feeds watch` stream that already emitted mentions
+cannot retract them, so they stay on stdout and, under `--json`, a final
+`{"type":"error",…}` terminator record marks where the stream died.
+
+<ExitCodeTable />
+
+Branch on codes, never on message text — message wording may improve between
+versions; codes and exits are frozen. How to branch, including the two codes
+with special retry rules, is the subject of
+[Handling failure in scripts](/cli/scripting/handling-failure).

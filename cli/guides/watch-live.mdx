@@ -1,0 +1,185 @@
+---
+title: "Watch a feed live"
+sidebarTitle: "Watch a feed live"
+description: "Follow your mention stream in real time with feeds watch: keyboard triage on a TTY, tail-only streams for automation, and the NDJSON contract a pipeline can trust."
+---
+
+{/* AUTHORED page (OCT-1509) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/ and published by `pnpm cli:docs:site`. Every `octolens`
+    line below is docs-lint-verified against the live command registry
+    (including the stream-pipeline gates: unbuffered stages, terminator
+    guards); the flag table is a generated snippet and contract facts are
+    linked, never restated. */}
+
+import FeedsWatchUsage from '/snippets/cli/usage/feeds-watch.mdx';
+
+`octolens feeds watch` is the live view: it polls your mention stream and
+renders new mentions as they arrive. On a terminal it is a scrolling stream
+with keyboard triage; piped or under `--json` it degrades to a plain,
+tailable line-per-mention feed an agent can act on. The full stream contract
+— every flag, the exact NDJSON record shapes, poll error classification —
+lives on the [Feeds reference](/cli/commands/feeds).
+
+## Start watching
+
+Watch everything, one saved feed, or an ad-hoc filter — the same filter flags
+`mentions list` takes:
+
+```bash
+octolens feeds watch
+octolens feeds watch --feed 42
+octolens feeds watch --keyword 'social listening' --source reddit
+octolens feeds watch --sentiment negative --interval 30
+```
+
+<FeedsWatchUsage />
+
+## Triage from the keyboard (interactive TTY)
+
+On a terminal the watch renders a scrolling stream above a focus panel showing
+the selected mention in full, with a status line as the liveness indicator:
+
+| Key | Action |
+|---|---|
+| `j` / `↓` | Select a newer mention |
+| `k` / `↑` | Select an older mention |
+| `o` / `Enter` | Open the selected mention in your browser |
+| `r` | Mark the selected mention **relevant** |
+| `x` | Mark the selected mention **not relevant** |
+| `1` / `2` / `3` | Set sentiment **Positive** / **Neutral** / **Negative** |
+| `q` / `Ctrl-C` | Quit (clean exit) |
+
+The triage keys perform the exact same update as `mentions update`
+([Triage your mentions](/cli/guides/triage-mentions)) — a mark here is a real
+relevance/sentiment override, not a local annotation.
+
+## The backlog: what the stream starts with
+
+By default the first poll emits the feed's **current first page** — the ~20
+newest already-existing mentions, possibly hours old — as if they had just
+arrived; pass `--backlog none` when you do not want that. The default burst
+is right when a human opens the view (context above the live edge) and wrong
+when a script acts on every line. `--backlog none` makes the stream
+**tail-only**: the first page only seeds the watermark, and nothing that
+existed at startup is ever emitted.
+
+```bash
+octolens feeds watch --feed 42 --backlog none --json
+```
+
+**Use `--backlog none` whenever an agent acts on the stream.** It is the one
+guard an auto-triage or alerting loop needs: with no initial burst there is
+nothing pre-existing to filter out, and after it the stream only moves
+forward in time — the watch keeps a high-water mark on the newest timestamp
+it has emitted and never emits anything older, so triaging mentions out of
+your own filter cannot backfill old mentions into the stream.
+
+## The NDJSON stream contract (`--json`)
+
+Under `--json`, stdout is NDJSON: **one canonical Mention JSON document per
+line** (the exact `mentions get` shape), flushed as each new mention arrives.
+Two properties make it safe to build on:
+
+**The stream says how it ended.** If a fatal poll error (expired key, missing
+scope, deleted feed) kills the watch *after* it has emitted mentions, the
+last line is a **terminator record**, not a mention:
+
+```json
+{"type":"error","error":{"code":"UNAUTHORIZED","message":"API key expired","status":401},"emitted":12,"watermark":"2026-07-29 08:05:00.000"}
+```
+
+A Mention never has a `type` field, so `.type` is an unambiguous
+discriminator. `emitted` is how many mentions the stream handed you;
+`watermark` is the newest timestamp it reached — where to resume from. The
+same typed error also goes to stderr as the standard
+[error envelope](/cli/contract/error-envelope) with the mapped non-zero exit
+code; the terminator exists because a consumer wired only to stdout has no
+ordering between the two pipes and has already acted line by line long before
+the exit code exists.
+
+**Stopping is not failing.** A cleanly stopped watch — `q`, Ctrl-C, SIGINT,
+SIGTERM (so `timeout 60 octolens feeds watch --json` too) — exits `0` with
+**no terminator record**: everything already emitted stays on stdout and the
+stream simply ends. That is how you tell "cancelled" from "died": no
+terminator and exit `0` means you stopped it; a terminator (or a non-zero
+exit) means the stream failed and tells you why and how far it got. Transient
+failures (network blips, rate limits) produce neither — the watch retries
+with backoff and the stream is not over; its diagnostics go to stderr, one
+JSON object per line.
+
+## The jq buffering trap
+
+The CLI flushes every line as it is written — and your pipeline can still
+sit silent for minutes. The reason is downstream: `jq`, `grep` and `sed`
+line-buffer only while their stdout is a terminal. The moment their stdout is
+a **pipe** (the next `|`) or a file, they switch to ~4 KiB block buffering,
+so a slow live stream gets held inside the filter until the block fills or
+the stream ends — delivering everything at once, precisely when "live" no
+longer matters.
+
+So in a live pipeline, every filter stage after the watch must be told to
+stay unbuffered: `jq --unbuffered`, `grep --line-buffered`, `sed -u`. The
+recipes below do this; docs on this site are lint-checked for it, and yours
+should copy the habit.
+
+## Recipes
+
+Live-tail one keyword and print each relevant mention's URL as it arrives:
+
+```bash
+octolens feeds watch --keyword 'social listening' --json | jq -r --unbuffered 'select(.type != "error") | select(.relevance=="relevant") | .url'
+```
+
+The `select(.type != "error")` guard drops the terminator record so the
+projection never yields a literal `null` — without it, a loop consuming ids
+would end by processing the id `null`.
+
+Auto-triage: mark every incoming negative Reddit mention not-relevant, live.
+`--backlog none` keeps the loop off the pre-existing backlog (tail-only, so
+there is no initial burst to guard against), and the `.type` guard keeps the
+terminator out of the id stream:
+
+```bash
+octolens feeds watch --source reddit --sentiment negative --backlog none --json | jq -r --unbuffered 'select(.type != "error") | .sourceId' | while read -r id; do octolens mentions update "$id" --relevance not_relevant --json; done
+```
+
+If your consumer reads only stdout, branch on the terminator instead of the
+exit code — it arrives in order, at the point the data stopped:
+
+```bash
+set -o pipefail
+octolens feeds watch --backlog none --json | jq -c --unbuffered '.' | while read -r line; do
+      if [ "$(printf '%s' "$line" | jq -r '.type // "mention"')" = "error" ]; then
+        printf 'stream ended: %s after %s mentions (resume from %s)\n' \
+          "$(printf '%s' "$line" | jq -r .error.code)" \
+          "$(printf '%s' "$line" | jq -r .emitted)" \
+          "$(printf '%s' "$line" | jq -r .watermark)" >&2
+        exit 1
+      fi
+      printf '%s\n' "$(printf '%s' "$line" | jq -r .sourceId)"
+    done
+```
+
+Two details keep a scheduler or restart wrapper honest about failure:
+
+- **The terminator branch ends with `exit 1`, not `break`**: the loop is the
+  pipeline's last stage, so its status becomes the pipeline's. A `break`
+  would let the pipeline exit `0` — a fatal stream error silently reported as
+  a clean shutdown.
+- **`set -o pipefail` covers the stream that dies before it starts.** The
+  terminator only exists once the stream has emitted at least one mention; a
+  watch that fails on its very first poll (expired key, deleted feed) leaves
+  stdout empty and exits non-zero with the error envelope on stderr. Without
+  `pipefail` the loop stage would hit EOF, return `0`, and mask that failure;
+  with it, the watch's own exit status becomes the pipeline's.
+
+A plain (non-`--json`) piped watch emits one tab-delimited record per mention
+— greppable and tailable, ideal for a log file:
+
+```bash
+octolens feeds watch --source reddit --interval 30 >> feed.log
+```
+
+The stream runs until stopped — background it or bound it with `timeout`,
+both of which end it cleanly. Feeds worth watching are feeds worth saving:
+build them in [Build feeds & filters](/cli/guides/feeds-and-filters).

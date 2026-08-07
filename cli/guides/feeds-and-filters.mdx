@@ -1,0 +1,176 @@
+---
+title: "Build feeds & filters"
+sidebarTitle: "Build feeds & filters"
+description: "Slice your mention stream into saved feeds — with flags, a full filter object, or plain English — and cut workspace-wide noise with the org filter lists."
+---
+
+{/* AUTHORED page (OCT-1509) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/ and published by `pnpm cli:docs:site`. Every `octolens`
+    line below is docs-lint-verified against the live command registry; flag
+    tables are generated snippets and contract facts are linked, never
+    restated. */}
+
+import FeedsCreateUsage from '/snippets/cli/usage/feeds-create.mdx';
+import FiltersAddUsage from '/snippets/cli/usage/filters-add.mdx';
+
+A **feed** is a named, saved filter over your mention stream — reusable
+across `mentions list --feed`, `mentions export --feed`, the live
+[watch view](/cli/guides/watch-live), and notifications. **Org-wide filter
+lists** sit underneath all of that: always-on noise controls that decide what
+enters the stream in the first place. This guide builds both. The
+flag-by-flag contract lives on the [Feeds reference](/cli/commands/feeds) and
+the [Filters, tags & feedback reference](/cli/commands/filters).
+
+## Three ways to express a feed's filter
+
+`feeds create` (and `feeds update`) accept a filter in exactly one of three
+mutually exclusive ways — combining two is refused.
+
+### 1. Ergonomic flags — the quick way
+
+`--keyword`, `--source` and `--sentiment` (each repeatable) AND together into
+a simple filter:
+
+```bash
+octolens feeds create --name "Negative Reddit" --source reddit --sentiment negative
+octolens feeds create --name "Launch chatter" --keyword launch --keyword 'social listening'
+```
+
+A `--keyword` **name** that matches several tracked keywords resolves to all
+of their ids (same-named keywords with different per-source scoping are a
+normal pattern); pass an **id** to pin exactly one. An unknown keyword name
+or id is refused — nothing is created.
+
+<FeedsCreateUsage />
+
+### 2. `--filter-json` — full fidelity
+
+For anything the flags cannot say, pass the filter object itself. A simple
+filter is a flat list of conditions, ANDed:
+
+```bash
+octolens feeds create --name "Negative on Reddit or X" --filter-json '{"conditions":[{"field":"Source","values":"reddit,twitter"},{"field":"Sentiment","values":"Negative"}]}'
+```
+
+An advanced filter adds AND/OR group logic:
+
+```bash
+octolens feeds create --name "High-signal" --filter-json '{"top_level_operator":"AND","groups":[{"group_operator":"OR","conditions":[{"field":"Source","operator":"in","values":"reddit,twitter"},{"field":"RelevanceScore","operator":">=","values":"2"}]}]}'
+```
+
+Condition `field` names are a closed, **case-sensitive** enum — `Keywords`,
+`Source`, `Sentiment`, `Language`, `Tags`, `RelevanceScore`, `Engaged`,
+`Bookmarked`, `RelevantOnly`, `TimeRange`, `TwitterFollowerCount`. Anything
+else (a typo, a lowercase `source`) is refused naming the bad value and
+listing the valid fields, rather than silently creating a feed that matches
+nothing. `Keywords` values are validated too: every id must be a keyword this
+workspace tracks, or the write is refused naming the unknown ids. The whole
+blob is deep-validated server-side — a filter the CLI accepts is always one
+`mentions list --feed` can read.
+
+### Tags as filter conditions
+
+Mentions carry AI-assigned topic tags (`buy_intent`, `competitor_mention`,
+`bug_report`, …). `mentions list` deliberately has no tag flag — the one path
+from a tag to a narrowed mention list is a feed whose `--filter-json` carries
+a `Tags` condition. Discover the vocabulary first, then build the feed:
+
+```bash
+octolens tags list
+octolens feeds create --name "Buying signals" --filter-json '{"conditions":[{"field":"Tags","values":"buy_intent,competitor_mention"}]}'
+```
+
+`tags list` returns every tag seen on this workspace's mentions plus a
+conventional fallback set, so there is always something to filter on. Tags
+are assigned by the relevance pipeline, not created by hand — the command is
+list-only.
+
+### 3. `--ai` — describe it in plain English
+
+The AI wizard turns a sentence into a filter:
+
+```bash
+octolens feeds create --name Pricing --ai "negative posts about our pricing on reddit this month"
+```
+
+On a TTY it previews the generated filter — the explanation, the structure,
+and a `reads as:` block in exactly the wording `feeds get` will print later —
+and asks for confirmation; `--yes` skips the prompt, and any
+[headless](/cli/concepts/output-modes#headless) or
+`--json` run applies the filter directly:
+
+```bash
+octolens feeds create --name Pricing --ai "posts about pricing this week" --yes --json
+```
+
+The generated filter is applied verbatim — exclusions become `not in`
+conditions, date phrases become a `TimeRange` condition, follower bounds
+become a `TwitterFollowerCount` condition — and nothing is ever silently
+dropped: the one combination a feed cannot store (a date range together with
+exclusions or OR-group logic) fails naming the conflict, to be rephrased or
+built with `--filter-json` instead.
+
+## Use the feed
+
+The id that `feeds create` prints plugs in everywhere (the examples below use
+`42` — substitute the id your create returned):
+
+```bash
+octolens mentions list --feed 42 --json | jq '.data[].url'
+octolens feeds get 42
+octolens feeds update 42 --name "Renamed"
+octolens feeds rm 42 --yes
+```
+
+`feeds get`, `feeds list` and `feeds create` print a stored filter with one
+shared renderer — keyword names instead of raw ids, and each condition shown
+as what the engine actually does with it. Two follow-ups worth knowing:
+`feeds watch --feed` follows the feed live
+([Watch a feed live](/cli/guides/watch-live)), and
+`notifications create --feed` delivers its matches to email, Slack or a
+webhook. Deleting a feed also deletes the notification attached to
+it — the command names what it destroys before anything is removed, and the
+response's `deletedNotificationIds` says what went.
+
+## Org-wide filter lists: cut the noise at the source
+
+Five always-active lists apply to the whole workspace, on top of any feed:
+`negativeKeywords`, `negativeAuthors`, `negativeSubreddits`,
+`positiveSubreddits` (a Reddit allowlist — when non-empty, Reddit mentions
+are restricted to it), and `negativeRepos`. Read them, then edit
+incrementally:
+
+```bash
+octolens filters get
+octolens filters get --list negativeKeywords
+octolens filters add negativeAuthors spambot1
+octolens filters add negativeSubreddits r/spamland
+octolens filters remove negativeSubreddits r/spamland
+```
+
+`add` and `remove` are atomic server-side merges — two concurrent adds both
+land, a remove is never undone by a concurrent add, and re-running an `add`
+is a harmless no-op. The subreddit lists are **mutually exclusive**: a value
+sitting in `positiveSubreddits` cannot be added to `negativeSubreddits` (or
+vice versa) — the add fails, the envelope names the list to fix, and
+retrying will not change the answer until you remove the value from the
+opposite list.
+
+<FiltersAddUsage />
+
+For wholesale replacement there is `filters set`, which overwrites a list
+with exactly the values given:
+
+```bash
+octolens filters set negativeKeywords giveaway promo referral
+```
+
+Emptying a non-empty list is guarded — a `set` that resolves to zero values
+(the classic cause: an unset shell variable expanding to nothing) is refused
+unless you pass `--clear`, so `octolens filters set negativeKeywords --clear`
+is the explicit "empty it" form.
+
+The triage loop closes the circle: when the same author or subreddit keeps
+producing noise, promote the one-off correction into a durable filter here —
+see [Triage your mentions](/cli/guides/triage-mentions) for the
+per-mention side of that loop.

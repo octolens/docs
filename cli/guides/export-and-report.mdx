@@ -1,0 +1,158 @@
+---
+title: "Export & report"
+description: "Get your mentions out of Octolens — CSV for a spreadsheet, JSON for a script, a cron job for every Monday morning, and the analytics commands when you only need the numbers."
+---
+
+{/* AUTHORED page (OCT-1510) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/ and published by `pnpm cli:docs:site`. Every `octolens`
+    line below is docs-lint-verified against the live command registry; the
+    export flag table and the analytics usage tables are imported from
+    generated, manifest-derived snippets, never restated by hand. */}
+
+import MentionsExportUsage from '/snippets/cli/usage/mentions-export.mdx';
+import AnalyticsVolumeUsage from '/snippets/cli/usage/analytics-volume.mdx';
+import DashboardUsage from '/snippets/cli/usage/dashboard.mdx';
+
+Two ways to turn mentions into a report. `octolens mentions export` hands you
+the rows themselves — up to 50,000 per run, as CSV or JSON — for a
+spreadsheet, a CRM import or your own pipeline. The `analytics` commands skip
+the rows and answer with the numbers: volume over time, per-keyword counts,
+sentiment split, per-platform split. Start with the second when a chart is all
+you actually need.
+
+## Export the rows
+
+The export honors the same filter flags as `octolens mentions list`, so
+anything you can narrow the feed to, you can export:
+
+```bash
+# The whole filtered feed, as a CSV file
+octolens mentions export -o mentions.csv
+
+# Every negative Reddit mention since July, for the "what hurts" review
+octolens mentions export --source reddit --sentiment negative \
+  --since 2026-07-01 -o negative-reddit.csv
+
+# A bounded, well-formed sample — the cap is applied server-side,
+# so the CSV never breaks mid-record the way `| head` would break it
+octolens mentions export --limit 100 -o sample.csv
+```
+
+With `--output`/`-o` the rows go to the file and stdout carries a one-line
+summary (a JSON summary document under `--json`). Without `-o`, the raw body
+streams to stdout with zero decoration, so a shell redirect works too:
+
+```bash
+octolens mentions export --source reddit > reddit.csv
+```
+
+### CSV or JSON
+
+`--format csv|json` decides the body; when you omit it, a `-o` file extension
+decides (`.csv`/`.json`), and anything else is CSV. Note that `.jsonl` /
+`.ndjson` extensions are refused with exit `2` (`INVALID_FORMAT`) rather than
+silently written in the wrong format — the JSON export body is one array, not
+newline-delimited JSON, and the error names the fix (`-o out.json`).
+
+```bash
+octolens mentions export --format json -o mentions.json
+```
+
+<MentionsExportUsage />
+
+## The time-window trap
+
+**The CLI applies no default time window.** The web app's feed opens on the
+last 7 days; an export (and `mentions list`) does not inherit that view. Omit
+`--since` and the export reaches back to your oldest mention — so
+`--until 2026-06-20` alone means *everything on or before June 20*, not "the
+week before June 20".
+
+The bounds themselves are forgiving in the right places and strict in the
+rest:
+
+- **Both bounds are inclusive**, and a bare date covers the whole named day —
+  `--since 2026-06-01 --until 2026-06-01` is the valid one-day window for
+  June 1.
+- **An impossible window is refused before anything is written**: with both
+  bounds supplied, an `--until` before `--since` exits `2` (`INVALID_WINDOW`)
+  client-side, and no file is touched. Impossible dates (`2026-02-30`) exit
+  `2` (`INVALID_DATE`) naming the flag.
+- **An export that matches nothing says so**: the run still exits `0` (an
+  empty range is not an error), but the summary carries an explicit warning
+  naming the active window and stating that no default window was applied. An
+  empty file therefore always means the workspace truly has no matching
+  mentions.
+
+## Put it on a schedule
+
+Exit codes make an unattended export safe: `0` means the file on disk is the
+documented export (the CLI validates the downloaded body before a single byte
+reaches disk, so a proxy error page can never replace your dataset under exit
+`0`), and any failure is non-zero with a machine-readable envelope on stderr —
+see [Exit codes](/cli/contract/exit-codes).
+
+A weekly report script, using `OCTOLENS_API_KEY` for
+[headless](/cli/concepts/output-modes#headless) auth
+([Install & login](/cli/install)):
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# Last 7 days of negative mentions, dated file per run
+octolens mentions export --sentiment negative \
+  --since "$(date -d '7 days ago' +%F)" \
+  -o "/reports/negative-$(date +%F).csv"
+```
+
+`date -d '7 days ago'` is GNU `date` syntax (Linux). On macOS/BSD, write
+`date -v-7d +%F` instead — the BSD `date` rejects `-d`, and under
+`set -euo pipefail` that failure would kill the script before the export
+runs.
+
+And the crontab entry that runs it every Monday at 07:00 (put the command in a
+script — cron treats `%` specially, so date arithmetic belongs outside the
+crontab line):
+
+```bash
+0 7 * * 1 OCTOLENS_API_KEY=ak_live_xxx /usr/local/bin/octolens-weekly-export.sh
+```
+
+## Quick reporting with analytics
+
+When the report is a number, skip the export. Four focused commands —
+`octolens analytics volume`, `octolens analytics keywords`,
+`octolens analytics sentiment`, `octolens analytics sources` — and the
+composite `octolens dashboard` all aggregate server-side and answer in one
+round trip:
+
+```bash
+# Mention volume, day by day
+octolens analytics volume --since 2026-06-01 --until 2026-06-30 --json | jq -r '.data[] | "\(.bucket)\t\(.count)"'
+
+# Which platform is driving the most signal right now
+octolens analytics sources --json | jq -r '.data[0].source'
+
+# The whole KPI overview — volume trend, top keywords, sentiment, usage vs plan
+octolens dashboard --json
+```
+
+Analytics windows differ from exports in two deliberate ways: omitting both
+dates defaults to the **last 30 days** (a report has a natural window; an
+export does not), and `--since`/`--until` must be passed **together** —
+supplying only one exits `2` (`INCOMPLETE_WINDOW`), and a span over 365 days
+exits `2` (`WINDOW_TOO_LARGE`). On a terminal you get sparklines and bar
+charts; piped or under `--json` the same numbers come back plain — the full
+shapes are on the [Analytics reference](/cli/commands/analytics).
+
+<AnalyticsVolumeUsage />
+
+<DashboardUsage />
+
+## Where to go next
+
+- Narrowing the slice you export — filters, feeds and free-text search — is
+  the [Mentions reference](/cli/commands/mentions).
+- Scripting against the JSON summaries: [The --json contract](/cli/contract/json-output).
+- Want the slice delivered to you instead of pulled? Attach a
+  [notification](/cli/guides/notifications) to a feed.

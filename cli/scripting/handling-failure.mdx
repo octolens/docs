@@ -1,0 +1,170 @@
+---
+title: "Handling failure in scripts"
+sidebarTitle: "Handling failure"
+description: "How to branch when an octolens run fails: the exit-code map, testing auth-family membership instead of one code, when a retry is safe — and the one exit you must never auto-retry."
+---
+
+{/* AUTHORED page (OCT-1512) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/scripting/ and published by `pnpm cli:docs:site`. Every
+    `octolens` line below is docs-lint-verified against the live command
+    registry; the exit map and the auth-family roster are imported from
+    generated snippets, never restated by hand, and the auth-family membership
+    stated in prose is pinned to the CLI's own AUTH_FAMILY_CODES set by
+    `src/cli/lib/docs-scripting.test.ts`. */}
+
+import ExitCodeTable from '/snippets/cli/exit-code-table.mdx';
+import AuthFamilyList from '/snippets/cli/auth-family-list.mdx';
+
+A failing `--json` run does three things, always: exits non-zero, leaves one
+[error envelope](/cli/contract/error-envelope) on stderr — first byte `{`,
+safe to `jq` directly — and, outside the one `feeds watch` terminator case
+covered on [The agent contract](/cli/scripting/agent-contract), puts nothing
+on stdout. **Branch on the exit code and on `error.code`, never on message
+text**: wording may improve between versions; codes and exits are frozen.
+
+<ExitCodeTable />
+
+## Capturing the envelope
+
+The payload goes to stdout, the envelope to stderr — capture them
+separately and the failure report is one `jq` away:
+
+```bash
+octolens mentions list --json > mentions.json 2> err.json || {
+  status=$?
+  code=$(jq -r '.error.code' err.json)
+  echo "octolens failed: exit $status, code $code" >&2
+  exit "$status"
+}
+```
+
+## Auth failures: test the FAMILY, not one code
+
+"This run has no usable credential" is answered by **four** codes —
+`MISSING_API_KEY`, `NOT_LOGGED_IN`, `NO_CREDENTIALS` and `NO_PROFILES` —
+and which one you get depends on the command, not on anything you did
+differently: `octolens whoami` answers `NOT_LOGGED_IN` while a data command
+answers `NO_CREDENTIALS` for the identical unauthenticated state. A script
+that branches on a single member silently misses the others.
+
+<AuthFamilyList />
+
+All four exit `3`, so the exit is the cheap test; read the member only for
+its remedy:
+
+```bash
+octolens mentions list --json > mentions.json 2> err.json || {
+  status=$?
+  if [ "$status" -eq 3 ]; then
+    case "$(jq -r '.error.code' err.json)" in
+      MISSING_API_KEY|NOT_LOGGED_IN|NO_CREDENTIALS|NO_PROFILES)
+        echo "no usable credential: set OCTOLENS_API_KEY (or run octolens login on a workstation)" >&2 ;;
+      *)
+        # UNAUTHORIZED, INVALID_API_KEY, …: a credential EXISTS and was
+        # refused. Re-authenticating in a loop will not fix it — check the
+        # key's value and the deployment it is being sent to.
+        echo "credential present but refused — inspect the key, do not loop on login" >&2 ;;
+    esac
+  fi
+  exit "$status"
+}
+```
+
+The distinction in the `case` matters: codes like `UNAUTHORIZED` and
+`INVALID_API_KEY` also relate to auth (and exit `3`), but a credential
+exists in each — they are deliberately **not** in the family, because "log
+in again" is the wrong recovery for them. The full partition is on
+[Auth preflight](/cli/contract/auth-preflight).
+
+## Exit `9`: the operation was refused at its target
+
+Exit `9` means your invocation was fine and the CLI hit nothing unexpected —
+the command ran, and the work itself was refused where it landed
+(`octolens notifications test 7` when a destination of notification `7`
+refuses the delivery, for example). The full report is inside the stderr envelope, so a failing run
+still tells you which item failed and why.
+
+Whether a retry can help is in **`error.status`**, not in the exit:
+
+```bash
+octolens notifications test 7 --json 2> err.json || {
+  if [ "$?" -eq 9 ]; then
+    if [ "$(jq -r '.error.status' err.json)" -ge 500 ]; then
+      echo "upstream refused (5xx) — may succeed later, safe to retry after a delay" >&2
+    else
+      echo "refused permanently (4xx) — a retry gets the same answer until something changes" >&2
+    fi
+  fi
+}
+```
+
+## Exit `10`: NEVER auto-retry
+
+Exit `10` (`RESPONSE_LOST`) is the one exit that reports an **unknown**
+outcome rather than a known one: the server answered the status line of a
+state-changing request — so the write was accepted — and the body never
+arrived, so the CLI cannot say whether the change landed. It is raised
+precisely so that your generic "retry on failure" policy can exclude it:
+**retrying blindly is how one `feeds create` becomes two feeds.**
+
+Verify with the matching `list`/`get` first, and repeat the write only if it
+is genuinely missing:
+
+```bash
+octolens feeds create --name "Negative Reddit" --source reddit --sentiment negative --json
+status=$?
+if [ "$status" -eq 10 ]; then
+  # The write may have landed. Look before re-running it.
+  if octolens feeds list --json | jq -e '.data[] | select(.name == "Negative Reddit")' >/dev/null; then
+    echo "the create landed — answer was lost, work was not" >&2
+  else
+    octolens feeds create --name "Negative Reddit" --source reddit --sentiment negative --json
+  fi
+fi
+```
+
+Contrast with `REQUEST_TIMEOUT` (exit `1`): the deadline expired before the
+server accepted anything, nothing was applied, and a retry is safe. The two
+are minted apart precisely so a retry policy can treat them differently —
+details on [RESPONSE_LOST](/cli/contract/response-lost) and
+[Retries and timeouts](/cli/contract/retries-and-timeouts).
+
+A safe generic policy, in one rule: **retry exit `1` and exit `7` (after its
+delay); verify-then-maybe-repeat exit `10`; treat everything else as a
+deterministic answer.**
+
+## Exit `7`: the envelope schedules the retry for you
+
+A rate-limited run does not make you guess the backoff. `RATE_LIMITED`'s
+envelope carries two additive fields alongside the standard three:
+`retryAfterSeconds` (seconds until the request may be retried) and `resetAt`
+(the ISO-8601 instant the window resets):
+
+```bash
+octolens mentions list --json > mentions.json 2> err.json || {
+  if [ "$?" -eq 7 ]; then
+    sleep "$(jq -r '.error.retryAfterSeconds' err.json)"
+    octolens mentions list --json > mentions.json
+  fi
+}
+```
+
+Short waits are already retried inside the CLI (up to twice, honoring the
+server's `Retry-After`), so an exit `7` that reaches your script means the
+wait was too long to sit through — schedule it instead of spinning.
+
+## Exit `8` needs no branch
+
+Exit `8` (a human aborted an interactive prompt) is unreachable in a
+`--json` run: `--json` never prompts, so there is nothing to cancel. If your
+script only ever runs with `--json` — and it should — you will never see it;
+missing input surfaces as exit `2` naming the flags to pass instead
+([The agent contract](/cli/scripting/agent-contract)).
+
+## Ctrl-C and signals
+
+A plain interrupt outside a prompt exits `130` (`128 + SIGINT`), and an
+interrupt during a write warns on stderr — as a JSON object in `--json` mode
+— that the write may already have been applied, naming the command to verify
+with. Long-running commands honor SIGINT and SIGTERM, so `timeout`-wrapped
+runs terminate cleanly.

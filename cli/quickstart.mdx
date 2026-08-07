@@ -1,0 +1,115 @@
+---
+title: "Quickstart"
+description: "Your first ten minutes with the octolens CLI — log in, initialize the workspace, triage a mention, save a feed and read the numbers."
+---
+
+{/* AUTHORED page (OCT-1503, rewritten by OCT-1504) — hand-written in the
+    octolens/octolens repo under docs/cli/authored/ and published by
+    `pnpm cli:docs:site`. Every `octolens` line below is docs-lint-verified
+    against the live command registry, and the contract tables are imported
+    from generated snippets, never restated by hand. */}
+
+import GlobalFlagsTable from '/snippets/cli/global-flags-table.mdx';
+import ExitCodeTable from '/snippets/cli/exit-code-table.mdx';
+
+Ten minutes, one terminal, a working Octolens workspace at the end. Install
+the CLI first if you have not ([Install & login](/cli/install)).
+
+<Steps>
+  <Step title="Log in">
+    The browser does the work — the CLI opens your Octolens deployment, mints
+    a scoped API key and stores it as a profile:
+
+    ```bash
+    octolens login
+    ```
+
+    On a [headless](/cli/concepts/output-modes#headless) box, use an API key
+    instead — run `octolens login --with-key ak_live_xxx` or set
+    `OCTOLENS_API_KEY`; details on [Install & login](/cli/install).
+  </Step>
+  <Step title="Initialize your workspace">
+    New workspace? The guided onboarding builds it from the terminal — company
+    profile, the keywords you want monitored, noise filters and your first
+    feed:
+
+    ```bash
+    octolens init
+    ```
+
+    It is safe on an existing workspace too: it reports what is already set up
+    and only offers the missing steps. See
+    [Initialize a workspace](/cli/init) for the whole flow.
+  </Step>
+  <Step title="Check who you are">
+    Confirm the workspace and the credential's scope before doing anything
+    else — this is also the preflight your scripts should run:
+
+    ```bash
+    octolens whoami
+    ```
+  </Step>
+  <Step title="Read your mentions">
+    The ten newest mentions Octolens has collected for you:
+
+    ```bash
+    octolens mentions list --limit 10
+    ```
+
+    Narrow it while you explore — add `--source reddit --sentiment negative`
+    for the classic "what is bothering people" view.
+  </Step>
+  <Step title="Triage one mention">
+    Take a sourceId from the list you just printed (the examples below use a
+    placeholder), inspect the mention, then act on it:
+
+    ```bash
+    octolens mentions get reddit_t3_1abc234
+    octolens mentions update reddit_t3_1abc234 --relevance not_relevant
+    octolens mentions engage reddit_t3_1abc234 --engaged true
+    ```
+
+    `mentions update` corrects the AI's relevance or sentiment call;
+    `mentions engage` marks that you have responded to the conversation.
+  </Step>
+  <Step title="Save a feed">
+    A feed is a saved filter over your mention stream. Describe the one you
+    want in plain language and let the AI build the filter:
+
+    ```bash
+    octolens feeds create --name Pricing --ai "posts about pricing this week" --yes
+    ```
+
+    From now on `octolens mentions list --feed 42` (use the id the create
+    printed) reads that slice directly, and `octolens feeds watch` follows
+    your mentions live in the terminal.
+  </Step>
+  <Step title="Read the numbers">
+    Mention volume over time, as a sparkline plus per-bucket counts:
+
+    ```bash
+    octolens analytics volume
+    ```
+
+    `octolens analytics sentiment` and `octolens analytics keywords` cut the
+    same data by tone and by term.
+  </Step>
+</Steps>
+
+## Scripting what you just did
+
+Everything above works [headlessly](/cli/concepts/output-modes#headless): add
+`--json` and each command emits exactly one JSON document on stdout ([Output
+modes](/cli/concepts/output-modes) defines all three renderings). Every
+command also accepts the global flags, generated here from the CLI's own
+contract manifest:
+
+<GlobalFlagsTable />
+
+When scripting, branch on exit codes (or the `--json` error envelope's
+`code`), never on message text:
+
+<ExitCodeTable />
+
+The full rules live on [The --json contract](/cli/contract/json-output) and
+[The error envelope](/cli/contract/error-envelope).

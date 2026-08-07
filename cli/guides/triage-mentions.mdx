@@ -1,0 +1,162 @@
+---
+title: "Triage your mentions from the terminal"
+sidebarTitle: "Triage mentions"
+description: "Work through your mention stream from a shell: narrow the list, inspect one mention, correct the AI's verdicts, teach the model, and mark what you have handled."
+---
+
+{/* AUTHORED page (OCT-1509) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/ and published by `pnpm cli:docs:site`. Every `octolens`
+    line below is docs-lint-verified against the live command registry; flag
+    tables are imported from generated, manifest-derived snippets, and contract
+    facts are linked rather than restated. */}
+
+import MentionsUpdateUsage from '/snippets/cli/usage/mentions-update.mdx';
+import MentionsEngageUsage from '/snippets/cli/usage/mentions-engage.mdx';
+
+Triage is the daily loop: skim what came in, correct the AI where it was
+wrong, teach it so it stays right, and mark the conversations you have
+handled. This guide walks that loop with real commands. The full flag-by-flag
+contract for everything used here lives on the
+[Mentions reference](/cli/commands/mentions) and the
+[Filters, tags & feedback reference](/cli/commands/filters).
+
+## Narrow the list to what needs you
+
+`octolens mentions list` is the entry point. Bare, it prints your newest
+mentions; the filter flags compose (AND), so stack them until the list is
+exactly the slice you want to work through:
+
+```bash
+octolens mentions list --limit 20
+octolens mentions list --source reddit --sentiment negative
+octolens mentions list --keyword 'social listening' --since 2026-06-01
+octolens mentions list --search "pricing page" --source reddit
+```
+
+Three filters worth knowing before you trust an empty result:
+
+- **`--relevance all`** — by default the list hides what the AI scored as low
+  relevance. When you are hunting false negatives, widen it:
+  `octolens mentions list --relevance all --limit 20`.
+- **`--since` / `--until`** — both bounds are inclusive, each works alone, and
+  the CLI applies **no default time window** (the web feed's default 7-day
+  view does not apply here). An empty result for a range means the workspace
+  really has no matching mentions there.
+- **`--feed`** — reuse a saved feed as the base filter
+  (`octolens mentions list --feed 42`). Flags you pass next to it intersect
+  with the feed's own conditions — they narrow, never replace. Build feeds in
+  [Build feeds & filters](/cli/guides/feeds-and-filters).
+
+## Inspect one mention
+
+Every list row carries a stable `sourceId` (like `reddit_t3_1abc234`) and an
+internal numeric `id` — every mention-keyed command below accepts either.
+
+```bash
+octolens mentions get reddit_t3_1abc234
+```
+
+`--json` emits the full canonical Mention document, and `--web` opens the
+mention's own permalink on the source platform in your browser.
+
+## Correct the AI's verdict
+
+`mentions update` overrides a mention's relevance and/or sentiment — either
+flag alone is a complete request:
+
+```bash
+octolens mentions update reddit_t3_1abc234 --relevance not_relevant
+octolens mentions update reddit_t3_1abc234 --sentiment Negative
+octolens mentions update reddit_t3_1abc234 --relevance clear
+```
+
+`--relevance clear` removes your manual override and restores the AI's
+original verdict — the AI's call is recorded the first time a mention is
+overridden and never rewritten, so `clear` is always safe, no matter how many
+overrides came before.
+
+What comes back is the **committed** state, not an echo of your flags:
+`--relevance clear` reports the restored AI verdict, and if a concurrent
+triage (another shell, the web app, the live view's keyboard triage) wins a
+race, the response carries what the workspace actually holds. Branch on the
+payload, never on the flag you passed.
+
+<MentionsUpdateUsage />
+
+## Teach the model, not just this mention
+
+An override fixes one mention. `feedback submit` feeds the relevance model,
+so the same mistake gets rarer:
+
+```bash
+octolens feedback submit reddit_t3_1abc234 --not-relevant --reason "unrelated product"
+octolens feedback submit reddit_t3_1abc234 --relevant
+```
+
+Exactly one of `--relevant` / `--not-relevant` is required; `--reason` is
+free-text context the relevance agent reads. Re-submitting for the same
+mention replaces the stored feedback wholesale. To undo it:
+
+```bash
+octolens feedback rm reddit_t3_1abc234 --yes
+```
+
+[Headless](/cli/concepts/output-modes#headless) runs need `--yes` (on a TTY
+the command confirms instead). The
+response's `removed` field distinguishes a real removal (`true`) from
+"there was no feedback to remove" (`false`) — both exit `0`, since the
+desired end state holds either way. `octolens feedback stats` reports the
+aggregate false-positive rate the loop is driving down.
+
+## Mark what you have handled — the engage trap
+
+`mentions engage` sets the engaged-with flag: "we saw this and responded".
+It has two modes, and picking the wrong one is the classic scripting bug:
+
+- **With `--engaged true|false`** — an absolute, **idempotent** write. Marking
+  an already-engaged mention engaged leaves it engaged; a retry after a
+  timeout cannot undo the write it is retrying; two concurrent
+  `--engaged true` calls both land on engaged.
+- **Bare (no flag)** — a **toggle**, kept for the interactive "flip this"
+  gesture. A toggle is inherently non-idempotent: re-running it undoes it, and
+  two concurrent toggles cancel out.
+
+**Scripts and agents must always pass `--engaged`.** A retried toggle flips
+the flag back to where it started, silently:
+
+```bash
+octolens mentions engage reddit_t3_1abc234 --engaged true --json
+octolens mentions engage reddit_t3_1abc234 --engaged false --json
+```
+
+Only use the bare form when a human is driving:
+
+```bash
+octolens mentions engage reddit_t3_1abc234
+```
+
+As with `mentions update`, the response's `engaged` field is the committed
+flag read back from the store, not a prediction — branch on it.
+
+<MentionsEngageUsage />
+
+## Script the loop
+
+Everything above is headless-safe with `--json` — one JSON document on
+stdout, errors as one envelope on stderr, stable exit codes (see
+[The --json contract](/cli/contract/json-output) and
+[Exit codes](/cli/contract/exit-codes)):
+
+```bash
+# Mark the newest low-value mention not-relevant, then teach the model.
+id=$(octolens mentions list --limit 1 --json | jq -r '.data[0].sourceId')
+octolens mentions update "$id" --relevance not_relevant --json
+octolens feedback submit "$id" --not-relevant --json
+
+# Work through every negative Reddit mention from June, marking each handled.
+octolens mentions list --source reddit --sentiment negative --since 2026-06-01 --json | jq -r '.data[].sourceId' | while read -r id; do octolens mentions engage "$id" --engaged true --json; done
+```
+
+To run this triage loop against mentions as they arrive instead of a static
+list, move to [Watch a feed live](/cli/guides/watch-live) — its keyboard
+triage performs the exact same updates as `mentions update`.

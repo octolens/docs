@@ -1,0 +1,102 @@
+---
+title: "Output modes"
+description: "The three renderings every octolens command has — human output on a TTY, header-free TSV records for pipes, and the --json document — and what headless means."
+---
+
+{/* AUTHORED page (OCT-1511) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/concepts/ and published by `pnpm cli:docs:site`. Every
+    `octolens` line below is docs-lint-verified against the live command
+    registry; contract facts are imported from generated snippets or linked,
+    never restated by hand — and the numeric facts this page does state (the
+    record headline width) are pinned to the CLI's own constants by
+    `src/cli/lib/docs-concepts.test.ts`, so they cannot drift silently. */}
+
+Every command has one data model and three renderings of it. Which rendering
+a run gets is decided by exactly two facts: whether stdout is a terminal,
+and whether `--json` was passed. Nothing else — not the command, not the
+platform — changes the shape, so a script can rely on the mode it selected.
+
+## Human output (a TTY)
+
+When stdout is a terminal and `--json` was not passed, you get the rendering
+built for eyes: aligned tables, color, unicode drawing (sparklines, bars),
+relative timestamps, and a progress line on stderr while the CLI waits on
+the API. Two things to know about it:
+
+- **It is not a parsing surface.** The human layout is allowed to improve
+  between versions; anything that consumes output should use `--json` or a
+  pipe.
+- **Color is opt-out.** Setting `NO_COLOR` disables ANSI styling even on a
+  terminal.
+
+## Piped output (TSV records)
+
+The moment stdout is a pipe, a redirect or a CI log, list commands drop the
+human layout and emit plain records — the gh-style contract a shell script
+can address without a JSON parser:
+
+- one row per record, cells joined by a single TAB — `| cut -f2` addresses a
+  column and `| wc -l` counts records, on every list;
+- no header row, no count trailer, no blank lines, no empty-state prose — an
+  empty result is zero bytes on stdout;
+- whitespace inside a value (TABs, newlines) collapses to a single space, so
+  the column count per row is constant and the data can never break `cut`;
+- each command group's column order is **frozen** — it is a compatibility
+  contract, like `--json` field names — and the mention record clips its
+  headline column to 72 characters regardless of the producing terminal's
+  width (or whether there was one), so a parser sees the same bytes at any
+  width.
+
+No ANSI color reaches a pipe from octolens' own output: the data views stay
+plain whenever stdout is not a terminal, and `FORCE_COLOR` does not change
+that. A truthy `FORCE_COLOR` only lifts the piped-color guard the CLI
+applies to *upstream plugin* output (the `autocomplete` setup instructions)
+— the one surface that could otherwise colorize into a pipe. Prefer `--json`
+for
+structured consumption — the TSV form is the convenience contract for quick
+shell composition:
+
+```bash
+octolens keywords list | wc -l
+```
+
+## The `--json` document
+
+`--json` is the machine contract: **exactly one JSON document on stdout and
+nothing else** — no banner, no color, no progress frames, ever. A failing
+run exits non-zero with one `error` envelope on stderr and — with one
+exception — leaves stdout empty; the exception is the live stream
+(`octolens feeds watch`), which cannot retract records it has already
+emitted, so it keeps them on stdout and appends a terminator record instead.
+The full rules, including that stream's NDJSON form, are on
+[The --json contract](/cli/contract/json-output); what each command's
+document contains is the **Returns** section of its command page.
+
+stderr keeps the same discipline: in a piped or `--json` run nothing is
+written there on success, failures carry the error report, and `--verbose`
+adds per-request diagnostics only when you ask for them.
+
+`--json` also **forces non-interactive mode**: a `--json` run never prompts,
+even on a real terminal. Anything a prompt would have collected must arrive
+as a flag — which is the next section.
+
+## Headless
+
+A run is **headless** when no human is attached to it: stdin or stdout is
+not a terminal (piped, redirected, CI), or `--json` was passed. This is the
+one definition of the word across these docs — a prompt can only open in the
+opposite case, an interactive run, where stdin and stdout are both a
+terminal and `--json` is absent.
+
+Headless is what the **Required (headless)** column in every flag table
+refers to. On an interactive run the CLI can prompt for missing input, so
+oclif-style hard requirements would get in a human's way; headlessly there
+is no prompt to fall back on, so:
+
+- `yes (headless)` — the flag must be passed on a headless run;
+- `one of (headless)` — at least one flag of the named group must be passed;
+- a destructive command (the `rm` family) requires its confirmation flag
+  (`--yes`) headlessly, because the confirm prompt is unavailable there.
+
+A headless run missing a required input never hangs waiting for a keyboard —
+it exits `2` naming the flags to pass.

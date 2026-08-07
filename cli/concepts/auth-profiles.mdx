@@ -1,0 +1,125 @@
+---
+title: "Auth, profiles & workspaces"
+sidebarTitle: "Auth & profiles"
+description: "What a profile is, how login creates one, switching between workspaces, what logout does and does not do, and how an environment API key interacts with it all."
+---
+
+{/* AUTHORED page (OCT-1511) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/concepts/ and published by `pnpm cli:docs:site`. Every
+    `octolens` line below is docs-lint-verified against the live command
+    registry; contract facts (flag tables, the credential-resolution rules,
+    the auth error family) are imported from generated snippets or linked,
+    never restated by hand. */}
+
+import SwitchUsage from '/snippets/cli/usage/switch.mdx';
+import LogoutUsage from '/snippets/cli/usage/logout.mdx';
+
+Four commands manage authentication — `octolens login`, `octolens whoami`,
+`octolens switch` and `octolens logout` — and they all operate on one small
+model: **profiles**. This page defines that model once; the command tables
+live on [Auth & workspace](/cli/commands/auth) and the credential-resolution
+rules on [Auth preflight](/cli/contract/auth-preflight).
+
+## What a profile is
+
+A profile is one stored login: the **workspace** it belongs to, the **API
+key** minted for that workspace, and the **base URL** of the deployment the
+key was verified against, saved under a name. One CLI install can hold
+several — a consultant with three client workspaces, a team member with a
+staging and a production login — and exactly one of them is *active*. The
+active profile is what supplies credentials to every command you run.
+
+`octolens login` creates profiles: the browser handoff (or
+`octolens login --with-key` on a machine without a browser) validates the
+credential against the workspace *before* saving, names the profile after the
+workspace (or after `--profile <name>` if you pass one), and makes it the
+active one. The full flow is on [Install & login](/cli/install).
+
+The store lives in a config file, but the file's layout is **not a
+contract** — it can and does change between versions. The one supported way
+to read auth state is:
+
+```bash
+octolens whoami --json
+```
+
+It reports the active workspace, whether the credential came from the
+environment or a profile (`authSource`), the credential's live scope, the
+effective `baseUrl`, and `ignoredEnv` (below). Scripts and agents should
+preflight with `whoami`, never by parsing the config file.
+
+## Switching workspaces
+
+`octolens switch` repoints the active profile — by name, or by the 1-based
+number the interactive list shows (the same stored-profile order the
+`MISSING_PROFILE` error reports on a headless run):
+
+```bash
+octolens switch acme
+octolens switch 2
+```
+
+On a terminal, a bare `octolens switch` lists your profiles and prompts. In a
+[headless](/cli/concepts/output-modes#headless) run the profile is required —
+a bare `octolens switch` exits `2` (`MISSING_PROFILE`) naming the stored
+profiles to pick from. With nothing stored at all, `octolens switch` raises
+`NO_PROFILES` (exit `3`): there is nothing to switch to, so log in first.
+
+<SwitchUsage />
+
+## Logging out
+
+`octolens logout` removes the active profile — or a named one with
+`--profile`, or every profile with `--all`:
+
+```bash
+octolens logout
+octolens logout --profile acme
+octolens logout --all
+```
+
+Two properties are deliberate:
+
+- **Logout never auto-promotes another profile.** Removing the active profile
+  leaves the CLI logged out, even when other profiles remain stored — the CLI
+  will not silently repoint your next command at a different workspace. It
+  tells you which profiles are still stored; run `octolens switch` to
+  activate one.
+- **Logout cannot remove environment credentials.** `OCTOLENS_API_KEY` is
+  never written to disk, so there is nothing for logout to delete — it says
+  so when the variable is set. Unset the variable to stop using it.
+
+<LogoutUsage />
+
+## Environment identity: `OCTOLENS_API_KEY`
+
+CI jobs and agents usually skip profiles entirely and set `OCTOLENS_API_KEY`.
+Two rules govern how that interacts with the profile store:
+
+- **The environment wins.** When `OCTOLENS_API_KEY` is set, it supplies the
+  credential for every command, no matter what profiles are stored or which
+  one is active. Nothing is written to disk.
+- **Identity is all-or-nothing.** The key alone selects the workspace on the
+  REST transport, so the other `OCTOLENS_*` identity variables
+  (`OCTOLENS_ORG`, `OCTOLENS_ORG_ID`, `OCTOLENS_USER_ID`,
+  `OCTOLENS_ORG_ROLE`) have no effect — an env var can never be half-applied
+  on top of a stored profile's identity, and a stored profile's identity is
+  never borrowed into an environment credential.
+
+Any identity variable that is set but has no effect on the run is reported by
+`octolens whoami` in `ignoredEnv`, so a silently inert variable is never
+invisible: if you expected `OCTOLENS_ORG` to retarget a run and it appears in
+`ignoredEnv`, the key — not the variable — chose the workspace.
+
+One thing the environment does **not** override: the deployment. A profile
+pins the base URL its login was verified against, and `OCTOLENS_API_KEY`
+replaces the stored *key* only — the run still targets the pinned deployment
+unless you name another one explicitly (`--base-url` or
+`OCTOLENS_BASE_URL`).
+
+## When authentication fails
+
+Every "this run has no usable credential" failure exits `3`, but the specific
+error code depends on which command you ran — so branch on the *family*, not
+on one code. The family, and the codes deliberately excluded from it, are on
+[Auth preflight](/cli/contract/auth-preflight).

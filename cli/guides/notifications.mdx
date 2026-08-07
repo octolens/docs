@@ -1,0 +1,145 @@
+---
+title: "Notifications end-to-end"
+description: "Wire a feed to Slack, email or a webhook from the terminal — connect the workspace, create the delivery rule, then prove it delivers with a real test."
+---
+
+{/* AUTHORED page (OCT-1510) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/ and published by `pnpm cli:docs:site`. Every `octolens`
+    line below is docs-lint-verified against the live command registry; the
+    create/test flag tables are imported from generated, manifest-derived
+    snippets, never restated by hand. */}
+
+import NotificationsCreateUsage from '/snippets/cli/usage/notifications-create.mdx';
+import NotificationsTestUsage from '/snippets/cli/usage/notifications-test.mdx';
+import SlackChannelsUsage from '/snippets/cli/usage/slack-channels.mdx';
+
+A **notification** is a delivery rule attached to a feed: when new mentions
+match the feed's filters, they are delivered to the destinations you
+configure — Slack, email, or a webhook. A feed carries at most one
+notification, and a notification carries at most one destination per type.
+The whole pipeline — feed → notification → test — works from the terminal,
+end to end.
+
+You need a saved feed first; `octolens feeds list` shows yours, and the
+[Feeds reference](/cli/commands/feeds) covers creating one.
+
+<Steps>
+  <Step title="Connect Slack (once per workspace)">
+    Slack is interactive, admin-gated OAuth, so it lives in the browser — the
+    CLI does the hand-off and waits:
+
+    ```bash
+    octolens slack connect
+    ```
+
+    The authorize URL is always printed before the command blocks, so on a
+    [headless](/cli/concepts/output-modes#headless) box you can open it
+    anywhere; the wait is bounded and an expiry
+    fails loudly rather than hanging. Already connected? It returns
+    immediately. Check any time with:
+
+    ```bash
+    octolens slack status
+    ```
+
+    Skip this step entirely for email or webhook destinations.
+  </Step>
+  <Step title="Find the channel id">
+    Slack destinations take channel **ids**, not names — resolve them first:
+
+    ```bash
+    octolens slack channels --search releases
+    ```
+
+    <SlackChannelsUsage />
+
+    When Slack is not connected this exits `2` (`SLACK_NOT_CONNECTED`)
+    pointing at `octolens slack connect` — rather than answering an empty
+    list — so a script piping the first id into the next step fails at the
+    real cause.
+  </Step>
+  <Step title="Create the delivery rule">
+    On a terminal with flags omitted, `octolens notifications create` runs a
+    short wizard: name, destination (with a live Slack channel picker), feed,
+    cadence. Headless runs spell everything out with flags:
+
+    ```bash
+    octolens notifications create --name "Pricing → Slack" --feed 42 --slack C0123ABC --frequency hourly --json
+    ```
+
+    Cadence is `--frequency hourly|hourlyAtTopOfHour|daily|weekly` (default
+    `daily`), with `--time`/`--timezone` for daily digests and
+    `--day-of-week` required for weekly ones. `--delivery-mode` picks one
+    digest per period (`batch`) or one message per mention (`individual`).
+    The schedule is deep-validated up front — a malformed `--time`, an
+    unknown timezone or a weekly rule with no day exits `2` naming the flag,
+    instead of persisting a schedule that never delivers.
+
+    Two failures worth knowing by name: a feed that already has a
+    notification exits `2` (`ITEM_EXISTS`, naming the conflicting
+    notification id so you can update or remove it), and an unknown feed
+    exits `4` (`FEED_NOT_FOUND`).
+
+    <NotificationsCreateUsage />
+  </Step>
+  <Step title="Prove it delivers">
+    `notifications test` performs a **real** delivery of the latest
+    matching mention to every destination and reports the per-destination
+    outcome. Scheduled deliveries are untouched.
+
+    ```bash
+    octolens notifications test 7 --json
+    ```
+
+    **The exit code is the answer.** Zero means every destination accepted
+    the message — nothing less:
+
+    | outcome | exit | `error.code` |
+    |---|---|---|
+    | every destination accepted | `0` | — |
+    | some destinations refused | `9` | `NOTIFICATION_TEST_PARTIAL_FAILURE` |
+    | every destination refused | `9` | `NOTIFICATION_TEST_FAILED` |
+    | no destinations configured | `2` | `NOTIFICATION_TEST_NO_DESTINATIONS` |
+
+    On success the per-destination report is on stdout; on a failure the
+    whole report moves into the error document on stderr (same fields, plus
+    `error`), so you never lose the detail of *which* destination refused —
+    read `results[]` from stdout on exit `0` and from stderr otherwise.
+
+    <NotificationsTestUsage />
+  </Step>
+</Steps>
+
+## Webhooks
+
+A webhook destination POSTs matching mentions to a public http(s) endpoint —
+the escape hatch into everything Slack and email are not:
+
+```bash
+octolens notifications create --name "Mention hook" --feed 42 --webhook https://hooks.example.com/octolens --json
+```
+
+The URL is judged by what its host **resolves to**, not what it looks like: a
+host that is (or DNS-resolves to) a private, loopback or link-local address
+is refused with `WEBHOOK_URL_INVALID` (exit `2`), and the same screen runs
+again at every delivery.
+
+## Living with it
+
+- **Patch, don't re-create.** `notifications update` changes only
+  what you pass — inside the destination you name, omitted fields are
+  preserved, so fixing a webhook URL keeps its cadence:
+
+  ```bash
+  octolens notifications update 7 --webhook https://new.example.com/hook --json
+  ```
+
+- **Pause and resume** with `--disable` / `--enable`; delete with
+  `octolens notifications rm 7` — like every deletion, headless runs require
+  `--yes` or nothing is deleted.
+- Email destinations need no setup at all: `--email a@acme.com,b@acme.com`
+  (the recipient list travels as one comma-separated value).
+
+The full flag set, the multi-destination `--destinations-json` escape hatch
+and the update-preservation rules are on the
+[Notifications reference](/cli/commands/notifications).

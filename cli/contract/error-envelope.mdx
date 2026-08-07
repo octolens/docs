@@ -7,13 +7,29 @@ description: "Every failure renders one envelope: { \"error\": { \"code\", \"mes
 
 Every failure renders one envelope: `{ "error": { "code", "message", "status" } }`. The three core fields are the contract and are always present; anything else is additive and per-code. `retryAfterSeconds` and `resetAt` ride on `RATE_LIMITED` (exit 7) only when the server stated them — their absence means "not stated", never "retry now".
 
+A real envelope, and a branch on its `code`:
+
+```json
+{ "error": { "code": "RATE_LIMITED", "message": "Rate limit exceeded", "status": 429, "retryAfterSeconds": 30 } }
+```
+
+```sh
+octolens mentions list --json 2>err.json ||
+  case "$(jq -r .error.code err.json)" in
+    RATE_LIMITED) sleep "$(jq -r '.error.retryAfterSeconds // 60' err.json)" ;;
+    *) jq -r .error.message err.json >&2 ;;
+  esac
+```
+
 ## Every error code
 
 Branch on the envelope's `code` (or the exit code), never on message text. The heading each table sits under is the exit its codes produce.
 
 Every code pins that exit except `KEYWORD_LIMIT_EXCEEDED`, `ORG_NOT_FOUND` and `WRITE_FAILED`, whose exit is computed at runtime — from the failure itself, or from the HTTP status the API answered with — which is why they sit under their own heading rather than promising an exit they do not choose.
 
-One case is deliberately absent. This build also rejects flags it does not carry, and that rejection is a usage error (exit 2) whose code is not published here — naming it would advertise the flags the rejection hides. So treat an exit-2 code you cannot find on this page as exactly what its exit says: a usage error, not a broken contract.
+These tables are the enrolled taxonomy, not a ceiling on what a caller can meet. When a resource you asked for by id does not exist, the API answers in its own vocabulary — `FEED_NOT_FOUND` and `MENTION_NOT_FOUND`, and every future `*_NOT_FOUND` like them — forwarded verbatim rather than enrolled here, because that vocabulary belongs to the API and grows with it. For such a code the exit derives from the envelope's HTTP `status` (a 404 exits 4, not found), so branch on the codes you know and fall back to `status` and the exit for one you do not.
+
+One more case is deliberately absent. This build also rejects flags it does not carry, and that rejection is a usage error (exit 2) whose code is not published here — naming it would advertise the flags the rejection hides. So treat an exit-2 code you cannot find on this page as exactly what its exit says: a usage error, not a broken contract.
 
 ### Exit 1 — unexpected
 

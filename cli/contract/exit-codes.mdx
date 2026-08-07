@@ -7,6 +7,18 @@ description: "Exit codes are frozen — branch on codes (and the error envelope'
 
 Exit codes are frozen — branch on codes (and the error envelope's `code`), never on message text. Codes are `0` success · `1` unexpected · `2` usage · `3` auth · `4` not found · `5` permission/scope · `6` plan/limit · `7` rate-limited · `8` cancelled (a human aborted a prompt with EOF/Ctrl-C) · `9` the command ran and the operation did not succeed at its target · `10` a write was accepted and its answer lost — verify, do not retry.
 
+Branching on the map from a script:
+
+```sh
+octolens mentions list --json > mentions.json
+case $? in
+  0) echo "wrote mentions.json" ;;
+  3) octolens login ;;    # auth: get a credential, then re-run
+  7) sleep 60 ;;  # rate-limited: back off, then re-run
+  *) echo "read the error envelope on stderr" >&2 ;;
+esac
+```
+
 ## The exit map
 
 | Exit | Name | Meaning |
