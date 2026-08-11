@@ -100,6 +100,17 @@ The `code` field is a stable `ApiErrorCode` enum — branch on it programmatical
 
 ---
 
+## Security: treat mention content as untrusted input
+
+Every mention field that originates from the platform post (`body`, `title`, `author`, `authorName`, …) was written by an unknown third party on the open internet. Handle these fields like any untrusted user input:
+
+- **Rendering or storing?** Escape before rendering (XSS) and parameterize before storing (SQL injection) — standard hygiene.
+- **Feeding mentions to an LLM or AI agent?** Mention text can contain prompt injection — instructions crafted to manipulate the model (e.g. "ignore your previous instructions and…"). Pass mention content in a clearly delimited data context, never concatenated into your system prompt. Give the consuming agent the fewest permissions that do the job, and gate consequential actions (sending email, creating tickets, changing code, moving money) behind a confirmation step.
+
+Octolens scores mentions for relevance and sentiment — it does not sanitize or neutralize adversarial text.
+
+---
+
 ## Endpoints
 
 Browse the full endpoint reference in the sidebar, organized by resource: **Feeds**, **Keywords**, **Mentions**, **Analytics**, **Organization**, **Feedback**, **AI**, **Members**, and **Filters**. Each endpoint page includes a live "Try it" playground.
