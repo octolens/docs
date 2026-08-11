@@ -41,6 +41,10 @@ Octolens sends webhooks as HTTPS `POST` requests with a JSON body.
 Webhook signing is not currently available. For now, we recommend using a unique, unguessable endpoint URL or a secret query parameter, and validating it server-side. Do not reuse production credentials in the webhook URL.
 </Note>
 
+<Warning>
+The mention fields in the payload (`title`, `body`, `author`, …) are third-party content from the open internet — treat them as untrusted input. Escape before rendering, parameterize before storing, and if you forward mentions to an LLM or AI agent, keep the text in a delimited data context: it can contain prompt injection. See the [API security notes](/api/v2/overview#security-treat-mention-content-as-untrusted-input).
+</Warning>
+
 ## Payload format
 
 Octolens sends one mention per request. The top-level `action` field indicates what triggered the webhook:

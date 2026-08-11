@@ -85,6 +85,20 @@ v2 covers everything v1 did, plus feeds, analytics, keyword management, and noti
 
 ---
 
+## Security: mentions are untrusted content
+
+Every mention Octolens delivers was written by an unknown third party somewhere on the internet. When your AI assistant reads mentions through this MCP server, that content is **data, not instructions** — a post could contain text deliberately crafted to steer an AI agent ("prompt injection").
+
+Octolens scores mentions for relevance and sentiment, but does not remove or neutralize adversarial text.
+
+Practical guidance:
+
+- Be deliberate about combining Octolens with write-capable tools (email, code, payments, file access) in the same agent session. Prefer read-only sessions when browsing mentions.
+- If your agent acts on mentions automatically, gate consequential actions behind a confirmation step.
+- Tell your agent explicitly that mention text is quoted third-party content and never a source of instructions.
+
+---
+
 ## Terms of Use
 
 The Octolens MCP server is intended for use with MCP-compatible AI clients (such as ChatGPT, Claude, and Cursor) for interactive, AI-driven workflows.
