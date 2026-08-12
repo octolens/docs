@@ -125,6 +125,95 @@ Example output:
 
 **Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE. The full map is on [Exit codes](/cli/contract/exit-codes).
 
+## `octolens signup`
+
+Create an Octolens workspace from the terminal (browser handoff, or --headless email code)
+
+**Flags**
+
+| Flag | Type | Required (headless) | Description |
+|---|---|---|---|
+| `--code` | `string` | no | The 6-digit verification code from the email (requires --signup-id headlessly) |
+| `--domain` | `string` | no | Your company domain (e.g. corp.com) — sets up the workspace profile |
+| `--email` | `string` | no | Work email to sign up with (--headless; prompted for interactively when omitted) |
+| `--headless` | `boolean` | no | Sign up entirely in the terminal: a verification code is emailed to you (no browser anywhere in the loop, works over SSH). |
+| `--no-browser` | `boolean` | no | Print the signup URL instead of opening a browser, then wait for the key to arrive out of band. The wait is time-bounded: the global --timeout governs it (default 180s without the flag), and expiry exits 2 with a SIGNUP_TIMEOUT envelope pointing at the `login --with-key` paste fallback — the process always terminates on its own |
+| `--profile` | `string` | no | Name to store this login under |
+| `--signup-id` | `string` | no | Pending signup id from a previous `signup --headless --email …` run — resume verification without restarting |
+
+**Examples**
+
+```bash
+octolens signup
+octolens signup --no-browser
+octolens signup --headless
+octolens signup --headless --email you@corp.com --json
+octolens signup --headless --signup-id 4f2a… --code 123456 --domain corp.com --json
+```
+
+**Returns**
+
+With `--json`, stdout carries one JSON document with these fields.
+
+| Field | Type | Description |
+|---|---|---|
+| `signedUp` | boolean | `true` when the workspace was created and the profile saved — both the browser handoff and the headless finishing run answer it (the headless step-1 run answers the `false` variant below). |
+| `edition` | enum: `internal`, `customer` | The CLI build edition (same value `version` reports). |
+| `profile` | string \| null | Name of the stored profile this signup created. |
+| `workspace` | object \| null | The freshly created Agents workspace (`{organizationId, name, plan}`) — same shape `login` emits. |
+| `workspace.organizationId` | string | Organization id. |
+| `workspace.name` | string | Workspace name. |
+| `workspace.plan` | string \| null | Current plan — `Agents` for a fresh signup. |
+| `actingAs` | object \| null | Always `null` — a signup never acts on another workspace. |
+| `baseUrl` | string | The effective app base URL for this signup — what the REST transport targets. |
+| `pinnedBaseUrl` | string \| null | The deployment the minted key was verified against and persisted with the profile. |
+
+Two modes, one success document. Default (browser handoff): the browser runs the actual signup (Clerk sign-up, domain, workspace creation) and the document reports the credential the handoff delivered and validated. `--headless`: the minted API key is saved into the profile and never printed — `--json` carries no secret. A wrong `--code` answers the server's `INVALID_CODE` envelope (exit 2); the attempt cap answers `SIGNUP_ATTEMPTS_EXCEEDED`, after which a fresh `--email` run restarts the flow. An interruption at ANY later point is equally recoverable by re-running with the same `--email`: a signup whose workspace never became usable is re-adopted after the new code is verified, and `EMAIL_ALREADY_REGISTERED` (409) answers only for a fully set-up account.
+
+Without `--json`: A terminal prints the browser hand-off (or the emailed-code prompt flow with --headless), then one confirmation line naming the new workspace and profile.
+
+Example output:
+
+```json
+{
+  "signedUp": true,
+  "edition": "customer",
+  "profile": "acme",
+  "workspace": {
+    "organizationId": "org_2abcDEFghij345",
+    "name": "Acme",
+    "plan": "Agents"
+  },
+  "actingAs": null,
+  "baseUrl": "https://app.octolens.com",
+  "pinnedBaseUrl": "https://app.octolens.com"
+}
+```
+
+Headless step 1 (`--headless --email` without `--code`) answers the pending-signup coordinates instead and exits 0 — the emailed code cannot be read by this process.
+
+| Field | Type | Description |
+|---|---|---|
+| `signedUp` | boolean | Always `false` for the step-1 document. |
+| `signupId` | string | Pending signup id — quote it back via `--signup-id` to finish. |
+| `email` | string | Normalized email the code was sent to. |
+| `expiresInSeconds` | integer | How long the emailed code stays valid. |
+| `next` | string | The exact finishing command, with `--signup-id` filled in. |
+
+Example output:
+
+```json
+{
+  "signedUp": false,
+  "signupId": "4f2a9c81d6e05b37a1428f6f9c03d5aa",
+  "email": "you@corp.com",
+  "expiresInSeconds": 600,
+  "next": "octolens signup --headless --signup-id 4f2a9c81d6e05b37a1428f6f9c03d5aa --code <code from the email> --domain <company.com>"
+}
+```
+
+**Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE · `8` CANCELLED. The full map is on [Exit codes](/cli/contract/exit-codes).
+
 ## `octolens switch`
 
 Switch the active workspace profile

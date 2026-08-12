@@ -37,7 +37,7 @@ With `--json`, stdout carries one JSON document with these fields.
 | `usage.keywords.limit` | integer | Keyword allowance (plan + purchased add-ons). |
 | `billingUrl` | string | URL of the app's billing page for managing the subscription. |
 
-Composed from the workspace read and the usage read (no single backing endpoint). When flex (usage-based) pricing is enabled for the org, the usage object additionally carries `flex` (`{enabled: true, budgetCents, used, resetAt}`); it is absent otherwise.
+Composed from the workspace read and the usage read (no single backing endpoint). When flex (usage-based) pricing is enabled for the org, the usage object additionally carries `flex` (`{enabled: true, budgetCents, used, resetAt}`); it is absent otherwise. On the Agents plan the usage object additionally carries `searches` (`{used, limit, remaining}`) — the lifetime on-demand search allowance (it never resets), read from the canonical quota method; it is absent on every other plan.
 
 Without `--json`: A terminal renders the plan line, the usage block, and the billing-page URL.
 
@@ -547,7 +547,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `keywords.count` | integer | Live keyword count. |
 | `keywords.limit` | integer | Keyword allowance (plan + purchased add-ons). |
 
-When flex (usage-based) pricing is enabled for the org, the usage object additionally carries `flex` (`{enabled: true, budgetCents, used, resetAt}`); it is absent otherwise.
+When flex (usage-based) pricing is enabled for the org, the usage object additionally carries `flex` (`{enabled: true, budgetCents, used, resetAt}`); it is absent otherwise. On the Agents plan the usage object additionally carries `searches` (`{used, limit, remaining}`) — the lifetime on-demand search allowance (it never resets), read from the canonical quota method; it is absent on every other plan.
 
 Without `--json`: A terminal renders the usage block with plan, mention and keyword meters.
 
