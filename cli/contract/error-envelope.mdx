@@ -25,7 +25,7 @@ octolens mentions list --json 2>err.json ||
 
 Branch on the envelope's `code` (or the exit code), never on message text. The heading each table sits under is the exit its codes produce.
 
-Every code pins that exit except `KEYWORD_LIMIT_EXCEEDED`, `ORG_NOT_FOUND` and `WRITE_FAILED`, whose exit is computed at runtime — from the failure itself, or from the HTTP status the API answered with — which is why they sit under their own heading rather than promising an exit they do not choose.
+Every code pins that exit except `KEYWORD_LIMIT_EXCEEDED`, `NO_ORG_MEMBER`, `ORG_NOT_FOUND` and `WRITE_FAILED`, whose exit is computed at runtime — from the failure itself, or from the HTTP status the API answered with — which is why they sit under their own heading rather than promising an exit they do not choose.
 
 These tables are the enrolled taxonomy, not a ceiling on what a caller can meet. When a resource you asked for by id does not exist, the API answers in its own vocabulary — `FEED_NOT_FOUND` and `MENTION_NOT_FOUND`, and every future `*_NOT_FOUND` like them — forwarded verbatim rather than enrolled here, because that vocabulary belongs to the API and grows with it. For such a code the exit derives from the envelope's HTTP `status` (a 404 exits 4, not found), so branch on the codes you know and fall back to `status` and the exit for one you do not.
 
@@ -178,5 +178,6 @@ One more case is deliberately absent. This build also rejects flags it does not 
 | Code | Auth family |
 |---|---|
 | `KEYWORD_LIMIT_EXCEEDED` | — |
+| `NO_ORG_MEMBER` | — |
 | `ORG_NOT_FOUND` | — |
 | `WRITE_FAILED` | — |

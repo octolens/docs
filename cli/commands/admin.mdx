@@ -569,3 +569,53 @@ Example output:
 ```
 
 **Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE. The full map is on [Exit codes](/cli/contract/exit-codes).
+
+## `octolens upgrade`
+
+Open the upgrade page already signed in (single-use link; on a paid plan it opens billing)
+
+**Flags**
+
+| Flag | Type | Required (headless) | Description |
+|---|---|---|---|
+| `--no-browser` | `boolean` | no | Print the upgrade link instead of opening a browser. The link is single-use and expires, so open it promptly on a machine with a browser. |
+
+**Examples**
+
+```bash
+octolens upgrade
+octolens upgrade --no-browser
+octolens upgrade --json
+```
+
+**Returns**
+
+With `--json`, stdout carries one JSON document with these fields. Backed by the v2 API operation `POST /api/v2/org/upgrade-link`.
+
+| Field | Type | Description |
+|---|---|---|
+| `url` | string | Single-use, short-lived sign-in URL. Opening it lands on `destination` already authenticated — no sign-in step. Redeeming it twice fails. |
+| `destination` | string | App path the link lands on: `/me/upgrade?src=agents` on the Agents plan, `/me/subscription` (billing) on any other plan. |
+| `plan` | string \| null | The workspace's current plan. `null` when no active plan. |
+| `expiresAt` | string | ISO-8601 instant after which the link can no longer be redeemed. |
+| `expiresInSeconds` | integer | Seconds the link stays redeemable from the moment it was minted. |
+| `opened` | boolean | Whether the CLI launched a browser. Always `false` in `--json`/piped runs and with `--no-browser` — the URL is the contract either way. |
+
+The v2 response (`createUpgradeLink`) plus the CLI-local `opened` flag. The link is minted for the calling credential's user and every mint is audit-logged server-side.
+
+Without `--json`: A terminal prints the single-use URL, its expiry, and — on an interactive TTY without `--no-browser` — opens it in the default browser.
+
+Example output:
+
+```json
+{
+  "url": "https://app.octolens.com/me/upgrade-auth?__clerk_ticket=sit_2h9…&orgId=org_2h9…&dest=%2Fme%2Fupgrade%3Fsrc%3Dagents",
+  "destination": "/me/upgrade?src=agents",
+  "plan": "Agents",
+  "expiresAt": "2026-08-11T12:10:00.000Z",
+  "expiresInSeconds": 600,
+  "opened": false
+}
+```
+
+**Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE. The full map is on [Exit codes](/cli/contract/exit-codes).
