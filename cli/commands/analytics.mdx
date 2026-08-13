@@ -263,7 +263,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `usage.keywords.count` | integer | Live keyword count. |
 | `usage.keywords.limit` | integer | Keyword allowance (plan + purchased add-ons). |
 
-Each section carries the corresponding focused command's ROWS directly (the per-section `{data: …}` envelopes of the raw v2 response are unwrapped). When flex (usage-based) pricing is enabled for the org, the usage object additionally carries `flex` (`{enabled: true, budgetCents, used, resetAt}`); it is absent otherwise. On the Agents plan the usage object additionally carries `searches` (`{used, limit, remaining}`) — the lifetime on-demand search allowance (it never resets), read from the canonical quota method; it is absent on every other plan.
+Each section carries the corresponding focused command's ROWS directly (the per-section `{data: …}` envelopes of the raw v2 response are unwrapped). When flex (usage-based) pricing is enabled for the org, the usage object additionally carries `flex` (`{enabled: true, budgetCents, used, resetAt}`); it is absent otherwise. On the **Agents plan** the analytics group — `dashboard` included — is allowlist-gated (OCT-1537) and answers the `UPGRADE_REQUIRED` wall (403 → exit `6`, with `upgradeUrl`/`upgradeCommand`) instead of data; the Agents searches meter lives in `org usage` / `billing` (see `references/admin.md`).
 
 Without `--json`: A terminal renders the composed KPI overview: volume trend, top keywords, sentiment split, usage vs plan.
 
