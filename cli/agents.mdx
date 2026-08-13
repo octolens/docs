@@ -73,6 +73,11 @@ allows attempts; an expired or unknown signup answers `SIGNUP_NOT_FOUND` —
 re-run the first step, and an interrupted signup for the same email is
 re-adopted rather than rejected.
 
+Sign up with your **base work address**: plus-addressed aliases
+(`you+tag@corp.com`) are refused at the first step with
+`EMAIL_ALIAS_NOT_ALLOWED` (one mailbox must not mint unlimited workspaces),
+and disposable-email domains with `DISPOSABLE_EMAIL_DOMAIN`.
+
 In **both** modes, a CLI that is already authenticated (stored profile or
 `OCTOLENS_API_KEY` in the environment) is refused with
 `ALREADY_AUTHENTICATED` instead of silently minting a second workspace — use
