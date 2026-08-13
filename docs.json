@@ -65,6 +65,7 @@
               "cli/overview",
               "cli/install",
               "cli/quickstart",
+              "cli/agents",
               "cli/init"
             ]
           },

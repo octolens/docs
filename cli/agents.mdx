@@ -1,0 +1,149 @@
+---
+title: "Sign up & search — the Agents plan"
+sidebarTitle: "Signup & the Agents plan"
+description: "Create a workspace from the terminal with octolens signup, run one-time AI-scored searches, understand the Agents allowance and quota headers, and upgrade with octolens upgrade."
+---
+
+{/* AUTHORED page (OCT-1534) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/ and published by `pnpm cli:docs:site`. Every `octolens`
+    line below is docs-lint-verified against the live command registry; the
+    allowance numbers are pinned to the CLI's own constants by
+    `docs-agents.test.ts` — correct them there, not here. */}
+
+The fastest path from "never heard of Octolens" to results is three commands,
+none of which opens a dashboard first:
+
+```bash
+npm install -g octolens
+octolens signup                    # create the workspace, end authenticated
+octolens search "your brand"       # one-time AI-scored search, right now
+```
+
+`octolens signup` creates the workspace **and** authenticates the CLI in one
+step. Workspaces created this way start on the **Agents plan** — a search-first
+plan sized for exactly this funnel — and searching works immediately, with no
+keyword setup, no feed, no onboarding wizard in the way.
+
+## `octolens signup` — two modes
+
+### Browser handoff (default)
+
+```bash
+octolens signup
+```
+
+The CLI opens the signup page in your browser, which completes the flow —
+email verification, company domain, workspace creation — and delivers the
+freshly minted API key back to the terminal over a one-time localhost
+callback (the same handoff `octolens login` uses). The key is validated
+against the deployment before it is saved as a profile, so a successful
+`signup` always ends with a working, authenticated CLI.
+
+The authorize URL is always printed before the wait begins, so a machine that
+cannot open a browser can still hand the URL to one; `octolens signup
+--no-browser` makes that the explicit contract. The wait is bounded by the
+global `--timeout` (default 180s) and the timeout error routes remote/SSH
+boxes to the `octolens login --with-key` paste fallback — the localhost
+callback is unreachable from a browser running on another machine.
+
+### `--headless` — no browser anywhere
+
+```bash
+octolens signup --headless
+```
+
+Signs up entirely in the terminal: work email → emailed 6-digit code →
+company domain → API key, minted server-side and stored as a profile. Works
+over SSH and in any [headless](/cli/concepts/output-modes#headless)
+environment. Interactively it prompts for whatever you did not pass as flags;
+under `--json` (which never prompts) it is a
+**resumable two-step** — the pending signup lives server-side, so losing the
+terminal mid-flow never wedges it:
+
+```bash
+octolens signup --headless --email you@corp.com --json
+# → { "signedUp": false, "signupId": "4f2a…", "expiresInSeconds": 600, "next": "…" }
+
+octolens signup --headless --signup-id 4f2a9c81d6e05b37a1428f6f9c03d5aa --code 123456 --domain corp.com --json
+# → { "signedUp": true, "workspace": …, … }    (profile saved, key stored)
+```
+
+A wrong code answers `INVALID_CODE` and can be retried while the server still
+allows attempts; an expired or unknown signup answers `SIGNUP_NOT_FOUND` —
+re-run the first step, and an interrupted signup for the same email is
+re-adopted rather than rejected.
+
+In **both** modes, a CLI that is already authenticated (stored profile or
+`OCTOLENS_API_KEY` in the environment) is refused with
+`ALREADY_AUTHENTICATED` instead of silently minting a second workspace — use
+`octolens login` or `octolens switch` for that. The full flag table is on the
+[auth command reference](/cli/commands/auth).
+
+## The allowance
+
+The Agents plan carries two budgets, read at any time with
+`octolens org usage`:
+
+- **50 on-demand searches** — a *lifetime* allowance; it never resets.
+- **5,000 AI-scored mentions per month** — new results a search consumes;
+  results your workspace already collected are free.
+
+`org usage` (and `octolens billing` / `octolens dashboard`) render the same
+searches meter, and warn when fewer than 10 searches remain. Under `--json`
+the usage object carries `searches: { used, limit, remaining }` on the Agents
+plan.
+
+### Quota headers on the REST API
+
+Callers that hit `POST /api/v2/search` directly (or through the MCP server)
+do not need an extra request to know where they stand: **every** search-route
+response carries remaining-quota headers —
+
+| Header | Meaning |
+|---|---|
+| `X-Octolens-Mentions-Remaining` | Mentions left in the current monthly quota (all plans) |
+| `X-Octolens-Searches-Remaining` | Lifetime searches left — present only on plans with a lifetime search cap (Agents) |
+
+— so a client can self-throttle before it hits the wall. The
+[OpenAPI spec](https://app.octolens.com/api/v2/openapi.json) documents both
+headers on the search operations.
+
+## The wall, and `octolens upgrade`
+
+When the lifetime search allowance (or the monthly mention quota) is
+exhausted, the server answers `403` `UPGRADE_REQUIRED` and the CLI exits `6`.
+The envelope carries two additive fields alongside the standard three, so an
+agent gets an actionable next step instead of prose:
+
+```json
+{ "error": { "code": "UPGRADE_REQUIRED", "message": "…", "status": 403,
+  "upgradeUrl": "https://app.octolens.com/me/upgrade?src=agents",
+  "upgradeCommand": "octolens upgrade" } }
+```
+
+A search that exhausts the mention quota mid-run (the async path) ends as
+`QUOTA_EXHAUSTED`, also exit `6`.
+
+The named command is the recovery:
+
+```bash
+octolens upgrade                   # opens the upgrade page, already signed in
+octolens upgrade --no-browser      # print the link instead (SSH boxes)
+```
+
+It mints a **single-use, short-lived authenticated deep link** into the
+upgrade page — no sign-in step, even for `--headless` signups that have never
+had a browser session (the API key proves workspace identity). On a paid plan
+the link opens the billing page instead, which is the upgrade action there —
+never an error.
+
+## Where to go next
+
+- The full reference for the `search` command — flags, the `--json` envelope,
+  exit codes — lives with the [mentions commands](/cli/commands/mentions).
+- Wiring the CLI into an AI agent? [Using with AI
+  agents](/cli/scripting/ai-agents) covers the Agent Skill and the ground
+  rules; the [agent contract](/cli/scripting/agent-contract) states the
+  guarantees.
+- Ready for continuous monitoring instead of one-time searches?
+  [`octolens init`](/cli/init) sets up keywords, filters and your first feed.

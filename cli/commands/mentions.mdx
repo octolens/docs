@@ -519,3 +519,147 @@ Example output:
 ```
 
 **Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE · `8` CANCELLED. The full map is on [Exit codes](/cli/contract/exit-codes).
+
+## `octolens search`
+
+Search any phrase across your enabled platforms — one-time, AI-scored (results never join your mentions feed)
+
+**Arguments**
+
+| Argument | Type | Required | Description |
+|---|---|---|---|
+| `QUERY` | `string` | required | The phrase to search for (quote multi-word phrases) |
+
+**Flags**
+
+| Flag | Type | Required (headless) | Description |
+|---|---|---|---|
+| `--days` | enum: `1`, `7`, `30` | no | How far back to search: 1, 7, or 30 days (default: `7`) |
+| `--max-results` | `integer` | no | Result budget: how many candidates are fetched and AI-scored (1-500, default 100). Scored results are what consume mention quota |
+| `--min-relevance` | enum: `high`, `medium`, `low` | no | Hide results the AI scored below this bar (display filter only; default medium) |
+| `--source` | `string` | no | Platform(s) to search — repeatable or comma-separated (e.g. reddit,twitter,hackernews). Default: every source enabled for your workspace |
+
+**Examples**
+
+```bash
+octolens search "your brand" --days 7 --json
+octolens search "linux foundation" --days 30 --source reddit,hackernews
+octolens search "acme corp" --min-relevance high --max-results 50
+```
+
+**Returns**
+
+With `--json`, stdout carries one JSON document with these fields. Backed by the v2 API operation `POST /api/v2/search`.
+
+| Field | Type | Description |
+|---|---|---|
+| `searchId` | string | Stable id of this search (`srch_…`). |
+| `status` | enum: `completed` | Always `completed` — the command transparently polls an async (202) search to its terminal state before printing; a failed or quota-exhausted search answers the error envelope instead. |
+| `query` | string | The phrase that was searched. |
+| `timeWindow` | enum: `1d`, `7d`, `30d` | The window that was searched — what `--days 1\|7\|30` maps onto. |
+| `sources` | string[] | The platform slugs that were searched (after workspace/plan resolution). |
+| `startedAt` | string | When the search started, ISO 8601. |
+| `completedAt` | string | When the search completed, ISO 8601. |
+| `stats` | object | Per-stage funnel counts for the search. |
+| `stats.rawMatches` | integer | Candidates fetched across all sources. |
+| `stats.afterDedup` | integer | Candidates left after de-duplication. |
+| `stats.afterRelevance` | integer | Results left after AI relevance scoring and the `--min-relevance` display bar. |
+| `stats.mentionsConsumed` | integer | Mentions this search consumed from the monthly quota (results already in the workspace are free). |
+| `stats.perSource` | object | Raw candidate count per source slug. |
+| `stats.skippedSources` | object | Sources that could not be searched, mapped to the human-readable reason. Absent when nothing was skipped. |
+| `mentions` | object[] | The results, ranked by relevance — the same row shape as `mentions list`, plus `alreadyInWorkspace`. |
+| `mentions[].id` | integer | Internal numeric post id. `mentions update` accepts it as an alternative to the sourceId. |
+| `mentions[].sourceId` | string | Stable mention key (e.g. `reddit_t3_1abc234`) — the id `mentions get`, `mentions update` and `feedback submit` take. |
+| `mentions[].url` | string | Canonical URL of the original post. |
+| `mentions[].title` | string \| null | Post title. `null` on platforms without titles (tweets, etc.). |
+| `mentions[].body` | string \| null | Post text. May be empty or `null`. |
+| `mentions[].source` | string | Platform slug, lowercase (`reddit`, `twitter`, `linkedin`, …). |
+| `mentions[].timestamp` | string | When the mention was posted: UTC datetime `YYYY-MM-DD HH:mm:ss.SSS`, no `Z` suffix. Pass it back verbatim where a timestamp is required. |
+| `mentions[].author` | string \| null | Author handle. `null` when not captured. |
+| `mentions[].authorName` | string \| null | Author display name, when distinct from the handle. |
+| `mentions[].authorAvatar` | string \| null | Author avatar image URL. |
+| `mentions[].authorUrl` | string \| null | Author profile URL. |
+| `mentions[].authorFollowers` | integer \| null | Author follower count at collection time. |
+| `mentions[].relevance` | enum: `relevant`, `not_relevant` | AI relevance classification (unscored posts collapse to `not_relevant`). |
+| `mentions[].relevanceComment` | string \| null | The AI's justification for its relevance verdict, when available. |
+| `mentions[].sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. |
+| `mentions[].language` | string \| null | Detected language of a fresh search result as a lowercase ISO 639-1 code (`en`, `es`, …) — unlike the mentions feed, which uses full names. A row flagged `alreadyInWorkspace` keeps the workspace's stored full-name value (`english`). |
+| `mentions[].tags` | string[] | AI-assigned topic tags (e.g. `competitor_mention`, `buy_intent`). |
+| `mentions[].keywords` | object[] | Monitored keywords this mention matched. |
+| `mentions[].keywords[].id` | integer | Tracked keyword id. |
+| `mentions[].keywords[].keyword` | string | Keyword text. |
+| `mentions[].engaged` | boolean | Whether a workspace member marked this mention engaged-with. |
+| `mentions[].relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
+| `mentions[].alreadyInWorkspace` | boolean | `true` when the workspace's monitored keywords had already collected this result — flagged results do not count against the monthly mention quota. Optional (absent means new). |
+
+This is the v2 completed-search envelope, byte-identical whether the search finished synchronously or the CLI polled an async (202) search to completion. The low-quota warning (Agents plan, below threshold) rides on STDERR — as one JSON object under `--json` — never inside this document.
+
+Without `--json`: A terminal renders each result in the `mentions list` stream layout, ranked by relevance, then a dim stats footer (`132 raw matches → 41 after relevance · 38 mentions consumed · 3 sources searched`). Piped stdout emits the same tab-delimited record per result as `mentions list`, and nothing else.
+
+<Accordion title="Example output">
+
+```json
+{
+  "searchId": "srch_2h9dK3mQxYz",
+  "status": "completed",
+  "query": "linux foundation",
+  "timeWindow": "7d",
+  "sources": [
+    "reddit",
+    "twitter",
+    "hackernews"
+  ],
+  "startedAt": "2026-08-12T09:00:00.000Z",
+  "completedAt": "2026-08-12T09:00:19.000Z",
+  "stats": {
+    "rawMatches": 132,
+    "afterDedup": 97,
+    "afterRelevance": 41,
+    "mentionsConsumed": 38,
+    "perSource": {
+      "reddit": 61,
+      "twitter": 48,
+      "hackernews": 23
+    },
+    "skippedSources": {
+      "linkedin": "requires the LinkedIn add-on"
+    }
+  },
+  "mentions": [
+    {
+      "id": 1298401,
+      "sourceId": "reddit_t3_1abc234",
+      "url": "https://reddit.com/r/socialmedia/comments/1abc234/best_social_listening_tools",
+      "title": "Best social listening tools in 2026?",
+      "body": "Looking for a tool that tracks Reddit and X mentions of our brand…",
+      "source": "reddit",
+      "timestamp": "2026-05-06 13:35:37.000",
+      "author": "jane_doe",
+      "authorName": "Jane Doe",
+      "authorAvatar": "https://styles.redditmedia.com/avatars/jane_doe.png",
+      "authorUrl": "https://reddit.com/user/jane_doe",
+      "authorFollowers": 1240,
+      "relevance": "relevant",
+      "relevanceComment": "Asks for social-listening tool recommendations — a buying signal.",
+      "sentiment": "Neutral",
+      "language": "en",
+      "tags": [
+        "buy_intent"
+      ],
+      "keywords": [
+        {
+          "id": 42,
+          "keyword": "social listening"
+        }
+      ],
+      "engaged": false,
+      "relevanceScore": 0,
+      "alreadyInWorkspace": false
+    }
+  ]
+}
+```
+
+</Accordion>
+
+**Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE. The full map is on [Exit codes](/cli/contract/exit-codes).

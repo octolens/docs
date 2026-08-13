@@ -1,13 +1,14 @@
 ---
 title: "Quickstart"
-description: "Your first ten minutes with the octolens CLI — log in, initialize the workspace, triage a mention, save a feed and read the numbers."
+description: "Your first ten minutes with the octolens CLI — sign up or log in, run your first search, triage a mention, save a feed and read the numbers."
 ---
 
-{/* AUTHORED page (OCT-1503, rewritten by OCT-1504) — hand-written in the
-    octolens/octolens repo under docs/cli/authored/ and published by
-    `pnpm cli:docs:site`. Every `octolens` line below is docs-lint-verified
-    against the live command registry, and the contract tables are imported
-    from generated snippets, never restated by hand. */}
+{/* AUTHORED page (OCT-1503, rewritten by OCT-1504; signup + search funnel
+    OCT-1534) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/ and published by `pnpm cli:docs:site`. Every `octolens`
+    line below is docs-lint-verified against the live command registry, and
+    the contract tables are imported from generated snippets, never restated
+    by hand. */}
 
 import GlobalFlagsTable from '/snippets/cli/global-flags-table.mdx';
 import ExitCodeTable from '/snippets/cli/exit-code-table.mdx';
@@ -16,17 +17,41 @@ Ten minutes, one terminal, a working Octolens workspace at the end. Install
 the CLI first if you have not ([Install & login](/cli/install)).
 
 <Steps>
-  <Step title="Log in">
-    The browser does the work — the CLI opens your Octolens deployment, mints
-    a scoped API key and stores it as a profile:
+  <Step title="Sign up — or log in">
+    No Octolens account yet? The CLI creates the workspace itself:
+
+    ```bash
+    octolens signup
+    ```
+
+    The browser completes the signup and the CLI ends authenticated; on a
+    box with no browser at all, `octolens signup --headless` runs the whole
+    flow in the terminal with an emailed code. Both modes — and the Agents
+    plan such workspaces start on — are on
+    [Signup & the Agents plan](/cli/agents).
+
+    Already have a workspace? Log in instead:
 
     ```bash
     octolens login
     ```
 
     On a [headless](/cli/concepts/output-modes#headless) box, use an API key
-    instead — run `octolens login --with-key ak_live_xxx` or set
+    — run `octolens login --with-key ak_live_xxx` or set
     `OCTOLENS_API_KEY`; details on [Install & login](/cli/install).
+  </Step>
+  <Step title="Run your first search">
+    One command, no setup — a one-time, AI-scored search across the
+    platforms enabled for your workspace:
+
+    ```bash
+    octolens search "your brand" --days 7
+    ```
+
+    Results are ranked by relevance and never mix into your mentions feed.
+    On the Agents plan searches draw on a lifetime allowance —
+    [Signup & the Agents plan](/cli/agents) explains the numbers and the
+    upgrade path.
   </Step>
   <Step title="Initialize your workspace">
     New workspace? The guided onboarding builds it from the terminal — company

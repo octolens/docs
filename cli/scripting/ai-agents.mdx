@@ -3,17 +3,31 @@ title: "Using with AI agents"
 description: "Give an AI coding agent working knowledge of Octolens: install the Agent Skill, point LLMs at llms.txt, and choose between the CLI, MCP and REST for the task at hand."
 ---
 
-{/* AUTHORED page (OCT-1512) — hand-written in the octolens/octolens repo under
-    docs/cli/authored/scripting/ and published by `pnpm cli:docs:site`. Every
-    `octolens` line below is docs-lint-verified against the live command
-    registry; the surface-selection guidance here is aligned with the Agent
-    Skill overview page (/skill/overview) — change one, check the other. */}
+{/* AUTHORED page (OCT-1512; agents funnel OCT-1534) — hand-written in the
+    octolens/octolens repo under docs/cli/authored/scripting/ and published by
+    `pnpm cli:docs:site`. Every `octolens` line below is docs-lint-verified
+    against the live command registry; the surface-selection guidance here is
+    aligned with the Agent Skill overview page (/skill/overview) — change one,
+    check the other. */}
 
 The CLI's guarantees — one JSON document on stdout, a frozen exit map,
 bounded runs, no prompts — exist precisely so that an AI agent can drive
 Octolens the way it drives `git` or `gh`: from a shell, with no SDK, no
 schema discovery, and failure modes it can branch on. This page is how to
 hand those guarantees to your agent.
+
+## An agent can start from zero
+
+An agent does not need a pre-provisioned account: `octolens signup
+--headless` creates a workspace end to end from a
+[headless](/cli/concepts/output-modes#headless) shell — email, emailed
+6-digit code, company domain — as a resumable two-step under `--json`, and
+finishes with a stored, validated API key. From there `octolens search
+"your brand" --json` returns AI-scored results with no keyword setup first.
+The flow, the Agents-plan allowance behind it, the quota headers a client can
+self-throttle on, and the `UPGRADE_REQUIRED` wall (exit `6`, with
+`upgradeUrl`/`upgradeCommand` in the envelope, answered by `octolens
+upgrade`) are all on [Signup & the Agents plan](/cli/agents).
 
 ## Install the Agent Skill
 
