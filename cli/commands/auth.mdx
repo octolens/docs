@@ -257,7 +257,7 @@ Example output:
 
 ## `octolens whoami`
 
-Show the active login: workspace, edition, auth source (env vs profile), and scope
+Show the active login: who you are, workspace, plan, and scope
 
 **Examples**
 
@@ -285,7 +285,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `baseUrl` | string | The effective app base URL for this configuration. |
 | `ignoredEnv` | string[] | Env identity vars that are set but IGNORED for the selected transport (e.g. `OCTOLENS_ORG_ID` on REST, where the API key selects the workspace). Empty when nothing is ignored. |
 
-Without `--json`: A terminal renders the workspace, edition, transport, auth source, scope and base URL as aligned rows.
+Without `--json`: A terminal renders the identity a human cares about (OCT-1545): workspace name + company domain, the acting user's email (omitted when unavailable), a one-line company headline, the plan label (Agents renders as `Sandbox`) and scope. Org id / edition / transport / auth source stay JSON-only, and the base URL prints ONLY when it is non-default.
 
 <Accordion title="Example output">
 
