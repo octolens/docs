@@ -7,7 +7,7 @@
 | Flag | Type | Required (headless) | Description |
 |---|---|---|---|
 | `--code` | `string` | no | The 6-digit verification code from the email (requires --signup-id headlessly) |
-| `--domain` | `string` | no | Your company domain (e.g. corp.com) — sets up the workspace profile |
+| `--domain` | `string` | no | Your company domain (e.g. corp.com) — sets up the workspace profile. Defaults to your email's domain for work addresses; personal providers (gmail, outlook, yahoo, …) say nothing about your company, so they still require this flag (or the prompt). An explicit --domain always wins. |
 | `--email` | `string` | no | Work email to sign up with (--headless; prompted for interactively when omitted) |
 | `--headless` | `boolean` | no | Sign up entirely in the terminal: a verification code is emailed to you (no browser anywhere in the loop, works over SSH). |
 | `--no-browser` | `boolean` | no | Print the signup URL instead of opening a browser, then wait for the key to arrive out of band. The wait is time-bounded: the global --timeout governs it (default 180s without the flag), and expiry exits 2 with a SIGNUP_TIMEOUT envelope pointing at the `login --with-key` paste fallback — the process always terminates on its own |
