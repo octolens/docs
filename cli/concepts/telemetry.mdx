@@ -3,11 +3,12 @@ title: "Telemetry"
 description: "What usage telemetry the published CLI collects, what it can never contain, why it cannot affect a command, and the two environment variables that turn it off."
 ---
 
-{/* AUTHORED page (OCT-1550) — hand-written in the octolens/octolens repo under
-    docs/cli/authored/concepts/ and published by `pnpm cli:docs:site`. The
-    behavioural claims on this page (opt-out env vars, the flush bound, the
-    never-blocks/never-prints guarantees) are pinned to the CLI's own telemetry
-    module by its unit suite, so they cannot drift silently. */}
+{/* AUTHORED page (OCT-1550, events documented by OCT-1551) — hand-written in
+    the octolens/octolens repo under docs/cli/authored/concepts/ and published
+    by `pnpm cli:docs:site`. The behavioural claims on this page (opt-out env
+    vars, the flush bound, the never-blocks/never-prints guarantees, the
+    per-command event's property list) are pinned to the CLI's own telemetry
+    suites, so they cannot drift silently. */}
 
 The published `octolens` npm package collects a small amount of usage
 telemetry: enough to see which commands earn their keep and where they fail,
@@ -23,8 +24,7 @@ that edition sends nothing, ever, regardless of configuration.
 
 ## What is sent
 
-Product events — for example, that a command completed — each carrying only
-environment metadata:
+Product events, each carrying only environment metadata:
 
 - the CLI's own **version, release channel and build commit**,
 - the **edition and transport** in use (for the published package: the
@@ -33,12 +33,72 @@ environment metadata:
   `darwin`, `win32`),
 - and the **Node.js major version** the CLI is running on.
 
+### The events
+
+**`cli_command_completed`** — exactly one per invocation, success or failure,
+emitted by the shared command lifecycle (never by individual commands). Its
+full property list, on top of the environment metadata above:
+
+| Property      | What it is                                                                                      |
+| ------------- | ----------------------------------------------------------------------------------------------- |
+| `command_id`  | the command that ran, e.g. `mentions:list` — never its arguments                                 |
+| `verb_kind`   | the command's category: `read`, `write`, `destructive`, `toggle`, or `create`                    |
+| `success`     | whether the run succeeded                                                                        |
+| `exit_code`   | the process exit code, from the documented exit-code map                                         |
+| `error_code`  | the documented error code (`USAGE_ERROR`, `UNAUTHORIZED`, …); `null` on success                  |
+| `duration_ms` | how long the invocation took                                                                     |
+| `flags_used`  | the **names** of the flags you passed (`["json", "limit"]`) — never their values                 |
+| `json`        | whether `--json` was requested                                                                   |
+| `transport`   | the backend transport (`rest` for the published package)                                         |
+
+**`cli_command_not_found`** — emitted when you invoke a command that does not
+exist, carrying a single property: `attempted_id`. Its value is never anything
+you typed: when the unknown id closely resembles a real command or command
+group (the same near-miss tolerance the "did you mean" hint uses), the
+property is that **real command id** (`mentons` reports as `mentions`);
+anything else — a pasted token or credential, a search term, any free text in
+the command position — is replaced by `<redacted>` before capture. Either way
+the value is drawn from the CLI's own public command vocabulary, so no
+user-typed byte ever leaves the machine on this path.
+
 Events are attributed to your **workspace id** once you are logged in — the
 same identifier the Octolens web app uses, tied to the workspace rather than
 to a person. Before any login exists, events carry a random **install id**,
 generated on first use and stored in the CLI's config file
 (`~/.config/octolens/config.json`, created `0600`). It identifies the
 install, nothing else, and it is never regenerated once created.
+
+## The signup and upgrade funnel events
+
+Beyond command-level events, the CLI records the **local steps** of
+`octolens signup` and `octolens upgrade` — the parts of getting started that
+happen entirely inside your terminal, which the server can never see. Each
+event carries only a step name, an outcome flag or a short machine reason
+(such as `timeout` or `no_browser_flag`), and the signup method
+(`browser_handoff` or `headless`) — never your email, company domain,
+verification code, or API key:
+
+- `cli_signup_browser_opened` — whether the signup page could be opened in a
+  browser (with the reason when it could not),
+- `cli_signup_callback_received` — the browser delivered the new API key back
+  to the terminal,
+- `cli_signup_code_requested` / `cli_signup_code_verified` — the
+  [headless](/cli/concepts/output-modes#headless) email-code steps (including
+  whether a run resumed via `--signup-id`),
+- `cli_signup_key_validated` / `cli_signup_profile_saved` — the key checked
+  out against the deployment and the login was stored,
+- `cli_signup_abandoned` — the signup died locally: the browser wait timed
+  out, the process was interrupted, or a prompt was cancelled,
+- `cli_signup_already_authenticated` — signup was refused because this
+  terminal is already logged in,
+- `cli_upgrade_link_opened` — whether the one-time upgrade link could be
+  opened in a browser.
+
+When a signup or first login completes, the pre-signup **install id** is
+linked to the new workspace id (a standard PostHog alias) — exactly once per
+install; later logins never re-link it. That is the only relationship the
+install id is ever part of, and with the opt-out set it does not happen at
+all.
 
 ## What is never sent
 
