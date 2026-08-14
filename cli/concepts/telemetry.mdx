@@ -1,0 +1,77 @@
+---
+title: "Telemetry"
+description: "What usage telemetry the published CLI collects, what it can never contain, why it cannot affect a command, and the two environment variables that turn it off."
+---
+
+{/* AUTHORED page (OCT-1550) — hand-written in the octolens/octolens repo under
+    docs/cli/authored/concepts/ and published by `pnpm cli:docs:site`. The
+    behavioural claims on this page (opt-out env vars, the flush bound, the
+    never-blocks/never-prints guarantees) are pinned to the CLI's own telemetry
+    module by its unit suite, so they cannot drift silently. */}
+
+The published `octolens` npm package collects a small amount of usage
+telemetry: enough to see which commands earn their keep and where they fail,
+and nothing that could identify what you were working on. This page is the
+full contract — what is sent, what can never be sent, why telemetry cannot
+affect a run, and how to turn it off with one environment variable.
+
+## Where telemetry exists at all
+
+Only in the **published npm package** (the customer edition). If you run the
+CLI from a checkout of the Octolens repository, telemetry is compiled out —
+that edition sends nothing, ever, regardless of configuration.
+
+## What is sent
+
+Product events — for example, that a command completed — each carrying only
+environment metadata:
+
+- the CLI's own **version, release channel and build commit**,
+- the **edition and transport** in use (for the published package: the
+  customer edition, over REST),
+- the **operating system platform** (as Node.js reports it — `linux`,
+  `darwin`, `win32`),
+- and the **Node.js major version** the CLI is running on.
+
+Events are attributed to your **workspace id** once you are logged in — the
+same identifier the Octolens web app uses, tied to the workspace rather than
+to a person. Before any login exists, events carry a random **install id**,
+generated on first use and stored in the CLI's config file
+(`~/.config/octolens/config.json`, created `0600`). It identifies the
+install, nothing else, and it is never regenerated once created.
+
+## What is never sent
+
+Command arguments, keyword terms, search phrases, mention content, file
+paths, environment variables, API keys — anything you type or anything the
+API returns. Telemetry describes that the CLI was used, never what it was
+used on.
+
+## Why it cannot affect a command
+
+The telemetry module is built so that its worst day is invisible:
+
+- **It never blocks.** Events are buffered in memory and posted in a single
+  batch as the process exits, with a hard cap of 400ms — an unreachable or
+  hung endpoint cannot delay your shell prompt beyond that, and cannot hold
+  the process alive.
+- **It never prints.** Nothing reaches stdout or stderr, in any mode —
+  `--json` output stays exactly one document, and network failures are
+  swallowed silently.
+- **It never changes behaviour.** Exit codes, `--json` documents and error
+  envelopes are byte-identical with telemetry enabled, disabled, or failing.
+
+## Opting out
+
+Either environment variable disables telemetry entirely — nothing is
+collected, stored, or sent:
+
+```bash
+export DO_NOT_TRACK=1          # the industry-wide convention
+export OCTOLENS_NO_TELEMETRY=1 # the Octolens-specific switch
+```
+
+Set one in your shell profile (or your CI environment) and the telemetry
+module becomes a no-op before any event is recorded. There is nothing to
+delete afterwards: with the opt-out set, the install id is not created
+either.

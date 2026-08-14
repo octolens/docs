@@ -101,7 +101,8 @@
               "cli/concepts/auth-profiles",
               "cli/concepts/keys-scopes",
               "cli/concepts/output-modes",
-              "cli/concepts/pagination-windows"
+              "cli/concepts/pagination-windows",
+              "cli/concepts/telemetry"
             ]
           },
           {
