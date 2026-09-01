@@ -23,6 +23,7 @@ List an author's mentions on a single platform
 | Flag | Type | Required (headless) | Description |
 |---|---|---|---|
 | `--all` | `boolean` | no | Drain every page (mutually exclusive with --limit) |
+| `--engagement-metrics` | `boolean` | no | Include each mention's latest engagement counters and snapshot time |
 | `--limit` | `integer` | no | Return the first N mentions (across pages) |
 | `--profile-url` | `string` | no | LinkedIn profile URL/slug (alternative to the positional author) |
 | `--source` | `string` | yes | Platform to scope the lookup to (e.g. twitter, reddit, linkedin) |
@@ -63,6 +64,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `data[].keywords[].keyword` | string | Keyword text. |
 | `data[].engaged` | boolean | Whether a workspace member marked this mention engaged-with. |
 | `data[].relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
+| `data[].engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
+| `data[].engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
 | `pagination.nextCursor` | string \| null | Opaque resume cursor. `null` when the listing is complete (always `null` after `--all` drains every page). |
 
 Without `--json`: A terminal renders the same mention stream as `mentions list`. Piped (non-TTY) stdout without `--json` emits one tab-delimited record per mention: age, source, relevance, sentiment, author, sourceId, url, headline.
@@ -169,6 +172,8 @@ Export filtered mentions to a CSV/JSON file or stdout
 | Flag | Type | Required (headless) | Description |
 |---|---|---|---|
 | `--author` | `string` | no | Only mentions by this author handle (requires a single --source) |
+| `--engagement` | `string` | no | Minimum engagement as source.metric=count, e.g. twitter.likes=100 (repeatable) |
+| `--engagement-metrics` | `boolean` | no | Include each mention's latest engagement counters and snapshot time |
 | `--feed` | `integer` | no | Reuse a saved feed id as the base filter |
 | `--format` | enum: `csv`, `json` | no | Body format: csv or json. Defaults to the -o extension (.csv/.json; anything else is csv), or json when writing to stdout under --json |
 | `--keyword` | `string` | no | Filter by keyword name or id (repeatable) |
@@ -185,6 +190,7 @@ Export filtered mentions to a CSV/JSON file or stdout
 
 ```bash
 octolens mentions export --source reddit -o mentions.csv
+octolens mentions export --engagement twitter.likes=100 -o popular.csv
 octolens mentions export --feed 42 --format json > feed.json
 octolens mentions export --limit 100 -o sample.csv
 octolens mentions export --author elonmusk --source twitter -o elon.csv
@@ -219,6 +225,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `data[].keywords[].keyword` | string | Keyword text. |
 | `data[].engaged` | boolean | Whether a workspace member marked this mention engaged-with. |
 | `data[].relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
+| `data[].engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
+| `data[].engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
 | `total` | integer | Rows exported (capped at 50,000 per run). |
 
 This is the stdout body for `--format json` with no `--output`. With `--output FILE` the body goes to the file and stdout carries a one-line summary document instead — `{"file", "total", "format"}`, plus a `warning` field when the export matched nothing. `--format csv` emits CSV rows, not JSON.
@@ -278,11 +286,18 @@ Get a single mention by its sourceId (or its numeric id)
 |---|---|---|---|
 | `SOURCEID` | `string` | required | Mention id from a list/export row — the stable sourceId or the internal numeric id |
 
+**Flags**
+
+| Flag | Type | Required (headless) | Description |
+|---|---|---|---|
+| `--engagement-metrics` | `boolean` | no | Include the mention's latest engagement counters and snapshot time |
+
 **Examples**
 
 ```bash
 octolens mentions get reddit_t3_1abc234
 octolens mentions get reddit_t3_1abc234 --json
+octolens mentions get reddit_t3_1abc234 --engagement-metrics --json
 octolens mentions get reddit_t3_1abc234 --web
 ```
 
@@ -314,6 +329,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `keywords[].keyword` | string | Keyword text. |
 | `engaged` | boolean | Whether a workspace member marked this mention engaged-with. |
 | `relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
+| `engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
+| `engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
 
 Without `--json`: A terminal renders a detail panel: headline, addressing pair, classification rows, and the word-wrapped body.
 
@@ -365,6 +382,8 @@ List mentions from your feed, filtered and paginated
 |---|---|---|---|
 | `--all` | `boolean` | no | Drain every page (mutually exclusive with --limit) |
 | `--author` | `string` | no | Only mentions by this author handle (requires a single --source) |
+| `--engagement` | `string` | no | Minimum engagement as source.metric=count, e.g. twitter.likes=100 (repeatable) |
+| `--engagement-metrics` | `boolean` | no | Include each mention's latest engagement counters and snapshot time |
 | `--feed` | `integer` | no | Reuse a saved feed id as the base filter |
 | `--keyword` | `string` | no | Filter by keyword name or id (repeatable) |
 | `--limit` | `integer` | no | Return only the first N mentions |
@@ -380,6 +399,7 @@ List mentions from your feed, filtered and paginated
 ```bash
 octolens mentions list
 octolens mentions list --source reddit --sentiment negative
+octolens mentions list --engagement twitter.likes=100
 octolens mentions list --keyword 'social listening' --since 2026-06-01
 octolens mentions list --search 'pricing page' --source reddit
 octolens mentions list --feed 42 --all --json
@@ -415,6 +435,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `data[].keywords[].keyword` | string | Keyword text. |
 | `data[].engaged` | boolean | Whether a workspace member marked this mention engaged-with. |
 | `data[].relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
+| `data[].engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
+| `data[].engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
 | `pagination.nextCursor` | string \| null | Opaque resume cursor. `null` when the listing is complete (always `null` after `--all` drains every page). |
 
 `--limit`/`--all` page client-side, so the emitted `data` already holds every requested row.
@@ -590,6 +612,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `mentions[].keywords[].keyword` | string | Keyword text. |
 | `mentions[].engaged` | boolean | Whether a workspace member marked this mention engaged-with. |
 | `mentions[].relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
+| `mentions[].engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
+| `mentions[].engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
 | `mentions[].alreadyInWorkspace` | boolean | `true` when the workspace's monitored keywords had already collected this result — flagged results do not count against the monthly mention quota. Optional (absent means new). |
 
 This is the v2 completed-search envelope, byte-identical whether the search finished synchronously or the CLI polled an async (202) search to completion. The low-quota warning (Agents plan, below threshold) rides on STDERR — as one JSON object under `--json` — never inside this document.

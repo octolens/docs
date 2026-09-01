@@ -7,6 +7,8 @@
 | Flag | Type | Required (headless) | Description |
 |---|---|---|---|
 | `--author` | `string` | no | Only mentions by this author handle (requires a single --source) |
+| `--engagement` | `string` | no | Minimum engagement as source.metric=count, e.g. twitter.likes=100 (repeatable) |
+| `--engagement-metrics` | `boolean` | no | Include each mention's latest engagement counters and snapshot time |
 | `--feed` | `integer` | no | Reuse a saved feed id as the base filter |
 | `--format` | enum: `csv`, `json` | no | Body format: csv or json. Defaults to the -o extension (.csv/.json; anything else is csv), or json when writing to stdout under --json |
 | `--keyword` | `string` | no | Filter by keyword name or id (repeatable) |
