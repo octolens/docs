@@ -110,6 +110,18 @@ You need a saved feed first; `octolens feeds list` shows yours, and the
   </Step>
 </Steps>
 
+## What Slack messages contain
+
+Short social posts keep their original notification layout and text. When a
+long post must be shortened, Slack instead shows a bounded excerpt centered on
+the first whole monitored keyword available in the source text. Ellipses mark
+the excerpt as partial, and the matched keyword is emphasized. When the mention
+has an existing relevance explanation, Slack shows it beneath the excerpt as
+smaller italic context without an extra label. If an upstream provider supplied
+only a truncated opening and omitted the matched region, the available source
+opening takes the place of the matched excerpt. Use **See post** to open the
+complete source in either case.
+
 ## Webhooks
 
 A webhook destination POSTs matching mentions to a public http(s) endpoint —
