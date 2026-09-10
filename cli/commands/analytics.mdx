@@ -262,6 +262,10 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `usage.mentions.resetAt` | string \| null | When the mention counter resets (start of next cycle). `null` for plans without a reset schedule. |
 | `usage.keywords.count` | integer | Live keyword count. |
 | `usage.keywords.limit` | integer | Keyword allowance (plan + purchased add-ons). |
+| `usage.aiCredits.used` | number | AI credits consumed this calendar month (UTC) by Octolens' hosted agents (Data Explorer, playground, Slack agent). One credit = one US cent of model list price (OCT-1582). |
+| `usage.aiCredits.allowance` | number \| null | Monthly allowance (plan + support top-ups). `null` = unlimited. |
+| `usage.aiCredits.remaining` | number \| null | `allowance − used`, floored at 0. `null` when unlimited. |
+| `usage.aiCredits.resetsAt` | string | When the counter resets — the first of next month, 00:00 UTC. |
 
 Each section carries the corresponding focused command's ROWS directly (the per-section `{data: …}` envelopes of the raw v2 response are unwrapped). When flex (usage-based) pricing is enabled for the org, the usage object additionally carries `flex` (`{enabled: true, budgetCents, used, resetAt}`); it is absent otherwise. On the **Agents plan** the analytics group — `dashboard` included — is allowlist-gated (OCT-1537) and answers the `UPGRADE_REQUIRED` wall (403 → exit `6`, with `upgradeUrl`/`upgradeCommand`) instead of data; the Agents searches meter lives in `org usage` / `billing` (see `references/admin.md`).
 
@@ -303,6 +307,12 @@ Without `--json`: A terminal renders the composed KPI overview: volume trend, to
     "keywords": {
       "count": 7,
       "limit": 15
+    },
+    "aiCredits": {
+      "used": 312.5,
+      "allowance": 2000,
+      "remaining": 1687.5,
+      "resetsAt": "2026-09-01T00:00:00.000Z"
     }
   }
 }

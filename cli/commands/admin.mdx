@@ -35,6 +35,10 @@ With `--json`, stdout carries one JSON document with these fields.
 | `usage.mentions.resetAt` | string \| null | When the mention counter resets (start of next cycle). `null` for plans without a reset schedule. |
 | `usage.keywords.count` | integer | Live keyword count. |
 | `usage.keywords.limit` | integer | Keyword allowance (plan + purchased add-ons). |
+| `usage.aiCredits.used` | number | AI credits consumed this calendar month (UTC) by Octolens' hosted agents (Data Explorer, playground, Slack agent). One credit = one US cent of model list price (OCT-1582). |
+| `usage.aiCredits.allowance` | number \| null | Monthly allowance (plan + support top-ups). `null` = unlimited. |
+| `usage.aiCredits.remaining` | number \| null | `allowance − used`, floored at 0. `null` when unlimited. |
+| `usage.aiCredits.resetsAt` | string | When the counter resets — the first of next month, 00:00 UTC. |
 | `billingUrl` | string | URL of the app's billing page for managing the subscription. |
 
 Composed from the workspace read and the usage read (no single backing endpoint). When flex (usage-based) pricing is enabled for the org, the usage object additionally carries `flex` (`{enabled: true, budgetCents, used, resetAt}`); it is absent otherwise. On the Agents plan the usage object additionally carries `searches` (`{used, limit, remaining}`) — the lifetime on-demand search allowance (it never resets), read from the canonical quota method; it is absent on every other plan.
@@ -57,6 +61,12 @@ Without `--json`: A terminal renders the plan line, the usage block, and the bil
     "keywords": {
       "count": 7,
       "limit": 15
+    },
+    "aiCredits": {
+      "used": 312.5,
+      "allowance": 2000,
+      "remaining": 1687.5,
+      "resetsAt": "2026-09-01T00:00:00.000Z"
     }
   },
   "billingUrl": "https://app.octolens.com/settings/billing"
@@ -546,12 +556,16 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `mentions.resetAt` | string \| null | When the mention counter resets (start of next cycle). `null` for plans without a reset schedule. |
 | `keywords.count` | integer | Live keyword count. |
 | `keywords.limit` | integer | Keyword allowance (plan + purchased add-ons). |
+| `aiCredits.used` | number | AI credits consumed this calendar month (UTC) by Octolens' hosted agents (Data Explorer, playground, Slack agent). One credit = one US cent of model list price (OCT-1582). |
+| `aiCredits.allowance` | number \| null | Monthly allowance (plan + support top-ups). `null` = unlimited. |
+| `aiCredits.remaining` | number \| null | `allowance − used`, floored at 0. `null` when unlimited. |
+| `aiCredits.resetsAt` | string | When the counter resets — the first of next month, 00:00 UTC. |
 
 When flex (usage-based) pricing is enabled for the org, the usage object additionally carries `flex` (`{enabled: true, budgetCents, used, resetAt}`); it is absent otherwise. On the Agents plan the usage object additionally carries `searches` (`{used, limit, remaining}`) — the lifetime on-demand search allowance (it never resets), read from the canonical quota method; it is absent on every other plan.
 
 Without `--json`: A terminal renders the usage block with plan, mention and keyword meters.
 
-Example output:
+<Accordion title="Example output">
 
 ```json
 {
@@ -564,9 +578,17 @@ Example output:
   "keywords": {
     "count": 7,
     "limit": 15
+  },
+  "aiCredits": {
+    "used": 312.5,
+    "allowance": 2000,
+    "remaining": 1687.5,
+    "resetsAt": "2026-09-01T00:00:00.000Z"
   }
 }
 ```
+
+</Accordion>
 
 **Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE. The full map is on [Exit codes](/cli/contract/exit-codes).
 
