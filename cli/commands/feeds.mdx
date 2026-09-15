@@ -429,6 +429,7 @@ Live-watch your feed with keyboard triage (polling live view). The first poll em
 | `--interval` | `string` | no | Poll interval in seconds (min 2) (default: `15`) |
 | `--keyword` | `string` | no | Filter by keyword name or id (repeatable) |
 | `--relevance` | enum: `relevant`, `all` | no | relevant (default) or all (include low-relevance mentions) |
+| `--review-rating` | `string` | no | Filter direct reviews by exact star rating, 1-5 (repeatable) |
 | `--sentiment` | `string` | no | Filter by sentiment: positive, neutral, negative (repeatable) |
 | `--source` | `string` | no | Filter by source platform, e.g. reddit, twitter (repeatable) |
 
@@ -438,6 +439,7 @@ Live-watch your feed with keyboard triage (polling live view). The first poll em
 octolens feeds watch
 octolens feeds watch --keyword 'social listening'
 octolens feeds watch --source reddit --interval 30
+octolens feeds watch --source google_reviews --review-rating 1 --review-rating 2
 octolens feeds watch --json | jq -r --unbuffered 'select(.type != "error") | .sourceId'
 octolens feeds watch --backlog none --json | jq -r --unbuffered 'select(.type != "error") | .sourceId'
 ```
@@ -473,6 +475,13 @@ With `--json`, stdout is an NDJSON STREAM — one complete JSON document per lin
 | `relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
 | `engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
 | `engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
+| `review` | object \| undefined | Direct-review metadata. Present only for Trustpilot, Google Reviews, App Store, and Google Play review sources. |
+| `review.rating` | number | Rating left by the reviewer. |
+| `review.ratingMax` | number | Maximum value of the provider's rating scale. |
+| `review.verified` | boolean \| null | Whether the provider marks the review as verified; `null` when unavailable. |
+| `review.response` | string \| null | Latest business or developer response, when supplied by the provider. |
+| `review.responseAt` | string \| null | UTC timestamp of the latest business or developer response. |
+| `review.targetName` | string \| null | Configured business or app name this review belongs to. |
 
 The stream is NOT homogeneous: a fatal error after at least one emitted record appends ONE terminator record — `{"type":"error","error":{"code","message","status"},"emitted":N,"watermark":<newest mention timestamp | null>}` — at the position the data stopped, then the process exits with the mapped code and the same error envelope on stderr. A Mention record never carries a `type` field, so `select(.type != "error")` cleanly splits data from framing. Transient poll failures are NOT on stdout: in `--json` mode each becomes one JSON diagnostic line on stderr (`{"event":"poll_failed","error":{…},"retryInMs":N}`).
 

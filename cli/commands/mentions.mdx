@@ -67,6 +67,13 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `data[].relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
 | `data[].engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
 | `data[].engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
+| `data[].review` | object \| undefined | Direct-review metadata. Present only for Trustpilot, Google Reviews, App Store, and Google Play review sources. |
+| `data[].review.rating` | number | Rating left by the reviewer. |
+| `data[].review.ratingMax` | number | Maximum value of the provider's rating scale. |
+| `data[].review.verified` | boolean \| null | Whether the provider marks the review as verified; `null` when unavailable. |
+| `data[].review.response` | string \| null | Latest business or developer response, when supplied by the provider. |
+| `data[].review.responseAt` | string \| null | UTC timestamp of the latest business or developer response. |
+| `data[].review.targetName` | string \| null | Configured business or app name this review belongs to. |
 | `pagination.nextCursor` | string \| null | Opaque resume cursor. `null` when the listing is complete (always `null` after `--all` drains every page). |
 
 Without `--json`: A terminal renders the same mention stream as `mentions list`. Piped (non-TTY) stdout without `--json` emits one tab-delimited record per mention: age, source, relevance, sentiment, author, sourceId, url, headline.
@@ -105,6 +112,44 @@ Without `--json`: A terminal renders the same mention stream as `mentions list`.
       "engaged": false,
       "isReply": false,
       "relevanceScore": 0
+    },
+    {
+      "id": 1298402,
+      "sourceId": "review:trustpilot:41f70b60d1e6",
+      "url": "https://www.trustpilot.com/reviews/68b83f2a1a2b3c4d5e6f7890",
+      "title": "Excellent support",
+      "body": "The team answered quickly and solved the issue on the first try.",
+      "source": "trustpilot_reviews",
+      "timestamp": "2026-05-07 09:20:00.000",
+      "author": "ada-l",
+      "authorName": "Ada L.",
+      "authorAvatar": null,
+      "authorUrl": null,
+      "authorFollowers": null,
+      "relevance": "relevant",
+      "relevanceComment": "Direct review from a configured customer-review target.",
+      "sentiment": "Positive",
+      "language": "english",
+      "tags": [
+        "user_feedback"
+      ],
+      "keywords": [
+        {
+          "id": 57,
+          "keyword": "Acme"
+        }
+      ],
+      "engaged": false,
+      "isReply": false,
+      "relevanceScore": 0,
+      "review": {
+        "rating": 5,
+        "ratingMax": 5,
+        "verified": true,
+        "response": "Thanks for sharing your experience, Ada.",
+        "responseAt": "2026-05-07 10:05:00.000",
+        "targetName": "Acme"
+      }
     }
   ],
   "pagination": {
@@ -182,6 +227,7 @@ Export filtered mentions to a CSV/JSON file or stdout
 | `--limit` | `integer` | no | Return only the first N mentions |
 | `--output` (`-o`) | `string` | no | Write to this file instead of stdout (.csv/.json sets the format, any other extension is csv; .jsonl/.ndjson are refused; - and /dev/stdout mean stdout) |
 | `--relevance` | enum: `relevant`, `all` | no | relevant (default) or all (include low-relevance mentions) |
+| `--review-rating` | `string` | no | Filter direct reviews by exact star rating, 1-5 (repeatable) |
 | `--search` | `string` | no | Free-text search (case-insensitive substring of title, body, author handle, or author display name) |
 | `--sentiment` | `string` | no | Filter by sentiment: positive, neutral, negative (repeatable) |
 | `--since` | `string` | no | Only mentions on/after this ISO date. When omitted the start is unbounded — the CLI applies no default time window (the web feed's default 7-day view does not apply here) |
@@ -192,6 +238,7 @@ Export filtered mentions to a CSV/JSON file or stdout
 
 ```bash
 octolens mentions export --source reddit -o mentions.csv
+octolens mentions export --source trustpilot_reviews --review-rating 5 -o five-star.csv
 octolens mentions export --engagement twitter.likes=100 -o popular.csv
 octolens mentions export --feed 42 --format json > feed.json
 octolens mentions export --limit 100 -o sample.csv
@@ -230,9 +277,16 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `data[].relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
 | `data[].engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
 | `data[].engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
+| `data[].review` | object \| undefined | Direct-review metadata. Present only for Trustpilot, Google Reviews, App Store, and Google Play review sources. |
+| `data[].review.rating` | number | Rating left by the reviewer. |
+| `data[].review.ratingMax` | number | Maximum value of the provider's rating scale. |
+| `data[].review.verified` | boolean \| null | Whether the provider marks the review as verified; `null` when unavailable. |
+| `data[].review.response` | string \| null | Latest business or developer response, when supplied by the provider. |
+| `data[].review.responseAt` | string \| null | UTC timestamp of the latest business or developer response. |
+| `data[].review.targetName` | string \| null | Configured business or app name this review belongs to. |
 | `total` | integer | Rows exported (capped at 50,000 per run). |
 
-This is the stdout body for `--format json` with no `--output`. With `--output FILE` the body goes to the file and stdout carries a one-line summary document instead — `{"file", "total", "format"}`, plus a `warning` field when the export matched nothing. `--format csv` emits CSV rows, not JSON.
+This is the stdout body for `--format json` with no `--output`. With `--output FILE` the body goes to the file and stdout carries a one-line summary document instead — `{"file", "total", "format"}`, plus a `warning` field when the export matched nothing. `--format csv` keeps the original 15-column prefix; when engagement enrichment is requested, its two established columns remain next. Flattened review columns (`reviewRating`, `reviewRatingMax`, `reviewVerified`, `reviewResponse`, `reviewResponseAt`, `reviewTargetName`) follow, and the output is not JSON.
 
 Without `--json`: A terminal run with `--output` prints a one-line summary of what was written where.
 
@@ -270,9 +324,47 @@ Without `--json`: A terminal run with `--output` prints a one-line summary of wh
       "engaged": false,
       "isReply": false,
       "relevanceScore": 0
+    },
+    {
+      "id": 1298402,
+      "sourceId": "review:trustpilot:41f70b60d1e6",
+      "url": "https://www.trustpilot.com/reviews/68b83f2a1a2b3c4d5e6f7890",
+      "title": "Excellent support",
+      "body": "The team answered quickly and solved the issue on the first try.",
+      "source": "trustpilot_reviews",
+      "timestamp": "2026-05-07 09:20:00.000",
+      "author": "ada-l",
+      "authorName": "Ada L.",
+      "authorAvatar": null,
+      "authorUrl": null,
+      "authorFollowers": null,
+      "relevance": "relevant",
+      "relevanceComment": "Direct review from a configured customer-review target.",
+      "sentiment": "Positive",
+      "language": "english",
+      "tags": [
+        "user_feedback"
+      ],
+      "keywords": [
+        {
+          "id": 57,
+          "keyword": "Acme"
+        }
+      ],
+      "engaged": false,
+      "isReply": false,
+      "relevanceScore": 0,
+      "review": {
+        "rating": 5,
+        "ratingMax": 5,
+        "verified": true,
+        "response": "Thanks for sharing your experience, Ada.",
+        "responseAt": "2026-05-07 10:05:00.000",
+        "targetName": "Acme"
+      }
     }
   ],
-  "total": 1
+  "total": 2
 }
 ```
 
@@ -336,6 +428,13 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
 | `engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
 | `engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
+| `review` | object \| undefined | Direct-review metadata. Present only for Trustpilot, Google Reviews, App Store, and Google Play review sources. |
+| `review.rating` | number | Rating left by the reviewer. |
+| `review.ratingMax` | number | Maximum value of the provider's rating scale. |
+| `review.verified` | boolean \| null | Whether the provider marks the review as verified; `null` when unavailable. |
+| `review.response` | string \| null | Latest business or developer response, when supplied by the provider. |
+| `review.responseAt` | string \| null | UTC timestamp of the latest business or developer response. |
+| `review.targetName` | string \| null | Configured business or app name this review belongs to. |
 
 Without `--json`: A terminal renders a detail panel: headline, addressing pair, classification rows, and the word-wrapped body.
 
@@ -394,6 +493,7 @@ List mentions from your feed, filtered and paginated
 | `--keyword` | `string` | no | Filter by keyword name or id (repeatable) |
 | `--limit` | `integer` | no | Return only the first N mentions |
 | `--relevance` | enum: `relevant`, `all` | no | relevant (default) or all (include low-relevance mentions) |
+| `--review-rating` | `string` | no | Filter direct reviews by exact star rating, 1-5 (repeatable) |
 | `--search` | `string` | no | Free-text search (case-insensitive substring of title, body, author handle, or author display name) |
 | `--sentiment` | `string` | no | Filter by sentiment: positive, neutral, negative (repeatable) |
 | `--since` | `string` | no | Only mentions on/after this ISO date. When omitted the start is unbounded — the CLI applies no default time window (the web feed's default 7-day view does not apply here) |
@@ -405,6 +505,7 @@ List mentions from your feed, filtered and paginated
 ```bash
 octolens mentions list
 octolens mentions list --source reddit --sentiment negative
+octolens mentions list --source google_reviews --review-rating 1 --review-rating 2
 octolens mentions list --engagement twitter.likes=100
 octolens mentions list --keyword 'social listening' --since 2026-06-01
 octolens mentions list --search 'pricing page' --source reddit
@@ -444,6 +545,13 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `data[].relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
 | `data[].engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
 | `data[].engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
+| `data[].review` | object \| undefined | Direct-review metadata. Present only for Trustpilot, Google Reviews, App Store, and Google Play review sources. |
+| `data[].review.rating` | number | Rating left by the reviewer. |
+| `data[].review.ratingMax` | number | Maximum value of the provider's rating scale. |
+| `data[].review.verified` | boolean \| null | Whether the provider marks the review as verified; `null` when unavailable. |
+| `data[].review.response` | string \| null | Latest business or developer response, when supplied by the provider. |
+| `data[].review.responseAt` | string \| null | UTC timestamp of the latest business or developer response. |
+| `data[].review.targetName` | string \| null | Configured business or app name this review belongs to. |
 | `pagination.nextCursor` | string \| null | Opaque resume cursor. `null` when the listing is complete (always `null` after `--all` drains every page). |
 
 `--limit`/`--all` page client-side, so the emitted `data` already holds every requested row.
@@ -484,6 +592,44 @@ Without `--json`: A terminal renders a readable mention stream (headline, source
       "engaged": false,
       "isReply": false,
       "relevanceScore": 0
+    },
+    {
+      "id": 1298402,
+      "sourceId": "review:trustpilot:41f70b60d1e6",
+      "url": "https://www.trustpilot.com/reviews/68b83f2a1a2b3c4d5e6f7890",
+      "title": "Excellent support",
+      "body": "The team answered quickly and solved the issue on the first try.",
+      "source": "trustpilot_reviews",
+      "timestamp": "2026-05-07 09:20:00.000",
+      "author": "ada-l",
+      "authorName": "Ada L.",
+      "authorAvatar": null,
+      "authorUrl": null,
+      "authorFollowers": null,
+      "relevance": "relevant",
+      "relevanceComment": "Direct review from a configured customer-review target.",
+      "sentiment": "Positive",
+      "language": "english",
+      "tags": [
+        "user_feedback"
+      ],
+      "keywords": [
+        {
+          "id": 57,
+          "keyword": "Acme"
+        }
+      ],
+      "engaged": false,
+      "isReply": false,
+      "relevanceScore": 0,
+      "review": {
+        "rating": 5,
+        "ratingMax": 5,
+        "verified": true,
+        "response": "Thanks for sharing your experience, Ada.",
+        "responseAt": "2026-05-07 10:05:00.000",
+        "targetName": "Acme"
+      }
     }
   ],
   "pagination": {
@@ -623,6 +769,13 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `mentions[].relevanceScore` | integer \| null | Raw relevance score behind `relevance` (0 high, 1 medium, 2 low). Optional — not every response carries it. |
 | `mentions[].engagementMetrics` | object \| undefined | Latest source-specific public engagement counters. Present only when `--engagement-metrics` requested response enrichment; unavailable counters are omitted from the map. |
 | `mentions[].engagementObservedAt` | string \| null \| undefined | UTC time when `engagementMetrics` was observed. Present only with `--engagement-metrics`; `null` means no snapshot has been collected. |
+| `mentions[].review` | object \| undefined | Direct-review metadata. Present only for Trustpilot, Google Reviews, App Store, and Google Play review sources. |
+| `mentions[].review.rating` | number | Rating left by the reviewer. |
+| `mentions[].review.ratingMax` | number | Maximum value of the provider's rating scale. |
+| `mentions[].review.verified` | boolean \| null | Whether the provider marks the review as verified; `null` when unavailable. |
+| `mentions[].review.response` | string \| null | Latest business or developer response, when supplied by the provider. |
+| `mentions[].review.responseAt` | string \| null | UTC timestamp of the latest business or developer response. |
+| `mentions[].review.targetName` | string \| null | Configured business or app name this review belongs to. |
 | `mentions[].alreadyInWorkspace` | boolean | `true` when the workspace's monitored keywords had already collected this result — flagged results do not count against the monthly mention quota. Optional (absent means new). |
 
 This is the v2 completed-search envelope, byte-identical whether the search finished synchronously or the CLI polled an async (202) search to completion. The low-quota warning (Agents plan, below threshold) rides on STDERR — as one JSON object under `--json` — never inside this document.

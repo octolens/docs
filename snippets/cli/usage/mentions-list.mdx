@@ -14,6 +14,7 @@
 | `--keyword` | `string` | no | Filter by keyword name or id (repeatable) |
 | `--limit` | `integer` | no | Return only the first N mentions |
 | `--relevance` | enum: `relevant`, `all` | no | relevant (default) or all (include low-relevance mentions) |
+| `--review-rating` | `string` | no | Filter direct reviews by exact star rating, 1-5 (repeatable) |
 | `--search` | `string` | no | Free-text search (case-insensitive substring of title, body, author handle, or author display name) |
 | `--sentiment` | `string` | no | Filter by sentiment: positive, neutral, negative (repeatable) |
 | `--since` | `string` | no | Only mentions on/after this ISO date. When omitted the start is unbounded — the CLI applies no default time window (the web feed's default 7-day view does not apply here) |
