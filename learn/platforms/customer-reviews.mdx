@@ -1,0 +1,115 @@
+---
+title: Customer reviews
+description: Track Trustpilot, App Store, and Google Play reviews for your brand or competitors. Connect a review page to a keyword and every new review lands in your feeds with its star rating.
+---
+
+Customer reviews let Octolens collect reviews from Trustpilot, the Apple App Store, and Google Play for any brand or competitor you track. Unlike the other platforms, reviews are not found by searching for your keyword. You connect a **review page** (a Trustpilot profile, an App Store listing, or a Google Play listing) to an existing keyword, and every review on that page becomes a mention under that keyword, even when the review text never names the brand.
+
+Reviews are available on every plan with active monitoring, including the free trial. Connected pages do not use extra keyword slots.
+
+## Supported review platforms
+
+| Platform | What to paste | Countries |
+| --- | --- | --- |
+| Trustpilot | The company's Trustpilot review page URL, e.g. `https://www.trustpilot.com/review/example.com` | Not applicable |
+| App Store | The app's App Store URL, e.g. `https://apps.apple.com/us/app/example/id123456789` | Choose up to 20 country storefronts |
+| Google Play | The app's Google Play URL, e.g. `https://play.google.com/store/apps/details?id=com.example.app` | Choose up to 20 country storefronts |
+
+<Note>
+**Google Business Profile reviews.** If you monitor a physical location, you can also paste a Google Maps URL or Place ID into **Add keyword**. This works the same way as the platforms above but is not listed in the platform picker, because location reviews are noise for most software companies.
+</Note>
+
+## Connect a review page
+
+<Steps>
+  <Step title="Open the keyword">
+    Go to the **Keywords** page, find the brand or competitor keyword you want reviews for, and click **Edit**.
+  </Step>
+  <Step title="Pick the review platform">
+    Open the **Platforms** dropdown and scroll to the bottom. Trustpilot, App Store, and Google Play are listed below the regular platforms. Click **Connect page**.
+  </Step>
+  <Step title="Paste the page URL">
+    Paste the review page URL. For App Store and Google Play, also pick the countries whose storefronts you want to monitor and the review language.
+  </Step>
+  <Step title="Connect">
+    Click **Connect page**. The connection is saved immediately, independently of the other keyword settings. You do not need to save the keyword sheet afterwards.
+  </Step>
+</Steps>
+
+<Frame caption="Review platforms sit at the bottom of the Platforms dropdown in Keyword Settings.">
+  <img src="/images/reviews-platform-selector.png" alt="Keyword Settings platforms dropdown showing regular platforms with toggles, and Trustpilot, App Store, and Google Play rows with Manage and Connect page buttons" />
+</Frame>
+
+<Frame caption="Connecting an App Store page: paste the URL, pick countries, and choose the review language.">
+  <img src="/images/reviews-keyword-settings.png" alt="Customer reviews section in Keyword Settings with a connected Trustpilot page and an App Store connection form showing URL, country picker, and review language" />
+</Frame>
+
+Two shortcuts do the same thing:
+
+- **Settings → Platforms.** The review platforms are listed at the bottom of the platform list. Click **Add** next to one, paste the URL, and choose which keyword to connect it to.
+- **Add keyword.** Paste a review page URL into the keyword input on the Keywords page. Octolens recognizes it and asks which existing keyword the page belongs to.
+
+You can connect several pages to the same keyword, for example one Trustpilot page plus both app stores. After connecting, the keyword row on the Keywords page shows the icons of its connected review platforms.
+
+<Tip>
+**Pages found during onboarding.** When you sign up, Octolens scans your website for links to Trustpilot, App Store, and Google Play. Any pages it finds are suggested in the onboarding trackers step. If you have exactly one own-brand keyword, they are connected to it automatically. Otherwise they appear in a banner on the Keywords page, where you can connect each one with a click.
+</Tip>
+
+### Countries and languages for app stores
+
+App Store and Google Play reviews are stored per country storefront. A US-only connection for an app that is reviewed mostly in Germany collects almost nothing, so pick every country where your app has real users. Each connection supports up to 20 countries. Every country is checked separately, so more countries mean more provider requests but no extra mentions unless there are new reviews.
+
+## How reviews are collected
+
+- **Once a day.** Every connected page is checked daily. Admins can trigger **Sync now** from the connection's Manage panel, with a 15-minute cooldown.
+- **One year of history.** When you connect a page, Octolens imports reviews from the last 12 months. This initial import is free, does not count toward your mention limit, and does not trigger alerts. The reviews are visible in your feeds right away.
+- **New reviews count once.** After the initial import, every new review is one mention and counts toward your monthly quota like any other post. Edits to a review, owner or developer replies, re-checks, and the same review appearing in several countries do not count again.
+- **Pauses at your mention limit.** When the workspace hits its monthly mention limit, review collection pauses along with everything else until the limit resets or you turn on Flex mentions. See [Mention Limits](/learn/mention-limits).
+
+## What a review looks like in Octolens
+
+Reviews appear in your feeds as regular mentions with the review platform's icon, plus a few extra details:
+
+- **Star rating** and scale, shown on the card, in Slack notifications, and in the API.
+- **Verified** badge when the platform marks the review as verified.
+- **Owner or developer response** and the time it was posted, when there is one.
+- **Connected page name**, so you can tell which listing or country the review came from.
+
+Reviews skip AI relevance scoring. Because you chose the page deliberately, every review on it is treated as relevant. Each review gets the **User Feedback** tag plus the classification of the keyword it is connected to: **Own Brand Mention**, **Competitor Mention**, or **Industry Insights**.
+
+**Sentiment comes from the star rating**, not from the text:
+
+| Rating | Sentiment |
+| --- | --- |
+| 4 to 5 stars | Positive |
+| 3 stars | Neutral |
+| 1 to 2 stars | Negative |
+
+The mention date is the date the review was **published**, not the date Octolens found it. A feed filtered to "Last 7 days" shows reviews written in the last 7 days, so the initial one-year import does not flood short date windows.
+
+## Filter and route reviews
+
+In [Feeds](/quickstart/feeds), reviews show up with the rest of the keyword's mentions. To work with them separately:
+
+- Filter by **Platform** and pick Trustpilot, App Store, or Google Play. The review platforms only appear in the filter once at least one page is connected.
+- Add a **Review rating** filter to keep only certain star ratings, for example 1 and 2 stars for a "negative reviews" feed.
+
+Any feed can send reviews to email, Slack, or a webhook through the usual [destinations](/quickstart/destinations). A common setup is a feed for a competitor keyword filtered to 1 to 2 star reviews, delivered daily to Slack.
+
+Reviews also carry their extra fields through the [REST API](/api/v2/overview), [MCP](/mcp/v2/overview), [CLI](/cli/overview), [webhooks](/quickstart/webhooks#field-reference), and [CSV export](/quickstart/csv-export). The source values are `trustpilot_reviews`, `app_store_reviews`, `google_play_reviews`, and `google_reviews`, and `reviewRating` is available as a filter everywhere the source filter is.
+
+## Manage or disconnect a page
+
+Open the keyword's **Platforms** dropdown and click **Manage** next to a connected review platform, or go to **Settings → Platforms**, which lists every connected page with its keyword.
+
+- **Edit** changes the page's display name, countries, or review language. It does not rename the keyword.
+- **Retry** restarts collection when the status shows that the page needs attention.
+- **Disconnect** stops collecting from that page. Reviews already collected stay under the keyword. Reconnecting the same page to the same keyword later restores collection without duplicating history.
+
+A review page belongs to exactly one keyword. Connecting a page that is already tracked under a different keyword is rejected so its history stays intact.
+
+**Pausing** a keyword stops its review collection together with its regular searches. **Deleting** a keyword removes its review connections and their mentions.
+
+<Note>
+Only workspace admins can connect, edit, or disconnect review pages.
+</Note>

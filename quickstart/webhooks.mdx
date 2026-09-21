@@ -109,6 +109,7 @@ Octolens sends one mention per request. The top-level `action` field indicates w
 | `data.tags` | string[] | AI-assigned tags on the mention (e.g. `Own Brand Mention`, `Buy Intent`). See [AI Relevance & Tags](/learn/ai-relevance). |
 | `data.language` | string | ISO 639-1 language code detected for the post (e.g. `en`, `es`, `de`). |
 | `data.subreddit` | string | Subreddit name. Only present for Reddit mentions. |
+| `data.review` | object | Only present for [customer review](/learn/platforms/customer-reviews) mentions (`source` is `trustpilot_reviews`, `app_store_reviews`, `google_play_reviews`, or `google_reviews`). Contains `rating` (number), `ratingMax` (number, usually 5), `verified` (boolean or null), `response` (owner or developer reply, string or null), and `responseAt` (ISO 8601 string or null). |
 | `data.viewId` | number | ID of the feed that fired this webhook. (Field name kept for backward compatibility — feeds were previously called views.) |
 | `data.viewName` | string | Name of the feed that fired this webhook. |
 | `data.viewKeywords` | string[] | The keywords configured on the feed that fired this webhook. Useful for distinguishing which feed-filter matched when one feed covers multiple keywords. |
