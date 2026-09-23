@@ -298,10 +298,18 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `results[].ok` | boolean | Whether the test delivery succeeded. |
 | `results[].status` | integer \| null | HTTP status returned by the target (webhook deliveries only; `null` otherwise). |
 | `results[].error` | string \| null | Failure detail when `ok` is `false`. |
+| `mentions` | object[] | The mentions that were delivered, newest first — the same set for every destination. |
+| `mentions[].id` | integer | Numeric mention id. |
+| `mentions[].source` | string | Platform the mention came from. |
+| `mentions[].title` | string \| null | Mention title, when the source has one. |
+| `mentions[].body` | string \| null | Mention text, truncated to 280 characters. |
+| `mentions[].url` | string | Link to the original post. |
+| `mentions[].author` | string \| null | Author handle. |
+| `mentions[].timestamp` | string | When the mention was posted (UTC). |
 
 Without `--json`: A terminal renders one line per destination with its outcome.
 
-Example output:
+<Accordion title="Example output">
 
 ```json
 {
@@ -314,9 +322,22 @@ Example output:
       "status": null,
       "error": null
     }
+  ],
+  "mentions": [
+    {
+      "id": 481516,
+      "source": "reddit",
+      "title": "Anyone using Acme for monitoring?",
+      "body": "We switched to Acme last month and…",
+      "url": "https://reddit.com/r/devops/comments/abc123",
+      "author": "devops_dana",
+      "timestamp": "2026-09-20 14:03:11"
+    }
   ]
 }
 ```
+
+</Accordion>
 
 **Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE. The full map is on [Exit codes](/cli/contract/exit-codes).
 
