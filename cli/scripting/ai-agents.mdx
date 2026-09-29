@@ -40,6 +40,21 @@ to reach for, how to filter mentions, and the gotchas to avoid:
 npx skills add octolens/skill
 ```
 
+On Claude Code or Codex, install it as a plugin instead — the plugin bundles
+the same skill plus the hosted [MCP server](/mcp/v2/overview), which signs in
+with OAuth on first use (`/mcp` in Claude Code, `codex mcp login octolens` in
+Codex):
+
+```bash
+# Claude Code
+claude plugin marketplace add octolens/skill
+claude plugin install octolens@octolens
+
+# Codex
+codex plugin marketplace add octolens/skill
+codex plugin add octolens@octolens
+```
+
 The skill activates on its own whenever a task involves Octolens. It covers
 the two surfaces an agent cannot introspect — the CLI's command surface and
 the REST v2 endpoint surface — and tells the agent which to prefer when.
