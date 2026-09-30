@@ -1,103 +1,76 @@
 ---
-title: Introduction
-description: Learn how to use Octolens to monitor brand, competitor, and keyword mentions across Reddit, X, GitHub, podcasts, newsletters, and 9 more platforms.
+title: "What is Octolens?"
+sidebarTitle: "Introduction"
+description: "Octolens is an AI social listening tool for B2B SaaS and developer brands. Track brand and competitor mentions across Reddit, X, LinkedIn, and 15+ platforms, filtered by AI and sent to Slack, email, webhooks, the API, or AI assistants like Claude and ChatGPT."
 ---
 
-Octolens is a social listening tool for developer and B2B SaaS brands. It monitors mentions across [13+ platforms](/learn/platforms/overview), including Reddit, X, LinkedIn, Hacker News, GitHub, YouTube, Bluesky, TikTok, podcasts, and newsletters. AI filters out the noise so you only see mentions that matter.
+Octolens is an AI social listening tool for B2B SaaS and developer brands. It monitors Reddit, X, LinkedIn, Hacker News, GitHub, and [15+ platforms](/learn/platforms/overview) for mentions of your brand, your competitors, and the topics you care about. AI scores every mention for relevance, sentiment, and intent, so you only see the ones that matter.
+
+Mentions go wherever your team, or your agents, already work: Slack, email, webhooks, the API, or AI assistants like Claude and ChatGPT. The API, webhooks, and AI assistant connections are included on every plan.
+
+## Start here
+
+<Columns cols={2}>
+  <Card title="Set up your keywords" icon="key" href="/quickstart/keywords">
+    Track your brand, your competitors, and the problems your product solves. Add your company context first so the AI knows what's relevant to you.
+  </Card>
+
+  <Card title="Send mentions to your team" icon="paper-plane" href="/quickstart/destinations">
+    Route any feed to Slack, email, or a webhook, either instantly or as an hourly, daily, or weekly digest.
+  </Card>
+
+  <Card title="Connect Claude or ChatGPT" icon="robot" href="/mcp/v2/setup-guides">
+    Ask Claude, ChatGPT, or Cursor about your mentions in plain language, and let them manage keywords and feeds for you.
+  </Card>
+
+  <Card title="Build with the API" icon="code" href="/api/v2/overview">
+    Pull mentions, manage keywords and feeds, and run analytics from your own code, dashboards, and agents.
+  </Card>
+</Columns>
+
+Working from a terminal or scripting a workflow? Start with the [CLI quickstart](/cli/quickstart).
+
+## How Octolens works
+
+<Steps>
+  <Step title="Choose and tune your keywords">
+    Add your brand name, competitors, and industry terms. Octolens uses your [company context](/quickstart/company-context) to score each mention, which is what lets you track common-word brands without drowning in noise. Fine-tune what each keyword matches in [keyword settings](/quickstart/keyword-settings).
+  </Step>
+  <Step title="Organize mentions into feeds">
+    Feeds are saved filters over your mentions. Start from a pre-built feed like Brand Mentions, Competitor Mentions, or Buy Intent, or build your own by platform, tag, sentiment, and relevance. See [Feeds](/quickstart/feeds).
+  </Step>
+  <Step title="Send them to your stack">
+    Deliver any feed to [Slack](/quickstart/connect-slack), email, or a [webhook](/quickstart/webhooks), or sync it into [Attio](/integrations/attio). Ask about your mentions in [Claude or ChatGPT](/mcp/v2/setup-guides), or pull them into your own tools with the [API](/api/v2/overview) and [CLI](/cli/overview).
+  </Step>
+</Steps>
 
 <Frame caption="The Octolens dashboard, with mentions over time, plan and API/MCP usage, and a recent mentions feed.">
   <img src="/images/dashboard-overview.png" alt="Octolens dashboard showing mentions over time chart, plan usage and filtering ratio cards, and a recent mentions feed" />
 </Frame>
 
-## What you can do with Octolens
+## What teams use Octolens for
 
-Track your brand, competitors, and industry terms to find posts like:
+- **Reputation monitoring:** see what people say about you across social, reviews, and news, correct misinformation, and watch [sentiment](/learn/sentiment) shift over time.
+- **Competitor monitoring:** catch the complaints, comparison threads, and switching moments from your competitors' users. Add competitors as [keywords](/quickstart/keywords) and filter with the Competitor Mention tag.
+- **Customer feedback:** find feature requests, bug reports, and praise nobody sent you, [tagged by AI](/learn/ai-relevance) and routed to the team that owns them.
+- **AI visibility:** find the public conversations on Reddit, forums, and reviews that shape what AI assistants recommend, and show up in them.
+- **AI agents:** give your own agents real-time social data through the [API](/api/v2/overview), [webhooks](/quickstart/webhooks), the [CLI](/cli/overview), or the [Octolens MCP server](/mcp/v2/overview).
 
-- **Brand love:** positive mentions and testimonials about your product
-- **Buy intent:** people searching for tool recommendations in your space
-- **Product questions:** users asking about your product or features
-- **Competitor complaints:** frustrations with competitors you can address
-- **Pain points:** problems your product can help solve
+Founders, marketing teams, developer relations teams, and agencies use Octolens, including teams at Vercel, PostHog, Supabase, Prisma, Railway, and Tally. Agencies can run monitoring for each client in its own workspace.
 
-Each mention comes with an AI-assigned [sentiment](/learn/sentiment), [relevance score, and tags](/learn/ai-relevance), plus a one-line explanation of why it matched your keyword.
+## What every mention includes
 
-## Who it's for
+- **Relevance:** High, Medium, or Low, based on your company context. See [AI Relevance & Tags](/learn/ai-relevance).
+- **Sentiment:** Positive, Neutral, or Negative. See [Sentiment Analysis](/learn/sentiment).
+- **Tags:** labels like Own Brand Mention, Competitor Mention, Buy Intent, and Bug Report that you can filter feeds by.
+- **Context:** the platform, author, and link to the original post, plus a one-line explanation of why it matched your keyword.
 
-<Columns cols={2}>
-  <Card title="Founders" icon="rocket">
-    Stay close to users as you scale. Catch product feedback, buy intent, and competitor chatter without living in 10 tabs.
-  </Card>
-  <Card title="Marketing teams" icon="megaphone">
-    Track brand health, campaign impact, and competitor activity in one place.
-  </Card>
-  <Card title="DevRel teams" icon="code">
-    Show up in developer conversations on GitHub, Hacker News, Reddit, and DEV.to. Correct misinformation before it spreads.
-  </Card>
-  <Card title="AI agent builders" icon="robot">
-    Pipe real-time social data into your agents via [MCP](/mcp/v2/overview), the [CLI](/cli/overview), the [API](/api/v2/overview), or [webhooks](/quickstart/webhooks).
-  </Card>
-</Columns>
+## Where mentions come from
 
-## What's in the app
+Octolens tracks Reddit, X, LinkedIn, Hacker News, GitHub, YouTube, Bluesky, TikTok, DEV, and Stack Overflow on every plan. The Scale plan adds podcasts, news, newsletters, and the open web. You can also connect Trustpilot, App Store, and Google Play pages to collect [customer reviews](/learn/platforms/customer-reviews).
 
-- **Dashboard:** mentions over time, plan and API/MCP usage, and a recent mentions feed. See [Dashboard](/learn/dashboard).
-- **Keywords:** the dedicated page where you add, edit, and tune every keyword you track, plus global keyword settings. See [Keywords](/quickstart/keywords).
-- **Feeds:** saved filters over your mentions, like Brand Mentions, Competitor Mentions, or Buy Intent. Each feed can be sent to a [destination](/quickstart/destinations). See [Feeds](/quickstart/feeds).
-- **API:** generate API keys and use the REST API to query mentions, keywords, and feeds. See [API Reference](/api/v2/overview).
-- **CLI:** the `octolens` terminal command — triage mentions, watch feeds live, export data, and script or automate all of it from a shell. See [CLI](/cli/overview).
-- **MCP:** connect Octolens to Claude, ChatGPT, Cursor, and other AI tools to ask questions of your mention data in natural language. See [MCP Server](/mcp/v2/overview).
-- **Settings:** company context, plans and billing, members, platforms, and the Slack integration.
+See [Tracked platforms](/learn/platforms/overview) for what is monitored on each platform and how often.
 
-## Getting started
+## Get help
 
-<Steps>
-  <Step title="Add your company context">
-    Tell Octolens about your business so the AI can assess mentions accurately. This is the single biggest lever on relevance quality.
-    [Set up company context →](/quickstart/company-context)
-  </Step>
-  <Step title="Choose your keywords">
-    Add your brand name, competitors, and industry terms. Start with 3 to 5 keywords. You can always add more.
-    [Choose keywords →](/quickstart/keywords)
-  </Step>
-  <Step title="Organize mentions into feeds">
-    Feeds are saved filters over your mentions. Think "Buy intent this week" or "Competitor mentions on Reddit." Octolens ships with presets like Brand Mentions, Competitor Mentions, and Buy Intent.
-    [Set up feeds →](/quickstart/feeds)
-  </Step>
-  <Step title="Send feeds to a destination">
-    Pick where each feed goes: email, Slack, or a webhook. One feed can fan out to all three.
-    [Set up destinations →](/quickstart/destinations)
-  </Step>
-  <Step title="(Optional) Connect to your stack">
-    Pull mentions into your own tools and AI agents via [MCP](/mcp/v2/overview), the [CLI](/cli/overview), the [API](/api/v2/overview), or [webhooks](/quickstart/webhooks). Prefer a terminal? The [CLI quickstart](/cli/quickstart) gets you triaging mentions in ten minutes.
-  </Step>
-</Steps>
-
-## Explore the docs
-
-<Columns cols={2}>
-  <Card title="MCP Server" icon="plug" href="/mcp/v2/overview">
-    Connect Octolens to Claude, Cursor, ChatGPT, and other AI tools.
-  </Card>
-  <Card title="API Reference" icon="brackets-curly" href="/api/v2/overview">
-    Query mentions, keywords, and feeds programmatically.
-  </Card>
-  <Card title="CLI" icon="terminal" href="/cli/overview">
-    Work with your mentions from the terminal — for people and for agents.
-  </Card>
-  <Card title="Tracked platforms" icon="globe" href="/learn/platforms/overview">
-    Every platform Octolens monitors and how often.
-  </Card>
-  <Card title="AI Relevance & Tags" icon="sparkles" href="/learn/ai-relevance">
-    How Octolens decides what's relevant and how tags work.
-  </Card>
-  <Card title="Dashboard" icon="chart-line" href="/learn/dashboard">
-    What every card and chart on the dashboard means.
-  </Card>
-  <Card title="FAQs" icon="circle-question" href="/learn/faqs">
-    Answers to the most common questions.
-  </Card>
-</Columns>
-
-<Note>
-Can't find what you're looking for? Email [hi@octolens.com](mailto:hi@octolens.com) or use the in-app chat and we'll get back to you ASAP.
-</Note>
+Check the [FAQs](/learn/faqs) for answers to common questions. For anything else, email [hi@octolens.com](mailto:hi@octolens.com) or use the in-app chat.
