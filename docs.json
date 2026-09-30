@@ -15,44 +15,84 @@
         "tab": "Documentation",
         "groups": [
           {
-            "group": "Documentation",
+            "group": "Get started",
             "pages": [
               "index"
             ]
           },
           {
-            "group": "Quickstart",
+            "group": "Setup",
             "pages": [
               "quickstart/company-context",
               "quickstart/keywords",
               "quickstart/keyword-settings",
               "quickstart/global-keyword-settings",
-              "quickstart/feeds",
-              "quickstart/destinations",
-              "quickstart/connect-slack",
-              "quickstart/webhooks",
-              "quickstart/csv-export",
               "quickstart/team-members"
             ]
           },
           {
-            "group": "Learn",
+            "group": "Tracked platforms",
             "pages": [
-              "learn/dashboard",
-              "learn/mention-limits",
-              "learn/ai-relevance",
-              "learn/sentiment",
               "learn/platforms/overview",
               "learn/platforms/web",
               "learn/platforms/customer-reviews",
-              "learn/platforms/newsletter-list",
-              "learn/faqs"
+              "learn/platforms/newsletter-list"
             ]
           },
           {
-            "group": "Integrations",
+            "group": "Destinations",
             "pages": [
+              "quickstart/destinations",
+              "quickstart/connect-slack",
+              "quickstart/webhooks",
+              "quickstart/csv-export",
               "integrations/attio"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "learn/dashboard",
+              "learn/mention-limits",
+              "quickstart/feeds",
+              "learn/ai-relevance",
+              "learn/sentiment"
+            ]
+          },
+          {
+            "group": "Support",
+            "pages": [
+              "learn/faqs"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "MCP Server",
+        "groups": [
+          {
+            "group": "MCP Server",
+            "pages": [
+              "mcp/v2/overview",
+              "mcp/v2/setup-guides",
+              "mcp/v2/tools",
+              "mcp/v2/use-cases"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API v2",
+            "root": "api/v2/overview",
+            "openapi": "https://app.octolens.com/api/v2/openapi.json"
+          },
+          {
+            "group": "API v1 (Legacy)",
+            "pages": [
+              "api/overview"
             ]
           }
         ]
@@ -129,50 +169,6 @@
             ]
           }
         ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API v2",
-            "root": "api/v2/overview",
-            "openapi": "https://app.octolens.com/api/v2/openapi.json"
-          },
-          {
-            "group": "API v1 (Legacy)",
-            "pages": [
-              "api/overview"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "MCP Server",
-        "groups": [
-          {
-            "group": "Agent Skill",
-            "pages": [
-              "skill/overview"
-            ]
-          },
-          {
-            "group": "MCP v2",
-            "pages": [
-              "mcp/v2/overview",
-              "mcp/v2/setup-guides",
-              "mcp/v2/tools",
-              "mcp/v2/use-cases"
-            ]
-          },
-          {
-            "group": "MCP v1 (Legacy)",
-            "pages": [
-              "mcp/overview",
-              "mcp/setup-guides",
-              "mcp/use-cases"
-            ]
-          }
-        ]
       }
     ]
   },
@@ -200,6 +196,22 @@
     {
       "source": "/cli/commands/init",
       "destination": "/cli/init"
+    },
+    {
+      "source": "/mcp/overview",
+      "destination": "/mcp/v2/overview"
+    },
+    {
+      "source": "/mcp/setup-guides",
+      "destination": "/mcp/v2/setup-guides"
+    },
+    {
+      "source": "/mcp/use-cases",
+      "destination": "/mcp/v2/use-cases"
+    },
+    {
+      "source": "/skill/overview",
+      "destination": "/cli/scripting/ai-agents"
     }
   ],
   "navbar": {
