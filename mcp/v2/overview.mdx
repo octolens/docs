@@ -1,6 +1,6 @@
 ---
-title: MCP Server
-description: Connect Claude, ChatGPT, Cursor, and other AI agents to your Octolens workspace via MCP v2 — query mentions, run analytics, and manage keywords and feeds in natural language.
+title: "MCP Server"
+description: "Connect Claude, ChatGPT, Cursor, and other AI assistants to your Octolens workspace. Ask about your mentions, run analytics, and manage keywords and feeds in plain language."
 ---
 
 **Octolens MCP** lets AI assistants like Claude, ChatGPT, and Cursor access your Octolens workspace directly. Instead of switching between tabs and dashboards, just ask questions in natural language — your AI assistant browses mentions, filters by source or sentiment, runs analytics, and manages your monitoring setup on your behalf.
@@ -18,25 +18,19 @@ For shell scripts, CI pipelines, and bulk export, the [Octolens CLI](/cli/overvi
 
 ---
 
-## What's new in v2
+## What your assistant can do
 
-v2 exposes the **full Octolens surface** — every action available in the app is available to your AI assistant.
+Your AI assistant gets the **full Octolens surface**: every action available in the app is available to it.
 
 **Reads:** mentions, keywords, feeds, tags, keyword suggestions, workspace and company profile, usage, and global filters, plus a SQL analytics tool for aggregations and trends.
 
-**Writes:** create and manage keywords and feeds — including wiring up Slack, email, and webhook notification destinations.
-
-<Note>
-v2 is the default for everyone signing in to or signing up for Octolens. If you're still on the v1 endpoint, see the [migration note](#migrating-from-v1) below.
-</Note>
+**Writes:** create and manage keywords and feeds, including wiring up Slack, email, and webhook notification destinations.
 
 ---
 
 ## Authentication
 
-v2 uses **OAuth** — there's no API key or token to paste. On first use, your MCP client opens a browser tab, you sign in to Octolens and approve the connection, and you're ready. Your token never lives in a URL or config file.
-
-This is a change from v1, which embedded an API token in the connection URL.
+Octolens uses **OAuth**, so there's no API key or token to paste. On first use, your AI client opens a browser tab, you sign in to Octolens and approve the connection, and you're ready. Your token never lives in a URL or config file.
 
 #### Connection URL
 
@@ -67,21 +61,9 @@ You can also generate setup snippets from inside the app under **Settings → MC
 
 ## Tools
 
-v2 ships 23 tools across mentions, keywords, feeds, tags, suggestions, workspace, usage, and analytics. See the full [Tools Reference](/mcp/v2/tools) for what each one does and when your assistant will reach for it.
+The server has 23 tools across mentions, keywords, feeds, tags, suggestions, workspace, usage, and analytics. See the full [Tools Reference](/mcp/v2/tools) for what each one does and when your assistant will reach for it.
 
 For ready-to-paste prompts and workflows, see [Use Cases](/mcp/v2/use-cases).
-
----
-
-## Migrating from v1
-
-The v1 MCP server is still available for existing users but is no longer the default. To move to v2:
-
-1. Remove the old v1 connection (the URL containing `?token=...`).
-2. Add the new v2 URL `https://app.octolens.com/api/mcp/v2` following the [Setup Guides](/mcp/v2/setup-guides).
-3. Complete the OAuth sign-in when prompted.
-
-v2 covers everything v1 did, plus feeds, analytics, keyword management, and notification destinations.
 
 ---
 
