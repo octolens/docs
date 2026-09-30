@@ -1,68 +1,45 @@
----
-title: Company Context
-description: Tell Octolens about your business so the AI can judge which mentions are actually relevant to you.
----
-
-Your company context is the single biggest lever on relevance quality. The AI uses it to decide whether a post actually matters to your brand. This is especially important if your brand name is a common word ("Arc," "Modal," "Stripe").
+Your company context is the biggest lever on relevance. The AI uses it to decide whether a post is about you, which matters most when your brand is a common word like "Arc," "Modal," or "Stripe."
 
 <Note>
-Octolens fills in your company context automatically during onboarding based on your website. You can edit it at any time. From the moment you save, the AI uses the updated context when scoring **new** posts. Existing mentions keep their original scoring.
+Octolens fills in your company context from your website during onboarding. Edit it any time in **Settings → Company Profile**. Changes apply to new posts; existing mentions keep their scores.
 </Note>
-
-Go to **Settings → Company Profile** in your workspace to review or edit it.
 
 <Frame caption="The fields that shape AI relevance scoring.">
   <img src="/images/settings-company-profile-new.png" alt="Company Profile settings tab with Company name, Company description, Product Use Cases, X/Twitter account, and LinkedIn account fields" />
 </Frame>
 
-## What to fill in
+## Fields
 
-**Company name** and **Company description** are required. The rest is optional but recommended. The more context you give, the fewer irrelevant mentions you'll see.
+**Company name** and **Company description** are required. The other fields are optional, and each one you fill in cuts irrelevant mentions.
 
-### Company name
+| Field | What to enter | Example |
+| --- | --- | --- |
+| Company name | Your company or product name as it appears publicly | `Octolens` |
+| Company description | Two to three sentences on what you do, how it works, and who it's for. Include your core use cases, the platforms or tech involved, and the outcome for users. | See below |
+| Product use cases | The main jobs your product does. Click **\+** to add each one as its own entry. | See below |
+| X/Twitter account | Your handle without the `@` | `Octolens` |
+| LinkedIn account | The part after `linkedin.com/company/` | `Octolens` |
 
-Your company or product name as it appears publicly.
+**Example description**
 
-> Example: `Octolens`
+> Octolens is a brand monitoring and social listening platform for SaaS, AI, and developer-focused companies. It monitors mentions across platforms like Reddit, X, LinkedIn, Hacker News, GitHub, YouTube, podcasts, newsletters, and news, then uses AI to filter noise and surface the most relevant brand, competitor, and pain-point conversations. Teams use it to get alerts in Slack, email, webhooks, or via API/MCP so they can respond faster and stay close to market sentiment.
 
-### Company description
-
-Two to three sentences covering what you do, how it works, and who it's for. Go beyond your homepage one-liner and include your core use cases, the platforms or tech involved, and the outcome for users.
-
-> **Example:** Octolens is a brand monitoring and social listening platform for SaaS, AI, and developer-focused companies. It monitors mentions across platforms like Reddit, X, LinkedIn, Hacker News, GitHub, YouTube, podcasts, newsletters, and news, then uses AI to filter noise and surface the most relevant brand, competitor, and pain-point conversations. Teams use it to get alerts in Slack, email, webhooks, or via API/MCP so they can respond faster and stay close to market sentiment.
-
-### Product use cases
-
-A list of the main jobs your product does for customers. Click the **+** next to "Product Use Cases" to add each one as its own entry. Short sentences work better than a single long paragraph.
-
-Good use cases are concrete and outcome-oriented:
+**Example use cases.** Short, concrete entries work better than one long paragraph:
 
 - Track brand mentions across social, community, and media channels so teams can respond quickly.
 - Monitor competitor names and category keywords to understand market sentiment and share of voice.
 - Detect pain-point and buying-signal conversations on Reddit, X, LinkedIn, Hacker News, and GitHub.
 - Route mention data into Slack, email, webhooks, API, or MCP-powered agent workflows.
 
-### X/Twitter account
+## Keep it current
 
-Your brand's X/Twitter handle without the `@`.
-
-> Example: `Octolens`
-
-### LinkedIn account
-
-Your company's LinkedIn slug, the part after `linkedin.com/company/`.
-
-> Example: `Octolens`
-
-## When to update your context
-
-Update Company Profile whenever your positioning, pricing model, or core use cases change. The AI re-uses this context every time it scores a new post, so keeping it current keeps your relevance high.
+Update your company context when your positioning, pricing model, or core use cases change. The AI reads it every time it scores a new post.
 
 <Tip>
-If you're seeing too many irrelevant mentions, start here before tweaking keyword settings. Most noise problems trace back to thin company context.
+Seeing too many irrelevant mentions? Check your company context before you change keyword settings. Thin context causes most noise.
 </Tip>
 
 ## Next steps
 
-- [Choose your keywords →](/quickstart/keywords)
-- [How AI Relevance & Tags work](/learn/ai-relevance)
+- [Choose your keywords](/quickstart/keywords)
+- [How AI relevance and tags work](/learn/ai-relevance)
