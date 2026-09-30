@@ -26,7 +26,6 @@
               "quickstart/company-context",
               "quickstart/keywords",
               "quickstart/keyword-settings",
-              "quickstart/global-keyword-settings",
               "quickstart/team-members"
             ]
           },
@@ -212,6 +211,10 @@
     {
       "source": "/skill/overview",
       "destination": "/cli/scripting/ai-agents"
+    },
+    {
+      "source": "/quickstart/global-keyword-settings",
+      "destination": "/quickstart/keyword-settings#global-settings"
     }
   ],
   "navbar": {
