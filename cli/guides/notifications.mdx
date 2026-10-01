@@ -112,15 +112,23 @@ You need a saved feed first; `octolens feeds list` shows yours, and the
 
 ## What Slack messages contain
 
-Short social posts keep their original notification layout and text. When a
-long post must be shortened, Slack instead shows a bounded excerpt centered on
-the first whole monitored keyword available in the source text. Ellipses mark
-the excerpt as partial, and the matched keyword is emphasized. When the mention
-has an existing relevance explanation, Slack shows it beneath the excerpt as
-smaller italic context without an extra label. If an upstream provider supplied
-only a truncated opening and omitted the matched region, the available source
-opening takes the place of the matched excerpt. Use **See post** to open the
-complete source in either case.
+Every card has the same structure; only the body text differs by source.
+
+- **Long-form sources** (LinkedIn, news, web pages, newsletters, podcast and
+  YouTube descriptions, DEV and Medium articles) always show one sentence
+  (at most about 280 characters) around the first whole monitored keyword,
+  plus the relevance explanation — never the full source text. Markdown
+  formatting scraped with the page (tables, headings, lists, bold) is
+  flattened to plain text.
+- **Every other source** shows a post of up to about 280 characters in full.
+  A longer post becomes a bounded excerpt of about that length centered on
+  the first whole monitored keyword, plus the relevance explanation.
+
+Ellipses mark an excerpt as partial, and the matched keyword is the only
+emphasized text in the body. The relevance explanation appears beneath the
+body as smaller italic context without an extra label (it is omitted when
+there is none). If the keyword does not appear in the source text, the card
+shows its opening instead. Use **See post** to open the complete source.
 
 ## Webhooks
 
