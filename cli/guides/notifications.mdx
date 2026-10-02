@@ -120,15 +120,20 @@ Every card has the same structure; only the body text differs by source.
   plus the relevance explanation — never the full source text. Markdown
   formatting scraped with the page (tables, headings, lists, bold) is
   flattened to plain text.
-- **Every other source** shows a post of up to about 280 characters in full.
-  A longer post becomes a bounded excerpt of about that length centered on
-  the first whole monitored keyword, plus the relevance explanation.
+- **Every other source** shows a post of up to about 280 characters in full,
+  with the first whole monitored keyword in **bold**. A longer post becomes a
+  bounded excerpt of about that length centered on that keyword, plus the
+  relevance explanation.
 
 Ellipses mark an excerpt as partial, and the matched keyword is the only
 emphasized text in the body. The relevance explanation appears beneath the
 body as smaller italic context without an extra label (it is omitted when
 there is none). If the keyword does not appear in the source text, the card
-shows its opening instead. Use **See post** to open the complete source.
+shows its opening instead. On short cards, occurrences inside a link or
+URL, inline code or italic text are passed over in favour of the next one, and
+nothing is bolded if none is left. If the first occurrence is already bold in
+the post, the card keeps the author's formatting and adds no other emphasis.
+Use **See post** to open the complete source.
 
 ## Webhooks
 
