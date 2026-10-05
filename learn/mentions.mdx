@@ -1,6 +1,6 @@
 ---
 title: "Mentions"
-description: "What a mention is, what Octolens stores for each one, and what you can do with it."
+description: "What a mention is, what Octolens stores for each one, what counts toward your monthly quota, and how to keep usage under control."
 ---
 
 A mention is one post, comment, article, episode or review that contains one of your keywords. Octolens collects mentions from every platform your keywords run on and stores each one once, even when it matches several keywords.
@@ -13,7 +13,7 @@ A mention is one post, comment, article, episode or review that contains one of 
 | **Platform and link** | Where the mention was published, with a link to the original. |
 | **Author** | Handle, display name, profile link and, where the platform shares it, follower count. |
 | **Keywords** | Every keyword that matched. |
-| **Relevance** | High, Medium or Low, with a one-sentence reason. See [AI Relevance & Tags](/learn/ai-relevance). |
+| **Relevance** | Relevant or not relevant, with a one-sentence reason. See [AI Relevance & Tags](/learn/ai-relevance). |
 | **Tags** | AI labels such as Buy Intent, Bug Report or Competitor Mention. |
 | **Sentiment** | Positive, Neutral or Negative. See [Sentiment Analysis](/learn/sentiment). |
 | **Language** | The detected language of the text. |
@@ -23,9 +23,7 @@ Review mentions also carry the star rating and any reply from the business. See 
 
 ## Relevant and all mentions
 
-Octolens collects every mention that matches a keyword, then the AI scores it. Your feeds, the Dashboard and alerts show **relevant** mentions (High and Medium) by default. Low-relevance mentions stay in the **All mentions** feed, so you can check what the AI filtered out.
-
-Every collected mention counts toward your monthly quota, relevant or not. See [Mention Limits](/learn/mention-limits).
+Octolens collects every mention that matches a keyword, then the AI decides whether it's relevant to your business. Your feeds, the Dashboard and alerts show **relevant** mentions by default. Mentions the AI marks not relevant stay in the **All mentions** feed, so you can check what it filtered out.
 
 ## What you can do with a mention
 
@@ -34,7 +32,108 @@ Every collected mention counts toward your monthly quota, relevant or not. See [
 - **Bookmark it** to come back later.
 - **Send it on.** Feeds route mentions to [Slack, email or webhooks](/quickstart/destinations), and the [API](/api/v2/overview) and [AI assistants](/ai-assistants/claude-desktop) can read them.
 
-## Next steps
+## Your monthly mention quota
 
-- [Feeds](/quickstart/feeds): group mentions into saved views
-- [Mention Limits](/learn/mention-limits): what counts toward your quota
+Every Octolens plan includes a monthly mention quota. On paid plans, Flex mentions are on by default: when you go past your quota, collection keeps running and each extra mention costs your plan's rate.
+
+### What counts toward your limit
+
+**Every mention Octolens collects for your keywords counts as one**, whether the AI marks it relevant or not.
+
+That's why your **mentions used** counter (in the sidebar and in **Settings → Plans & Billing**) is almost always higher than what you see in your feeds or on the Dashboard. Not-relevant mentions are hidden from view by default but still count against your quota.
+
+To see everything that's been collected:
+
+<Steps>
+  <Step title="Open the Dashboard">
+    From the sidebar.
+  </Step>
+  <Step title="Switch the Mentions over time chart to Relevance">
+    Use the breakdown control in the top right of the chart. The bars split into relevant and not-relevant mentions.
+  </Step>
+  <Step title="Filter by keyword">
+    Use the keyword picker above the chart to see which keywords drive the most volume.
+  </Step>
+</Steps>
+
+<Note>
+  **Keyword context doesn't reduce mention intake.** The **Keyword context** field in [Keyword Settings](/quickstart/keyword-settings) helps the AI decide what's relevant, but it does **not** stop mentions from being collected. To reduce usage, use the include and exclude rules below.
+</Note>
+
+### How mention intake works
+
+When you sign up and choose keywords during onboarding, Octolens looks back **7 days** and collects older mentions per platform. For any keyword you add later, it also goes back 7 days.
+
+These first mentions from onboarding and new keywords don't count toward your monthly quota. Every new mention after that counts as one.
+
+<Warning>
+  **Watch broad keywords during onboarding.** After onboarding, check the **All mentions** feed to see how many mentions are coming in and whether the volume fits your plan. Then adjust your keywords as described below.
+</Warning>
+
+### Reduce your mention usage
+
+If a keyword uses too much of your quota, open its **Keyword Settings** from the **Keywords** page (click **Edit** on its row) and use any of these:
+
+- **Posts must ALSO include (ANY OF / ALL OF).** Require additional terms alongside your keyword. For example, `Cursor` ANY OF `coding, AI, IDE` filters out posts about computer mice.
+- **Negative terms.** Exclude mentions that contain certain words. For example, `Cursor` NOT `mouse, click`.
+- **Negative authors.** Exclude specific accounts: your own company accounts, employees, or known noisy posters.
+- **Wildcard negative terms.** Exclude patterns like `beta.*` to filter out version strings or substrings.
+- **Exact match.** Keep this **on** for common-word brands so partial matches don't pull in unrelated posts.
+- **Case sensitive.** Turn it on for acronyms (e.g. `RAG`) so you don't catch every use of the lowercase word.
+
+For cleanup across every keyword, use [Global settings](/quickstart/keyword-settings#global-settings) for negative terms, negative authors, allowed subreddits, excluded subreddits, and excluded GitHub repositories.
+
+You can also **pause** a noisy keyword from its row on the **Keywords** page. The keyword stays in your workspace but stops collecting mentions until you resume it.
+
+### What happens when you go over your limit
+
+We email you when you reach 80% of your quota and again when you go over it.
+
+With **Flex mentions** on, Octolens keeps collecting and bills each extra mention at your plan's rate: \$0.013 on Pro, \$0.01 on Scale. To control the cost, open **Settings → Plans & Billing** and set a monthly spend cap or turn Flex mentions off. With Flex off, new mentions pause until your next billing cycle.
+
+For a bigger quota, [upgrade your plan](https://app.octolens.com/me/settings?tab=plans).
+
+### Edge cases worth knowing
+
+**Deleted keywords still count this cycle.** Mentions collected this billing cycle from a keyword you've since deleted still count against your quota, but they don't appear on the Dashboard, which only shows active keywords. This can make Dashboard totals look lower than your "mentions used" counter.
+
+**Your own company posts can count.** If your own posts match your keyword, they count too. Add your handles as **Negative authors** in Keyword Settings, or in [Global settings](/quickstart/keyword-settings#global-settings), to exclude them.
+
+## Why am I not getting mentions?
+
+If you see zero or very few mentions but your counter has plenty of headroom, it's almost always a keyword setup issue.
+
+### 1. Incorrect use of "Posts must ALSO include" (ANY OF / ALL OF)
+
+This is the most frequent cause. With include terms added, Octolens **only looks for posts where your keyword appears together with the additional terms**. It does not look for the keyword alone.
+
+Common pitfalls:
+
+- **ALL OF instead of ANY OF.** ALL OF requires every extra term to appear in the post. It's strict and usually works best with one extra term.
+- **Exact match on additional terms.** Each extra term must appear in the post exactly as written.
+- **Quotation marks.** Writing `"AI"` looks for the literal text with quotes. Don't quote.
+- **Comma-separated, not space-separated.** Use `ai, AI, artificial intelligence`, not `ai AI artificial intelligence`.
+- **Don't repeat your keyword as an extra term.** That requires the term to appear twice in the same post.
+- **Broad keywords with AND/OR.** Because of API limits, very broad keywords (e.g. `Brand`, `Hiring`, `Strategy`) combined with extra terms may miss posts. Use a narrower keyword instead.
+
+### 2. You've reached your monthly mention limit
+
+If you've hit your quota and Flex mentions are off, new mentions pause. See [What happens when you go over your limit](#what-happens-when-you-go-over-your-limit).
+
+### 3. Keyword spelling or formatting errors
+
+Check your keyword for typos, accidental quotation marks, or special characters.
+
+### 4. Case sensitivity is turned on
+
+With **Case sensitive** on in [Keyword Settings](/quickstart/keyword-settings), only exact-case matches show up. Keep it **off** unless you're monitoring an acronym (e.g. `RAG`) or a case-specific brand.
+
+### 5. Broad keywords may hit platform or API limits
+
+Some platforms and APIs cap how many mentions they return when a keyword is too broad. A narrower keyword (e.g. `brand tracking tool` instead of `brand`) gives more relevant and consistent mentions.
+
+See [Tracked Platforms](/learn/platforms/overview) for platform-specific limits.
+
+---
+
+We're happy to review your keywords and settings with you. Email [hi@octolens.com](mailto:hi@octolens.com) or write in the in-app chat. You can also [book a 15-minute call with Charlotte](https://cal.link/octolens-demo) and we'll do it live.
