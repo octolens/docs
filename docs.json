@@ -50,12 +50,22 @@
             ]
           },
           {
+            "group": "AI Assistants",
+            "pages": [
+              "ai-assistants/claude-code",
+              "ai-assistants/claude-desktop",
+              "ai-assistants/chatgpt",
+              "ai-assistants/cursor"
+            ]
+          },
+          {
             "group": "Concepts",
             "pages": [
               "learn/dashboard",
+              "learn/mentions",
               "learn/mention-limits",
-              "quickstart/feeds",
               "learn/ai-relevance",
+              "quickstart/feeds",
               "learn/sentiment"
             ]
           },
@@ -74,7 +84,6 @@
             "group": "MCP Server",
             "pages": [
               "mcp/v2/overview",
-              "mcp/v2/setup-guides",
               "mcp/v2/tools",
               "mcp/v2/use-cases"
             ]
@@ -202,10 +211,6 @@
       "destination": "/mcp/v2/overview"
     },
     {
-      "source": "/mcp/setup-guides",
-      "destination": "/mcp/v2/setup-guides"
-    },
-    {
       "source": "/mcp/use-cases",
       "destination": "/mcp/v2/use-cases"
     },
@@ -216,6 +221,14 @@
     {
       "source": "/quickstart/global-keyword-settings",
       "destination": "/quickstart/keyword-settings#global-settings"
+    },
+    {
+      "source": "/mcp/v2/setup-guides",
+      "destination": "/mcp/v2/overview#setup-guides"
+    },
+    {
+      "source": "/mcp/setup-guides",
+      "destination": "/mcp/v2/overview#setup-guides"
     }
   ],
   "navbar": {

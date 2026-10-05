@@ -1,0 +1,40 @@
+---
+title: "Mentions"
+description: "What a mention is, what Octolens stores for each one, and what you can do with it."
+---
+
+A mention is one post, comment, article, episode or review that contains one of your keywords. Octolens collects mentions from every platform your keywords run on and stores each one once, even when it matches several keywords.
+
+## What each mention includes
+
+| Field | What it tells you |
+| --- | --- |
+| **Text** | The post body, plus the title on platforms that have one, like Reddit or news. |
+| **Platform and link** | Where the mention was published, with a link to the original. |
+| **Author** | Handle, display name, profile link and, where the platform shares it, follower count. |
+| **Keywords** | Every keyword that matched. |
+| **Relevance** | High, Medium or Low, with a one-sentence reason. See [AI Relevance & Tags](/learn/ai-relevance). |
+| **Tags** | AI labels such as Buy Intent, Bug Report or Competitor Mention. |
+| **Sentiment** | Positive, Neutral or Negative. See [Sentiment Analysis](/learn/sentiment). |
+| **Language** | The detected language of the text. |
+| **Engagement** | Likes, replies, reposts or upvotes on platforms that report them. |
+
+Review mentions also carry the star rating and any reply from the business. See [Customer reviews](/learn/platforms/customer-reviews).
+
+## Relevant and all mentions
+
+Octolens collects every mention that matches a keyword, then the AI scores it. Your feeds, the Dashboard and alerts show **relevant** mentions (High and Medium) by default. Low-relevance mentions stay in the **All mentions** feed, so you can check what the AI filtered out.
+
+Every collected mention counts toward your monthly quota, relevant or not. See [Mention Limits](/learn/mention-limits).
+
+## What you can do with a mention
+
+- **Mark it relevant or not relevant.** Your feedback updates the mention and helps the AI on your workspace.
+- **Mark it engaged** once someone on your team has replied or acted on it, so others can skip it.
+- **Bookmark it** to come back later.
+- **Send it on.** Feeds route mentions to [Slack, email or webhooks](/quickstart/destinations), and the [API](/api/v2/overview) and [AI assistants](/ai-assistants/claude-desktop) can read them.
+
+## Next steps
+
+- [Feeds](/quickstart/feeds): group mentions into saved views
+- [Mention Limits](/learn/mention-limits): what counts toward your quota

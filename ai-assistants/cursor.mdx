@@ -1,0 +1,50 @@
+---
+title: "Cursor"
+description: "Connect Octolens to Cursor and use your mentions in Agent mode."
+---
+
+You add Octolens to your Cursor config and sign in with your Octolens account. There's no API key to paste.
+
+<Tip>
+You can also start this from the app: **Settings → MCP → Setup Octolens MCP** walks you through the same steps.
+</Tip>
+
+<Steps>
+  <Step title="Open MCP settings">
+    Open the Command Palette (`⌘ + Shift + P` on Mac, `Ctrl + Shift + P` on Windows), search for "MCP" and select **Add new global MCP server**.
+
+    Or edit the config file directly:
+
+    - **macOS/Linux:** `~/.cursor/mcp.json`
+    - **Windows:** `%USERPROFILE%\.cursor\mcp.json`
+  </Step>
+  <Step title="Add Octolens">
+    ```json
+    {
+      "mcpServers": {
+        "octolens": {
+          "url": "https://app.octolens.com/api/mcp/v2"
+        }
+      }
+    }
+    ```
+  </Step>
+  <Step title="Sign in">
+    Save the file, open **Cursor Settings → MCP**, click refresh, then click **Authenticate** on the Octolens entry. Sign in to Octolens in the browser tab that opens. Use the Octolens tools in Agent mode.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Cursor setup steps for Octolens](/images/mcp-v2-cursor.png)
+</Frame>
+
+## Try it
+
+- "Find feature requests about our CLI in Octolens and draft issues for them."
+- "Which competitor got the most negative mentions this month?"
+
+## Next steps
+
+- [Use cases](/mcp/v2/use-cases): prompts that work well
+- [Tools Reference](/mcp/v2/tools): everything Cursor can do in your workspace
+- [API](/api/v2/overview) and [CLI](/cli/overview): for scripts and automations
