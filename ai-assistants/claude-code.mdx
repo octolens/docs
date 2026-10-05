@@ -1,0 +1,47 @@
+---
+title: "Claude Code"
+description: "Connect Octolens to Claude Code and work with your mentions from the terminal."
+---
+
+You add Octolens with one command and sign in with your Octolens account. There's no API key to paste.
+
+<Tip>
+You can also start this from the app: **Settings → MCP → Setup Octolens MCP** walks you through the same steps.
+</Tip>
+
+<Steps>
+  <Step title="Add the server">
+    ```bash
+    claude mcp add --transport http octolens \
+      "https://app.octolens.com/api/mcp/v2"
+    ```
+
+    The server now shows as `needs authentication`. The next step signs you in.
+  </Step>
+  <Step title="Sign in">
+    Run `/mcp` inside Claude Code and pick **octolens → Authenticate**. A browser tab opens. Sign in to Octolens and approve the connection. The server then shows as connected:
+
+    ```text
+    /mcp
+    ⎿ MCP Server Status
+      • octolens: connected
+    ```
+  </Step>
+</Steps>
+
+Add `--scope user` to use Octolens in every project, or `--scope project` to share it with your team through `.mcp.json`.
+
+<Frame>
+  ![Claude Code setup steps for Octolens](/images/mcp-v2-claude-code.png)
+</Frame>
+
+## Try it
+
+- "Pull this week's bug reports from Octolens and group them by feature."
+- "Add 'vercel deployment' as a keyword, Reddit only."
+
+## Next steps
+
+- [Use cases](/mcp/v2/use-cases): prompts that work well
+- [Tools Reference](/mcp/v2/tools): everything Claude can do in your workspace
+- [API](/api/v2/overview) and [CLI](/cli/overview): for scripts and automations

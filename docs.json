@@ -50,9 +50,19 @@
             ]
           },
           {
+            "group": "AI Assistants",
+            "pages": [
+              "ai-assistants/claude-code",
+              "ai-assistants/claude-desktop",
+              "ai-assistants/chatgpt",
+              "ai-assistants/cursor"
+            ]
+          },
+          {
             "group": "Concepts",
             "pages": [
               "learn/dashboard",
+              "learn/mentions",
               "learn/mention-limits",
               "quickstart/feeds",
               "learn/ai-relevance",
