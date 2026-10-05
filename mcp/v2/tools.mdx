@@ -3,7 +3,7 @@ title: "Tools Reference"
 description: "Every tool the Octolens MCP server gives your AI assistant (mentions, analytics, keywords, feeds, destinations, workspace, and usage), with what each does and when your assistant uses it."
 ---
 
-The Octolens MCP server exposes 23 tools. You don't call these directly — your AI assistant picks the right tool based on your request. This reference is for understanding what the assistant can do and for writing precise prompts.
+The Octolens MCP server exposes more than 40 tools. The exact set depends on your workspace's features. You don't call these directly — your AI assistant picks the right tool based on your request. This reference is for understanding what the assistant can do and for writing precise prompts.
 
 Tools marked <Icon icon="pen" /> **write** mutate workspace state (create or change keywords, feeds, and destinations). Everything else is read-only.
 
@@ -16,6 +16,20 @@ Tools marked <Icon icon="pen" /> **write** mutate workspace state (create or cha
 | `list_mentions` | Fetch posts the pipeline collected for your workspace. Filter by source, sentiment, date range, keyword IDs, tags, language, follower counts, or engagement. Supports AND-only and advanced AND/OR filter logic, plus pagination. Returns newest-first. |
 | `analytics` | Run a read-only SQL `SELECT` against your mentions data for aggregations, counts, trends, and breakdowns (e.g. share of voice, sentiment over time). Not for listing individual mentions. |
 | `analytics_context` | Returns the analytics schema and valid values (sources, etc.). The assistant calls this before composing an `analytics` query. |
+| `get_mention` | Fetch one mention with full text, author, URL, relevance, sentiment, tags and matched keywords. |
+| `list_relevant_mentions` | The newest high-relevance mentions, any sentiment. |
+| `list_negative_mentions` | The newest high-relevance negative mentions, the ones most likely to need a reply. |
+| `list_mentions_by_author` | Mentions from one author on one platform, by handle or LinkedIn profile URL. |
+| `search_mentions` | Run a one-time search of your platforms for any phrase. Results stay on the search and don't join your feed. New results count against your mention quota. |
+| `get_search` | Check a running one-time search and get its results. |
+| `mentions_summary` | Total, relevant and negative mentions for a period, compared with the period before. |
+| `volume_over_time` | Mentions per day, week or month, optionally split by keyword, platform or sentiment. |
+| `breakdown` | Share of mentions by platform, keyword, tag, language or author. |
+| `top_keywords` | Keywords ranked by volume, with their high-relevance share. |
+| `top_sources` | Platforms ranked by volume, with their high-relevance share. |
+| `sentiment_by_keyword` | Positive, neutral and negative counts per keyword. |
+| `export_mentions` | Export up to 5,000 matching mentions as a CSV download link. Limited to 5 exports per hour. |
+| `mention_feedback` <Icon icon="pen" /> | Mark a mention relevant or not relevant, or engaged or not engaged. |
 
 **Example prompts**
 
@@ -32,6 +46,8 @@ A **keyword** is a phrase (brand, competitor, product, or topic) Octolens contin
 | --- | --- |
 | `list_keywords` | List every keyword the workspace monitors, with IDs, platforms, tag, and status. |
 | `get_keyword` | Fetch one keyword's full configuration by ID. |
+| `find_keyword` | Find a keyword's ID from its text. |
+| `keyword_health` | Check whether a keyword is noisy: weekly trend, top noise terms, authors and domains, and suggested exclusions. |
 | `add_keyword` <Icon icon="pen" /> | Start monitoring a new phrase. Only the phrase is required — the AI fills in context, exclusions, and platforms from your company profile. Counts against your keyword limit. |
 | `update_keyword` <Icon icon="pen" /> | Change a keyword's configuration (platforms, exclusions, context, tag, etc.). |
 | `pause_keyword` <Icon icon="pen" /> | Pause or resume collection for a keyword without deleting it. |
@@ -55,7 +71,8 @@ A **feed** is a saved filter preset (a "view"), optionally wired to one or more 
 | Tool | What it does |
 | --- | --- |
 | `list_feeds` | List saved feeds with their filters and any wired-up destinations. |
-| `create_feed` <Icon icon="pen" /> | Create a feed with simple (AND) or advanced (AND/OR) filters, optionally with notification destinations. |
+| `get_feed` | Fetch one feed with its filters and destinations. |
+| `create_feed` <Icon icon="pen" /> | Create a feed with simple (AND) or advanced (AND/OR) filters, including content terms, optionally with notification destinations. |
 | `update_feed` <Icon icon="pen" /> | Change a feed's name, icon, or filters. |
 | `delete_feed` <Icon icon="pen" /> | Permanently delete a feed. |
 | `add_feed_destination` <Icon icon="pen" /> | Attach an email, Slack, or webhook destination (with its own cadence) to a feed. |
@@ -81,6 +98,10 @@ Slack destinations need channel **IDs**, not names — the assistant calls `sear
 | `get_usage` | Return current usage against your plan limits (e.g. keyword and mention headroom). |
 | `get_global_filters` | Return the workspace-wide global filters applied across all queries. |
 | `list_tags` | List valid tag values (AI-assigned topical labels like `competitor_mention`, `buy_intent`, `bug_report`) for use in mention filters. |
+| `workspace_signals` | Up to 5 things that need attention, such as a noisy keyword, limit risk or a broken destination, each with a suggested action. |
+| `app_link` | Build a direct link to a page in the Octolens app. |
+| `list_workspaces` | List the workspaces you can access. |
+| `select_workspace` | Choose which workspace your assistant works in. |
 
 **Example prompts**
 
