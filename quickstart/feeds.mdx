@@ -68,9 +68,17 @@ You can also open any existing feed, tweak the filters, and save changes, or dup
 
 Scope to one or more of your tracked keywords. Example: narrow a feed to just `Octolens` + `social listening`.
 
+### Content
+
+Keep posts that also mention certain words. Add 1 to 15 terms, and Octolens keeps posts that mention at least one of them. Matching uses whole words in the title and body and ignores case, like keyword additional terms.
+
+Use it for a topic that isn't a keyword or a tag. For example, pick your brand keyword and add `tracing, spans, LangGraph`.
+
+In **Advanced filter**, Content has three options: **also mention any of**, **also mention all of**, and **don't mention**.
+
 ### Platform
 
-Filter by source. Options: LinkedIn, Stack Overflow, GitHub, DEV, Reddit, Hacker News, Twitter/X, YouTube, TikTok, Bluesky, Newsletter, and, once you have connected a review page, Trustpilot, App Store, and Google Play. See [Tracked Platforms](/learn/platforms/overview) for what's monitored where.
+Filter by source. Options: LinkedIn, Instagram, Stack Overflow, GitHub, DEV, Reddit, Hacker News, Twitter/X, YouTube, TikTok, Bluesky, Newsletter, and, once you have connected a review page, Trustpilot, App Store, and Google Play. See [Tracked Platforms](/learn/platforms/overview) for what's monitored where.
 
 ### Review rating
 
@@ -102,7 +110,7 @@ When simple AND-across-filters isn't enough, use Advanced filter to build nested
 
 Each rule has three parts:
 
-- **Field:** pick a filter like Tag, Sentiment, Keyword, Platform, Language, or X Followers
+- **Field:** pick a filter like Tag, Sentiment, Keyword, Platform, Language, Content, or X Followers
 - **Operator:** for example `Contains`, or a comparator for numeric fields
 - **Values:** one or more values for that field
 
