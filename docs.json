@@ -63,7 +63,6 @@
             "pages": [
               "learn/dashboard",
               "learn/mentions",
-              "learn/mention-limits",
               "learn/ai-relevance",
               "quickstart/feeds",
               "learn/sentiment"
@@ -229,6 +228,10 @@
     {
       "source": "/mcp/setup-guides",
       "destination": "/mcp/v2/overview#setup-guides"
+    },
+    {
+      "source": "/learn/mention-limits",
+      "destination": "/learn/mentions#your-monthly-mention-quota"
     }
   ],
   "navbar": {
