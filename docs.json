@@ -33,7 +33,6 @@
             "group": "Tracked platforms",
             "pages": [
               "learn/platforms/overview",
-              "learn/platforms/instagram",
               "learn/platforms/web",
               "learn/platforms/customer-reviews",
               "learn/platforms/newsletter-list"
@@ -232,6 +231,10 @@
     {
       "source": "/learn/mention-limits",
       "destination": "/learn/mentions#your-monthly-mention-quota"
+    },
+    {
+      "source": "/learn/platforms/instagram",
+      "destination": "/learn/platforms/overview"
     }
   ],
   "navbar": {
