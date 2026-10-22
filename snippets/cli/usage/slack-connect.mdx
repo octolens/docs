@@ -7,4 +7,5 @@
 | Flag | Type | Required (headless) | Description |
 |---|---|---|---|
 | `--no-browser` | `boolean` | no | Print the authorize URL instead of opening a browser (headless boxes) |
+| `--onboarding` | `boolean` | no | Connect through a one-time link bound to this workspace (the `octolens onboard slack` hand-off): no browser sign-in needed, works over SSH. Under --json it answers at once with the link when none is live. |
 | `--timeout` | `integer` | no | Seconds to wait for the browser OAuth flow to complete (default 120) — this command's own meaning for --timeout, not the global per-request budget. Expiry while unconnected exits 1 (SLACK_CONNECT_TIMEOUT). 0 = just open the URL and return without waiting (check with `slack status`). (default: `120`) |

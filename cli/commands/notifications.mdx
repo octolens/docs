@@ -488,6 +488,7 @@ Connect Slack via the browser OAuth flow, then wait for it to go live
 | Flag | Type | Required (headless) | Description |
 |---|---|---|---|
 | `--no-browser` | `boolean` | no | Print the authorize URL instead of opening a browser (headless boxes) |
+| `--onboarding` | `boolean` | no | Connect through a one-time link bound to this workspace (the `octolens onboard slack` hand-off): no browser sign-in needed, works over SSH. Under --json it answers at once with the link when none is live. |
 | `--timeout` | `integer` | no | Seconds to wait for the browser OAuth flow to complete (default 120) — this command's own meaning for --timeout, not the global per-request budget. Expiry while unconnected exits 1 (SLACK_CONNECT_TIMEOUT). 0 = just open the URL and return without waiting (check with `slack status`). (default: `120`) |
 
 **Examples**
@@ -528,7 +529,7 @@ Example output:
 }
 ```
 
-**Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE. The full map is on [Exit codes](/cli/contract/exit-codes).
+**Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE · `8` CANCELLED. The full map is on [Exit codes](/cli/contract/exit-codes).
 
 ## `octolens slack status`
 

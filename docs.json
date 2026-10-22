@@ -114,6 +114,7 @@
               "cli/install",
               "cli/quickstart",
               "cli/agents",
+              "cli/onboard",
               "cli/init"
             ]
           },

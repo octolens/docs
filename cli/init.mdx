@@ -36,6 +36,10 @@ With `--json`, stdout carries one JSON document with these fields.
 | `steps[].done` | boolean | Whether the observable workspace state satisfies this step. |
 | `steps[].status` | string | One-line description of the current state. |
 | `steps[].commands` | string[] | The exact command(s) a non-interactive caller runs to complete the step. |
+| `onboarding` | object \| null | The `octolens onboard` setup when this workspace has one, else `null` (additive; never affects the exit code or the other fields). On a terminal, `init` hands an unfinished Sonar setup to `octolens onboard`. |
+| `onboarding.step` | enum: `account`, `website`, `keywords`, `mentions`, `feeds`, `slack`, `mcp`, `complete` | The setup's current step (`onboard status`'s `step`). |
+| `onboarding.status` | enum: `needs_input`, `running`, `needs_human`, `pending_review`, `done` | The setup's status (`onboard status`'s `status`). |
+| `onboarding.next` | object \| null | `onboard status`'s `nextAction` (`kind`, `command`, `argv`, …): the move that continues the setup; `null` once it is done. |
 
 A step may additionally carry a non-gating `tip` (`{status, commands}`) naming optional follow-up state (e.g. pending AI keyword suggestions); tips never affect `fullyOnboarded`.
 
@@ -66,10 +70,88 @@ Without `--json`: A terminal walks the pending steps interactively and prints a 
         "octolens keywords add --term 'acme corp'"
       ]
     }
-  ]
+  ],
+  "onboarding": {
+    "step": "keywords",
+    "status": "needs_input",
+    "next": {
+      "kind": "decide",
+      "command": "octolens onboard keywords --confirm --json",
+      "argv": [
+        "onboard",
+        "keywords",
+        "--confirm",
+        "--json"
+      ],
+      "default": true,
+      "humanPrompt": "Track these 5 keywords? This creates your workspace.",
+      "retryAfterSeconds": null,
+      "url": null
+    }
+  }
 }
 ```
 
 </Accordion>
+
+**Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE · `8` CANCELLED. The full map is on [Exit codes](/cli/contract/exit-codes).
+
+## `octolens mcp connect`
+
+Connect Claude Code, Cursor or Codex to Octolens's MCP server: write its MCP config (the tool signs in to Octolens on first use)
+
+**Arguments**
+
+| Argument | Type | Required | Description |
+|---|---|---|---|
+| `CLIENT` | `enum` | optional | The tool: claude-code, cursor, codex, or print (show the setup to paste) |
+
+**Flags**
+
+| Flag | Type | Required (headless) | Description |
+|---|---|---|---|
+| `--scope` | enum: `user`, `project` | no | Where the config goes: user (every project, the default) or project (this directory only; not for Codex) |
+| `--yes` | `boolean` | no | Write the tool's config without a prompt (required headless for claude-code, cursor, codex) |
+
+**Examples**
+
+```bash
+octolens mcp connect
+octolens mcp connect claude-code --yes
+octolens mcp connect cursor --scope project --yes --json
+octolens mcp connect print --json
+```
+
+**Returns**
+
+With `--json`, stdout carries one JSON document with these fields.
+
+| Field | Type | Description |
+|---|---|---|
+| `client` | enum: `claude-code`, `cursor`, `codex`, `print` | The tool connected. |
+| `endpoint` | string | The MCP v2 server written (`<origin>/api/mcp/v2`). |
+| `auth` | string | Always `oauth`: the tool signs in to Octolens on first use; no key is created. |
+| `path` | string \| null | The config file written (cursor, codex); null for claude-code and print. |
+| `backupPath` | string \| null | The `.bak` kept before the first write. |
+| `command` | string \| null | The `claude mcp add` that ran (claude-code). |
+| `snippet` | string \| null | The `mcpServers` snippet to paste (print). |
+
+Re-running leaves exactly one `octolens` entry (an old key-based `/api/mcp` entry is replaced). Writing a tool's config headless needs `--yes` (exit 2); a failed write exits 9 `MCP_CONFIG_WRITE_FAILED`.
+
+Without `--json`: A terminal says what was written, how the tool signs in, and suggests a first question to ask.
+
+Example output:
+
+```json
+{
+  "client": "cursor",
+  "endpoint": "https://app.octolens.com/api/mcp/v2",
+  "auth": "oauth",
+  "path": "/home/jane/.cursor/mcp.json",
+  "backupPath": "/home/jane/.cursor/mcp.json.bak",
+  "command": null,
+  "snippet": null
+}
+```
 
 **Exit codes** — `0` OK · `1` UNEXPECTED · `2` USAGE · `8` CANCELLED. The full map is on [Exit codes](/cli/contract/exit-codes).
