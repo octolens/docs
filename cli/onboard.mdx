@@ -50,7 +50,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `handle.draftId` | string \| null | The setup draft (website scan + proposal). |
 | `handle.proposalId` | string \| null | The keyword proposal. |
 | `completed` | string[] | Steps already done. |
-| `data` | object | The step's data (website: `domain, scanSteps, profile`; keywords: `keywords[{ref, keyword, type}], slots, problems`; mentions: `yourMentions`, `relevant`, `noiseRemoved`, ≤20 relevant `posts`; feeds; slack; mcp: `endpoint` (the MCP v2 OAuth server), `auth`, `clients`, `client`, `connected` — no key is ever created for MCP). |
+| `data` | object | The step's data (website: `domain, scanSteps, profile`; keywords: `keywords[{ref, keyword, type, refinement}], slots, problems` — `refinement` is `{additionalTerms, excludeWords}` on a narrowed keyword (an everyday-word brand: its site and handles, product and category terms, competitors), else null; mentions: `yourMentions`, `relevant`, `noiseRemoved`, ≤20 relevant `posts`; feeds; slack; mcp: `endpoint` (the MCP v2 OAuth server), `auth`, `clients`, `client`, `connected` — no key is ever created for MCP). |
 | `data.trial` | object | Once the workspace exists: `{plan, allowance, startsAt, endsAt}`. `startsAt` is `on_finish` and `endsAt` null until setup finishes — the 7-day clock starts at finish. |
 | `data.alreadyDone` | true | The write had nothing to do (an idempotent re-run). |
 | `data.reviewed` | true | Manual review approved the workspace (the post-review tail). |
@@ -101,12 +101,14 @@ Without `--json`: A terminal runs the guided setup, step by step, and prints whe
       {
         "ref": "k1",
         "keyword": "Acme",
-        "type": "own_brand"
+        "type": "own_brand",
+        "refinement": null
       },
       {
         "ref": "k2",
         "keyword": "LaunchDarkly",
-        "type": "competitor"
+        "type": "competitor",
+        "refinement": null
       }
     ],
     "slots": {
@@ -448,7 +450,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `handle.draftId` | string \| null | The setup draft (website scan + proposal). |
 | `handle.proposalId` | string \| null | The keyword proposal. |
 | `completed` | string[] | Steps already done. |
-| `data` | object | The step's data (website: `domain, scanSteps, profile`; keywords: `keywords[{ref, keyword, type}], slots, problems`; mentions: `yourMentions`, `relevant`, `noiseRemoved`, ≤20 relevant `posts`; feeds; slack; mcp: `endpoint` (the MCP v2 OAuth server), `auth`, `clients`, `client`, `connected` — no key is ever created for MCP). |
+| `data` | object | The step's data (website: `domain, scanSteps, profile`; keywords: `keywords[{ref, keyword, type, refinement}], slots, problems` — `refinement` is `{additionalTerms, excludeWords}` on a narrowed keyword (an everyday-word brand: its site and handles, product and category terms, competitors), else null; mentions: `yourMentions`, `relevant`, `noiseRemoved`, ≤20 relevant `posts`; feeds; slack; mcp: `endpoint` (the MCP v2 OAuth server), `auth`, `clients`, `client`, `connected` — no key is ever created for MCP). |
 | `data.trial` | object | Once the workspace exists: `{plan, allowance, startsAt, endsAt}`. `startsAt` is `on_finish` and `endsAt` null until setup finishes — the 7-day clock starts at finish. |
 | `data.alreadyDone` | true | The write had nothing to do (an idempotent re-run). |
 | `data.reviewed` | true | Manual review approved the workspace (the post-review tail). |
@@ -499,12 +501,14 @@ Without `--json`: A terminal shows the suggested keywords with their legend, let
       {
         "ref": "k1",
         "keyword": "Acme",
-        "type": "own_brand"
+        "type": "own_brand",
+        "refinement": null
       },
       {
         "ref": "k2",
         "keyword": "LaunchDarkly",
-        "type": "competitor"
+        "type": "competitor",
+        "refinement": null
       }
     ],
     "slots": {
@@ -814,7 +818,7 @@ With `--json`, stdout carries one JSON document with these fields.
 | `data.relevant` | integer | Relevant mentions: the ones about you. |
 | `data.noiseRemoved` | integer \| null | Noise removed: what the automatic noise removal took out; null until step 3 is done, and on the classic path (nothing is removed there). |
 | `data.removingNoise` | boolean | The list is ready but the noise removal is still landing (keep polling). |
-| `data.posts` | object[] | Up to 20 relevant mentions (platform, where/author, when, text; `--offset/--limit` reads others). |
+| `data.posts` | object[] | Up to 20 relevant mentions (platform, where/author, when, text; `--offset/--limit` reads others), ordered by platform (X, LinkedIn, Reddit, Hacker News, podcasts, the rest, GitHub last), then sentiment (negative and positive first), then buying / switching / complaint tags, then newest. |
 | `data.trial` | object | `{plan, allowance, startsAt, endsAt}`; `endsAt` stays null until setup finishes. |
 | `needs` | object[] | Always empty: there is nothing to decide. |
 | `nextAction` | object \| null | What to do next: `poll` re-run after `retryAfterSeconds` while the noise is removed; `run` `onboard mentions --json` once done (it continues); once continued, the next step's command. |
@@ -1042,7 +1046,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `handle.draftId` | string \| null | The setup draft (website scan + proposal). |
 | `handle.proposalId` | string \| null | The keyword proposal. |
 | `completed` | string[] | Steps already done. |
-| `data` | object | The step's data (website: `domain, scanSteps, profile`; keywords: `keywords[{ref, keyword, type}], slots, problems`; mentions: `yourMentions`, `relevant`, `noiseRemoved`, ≤20 relevant `posts`; feeds; slack; mcp: `endpoint` (the MCP v2 OAuth server), `auth`, `clients`, `client`, `connected` — no key is ever created for MCP). |
+| `data` | object | The step's data (website: `domain, scanSteps, profile`; keywords: `keywords[{ref, keyword, type, refinement}], slots, problems` — `refinement` is `{additionalTerms, excludeWords}` on a narrowed keyword (an everyday-word brand: its site and handles, product and category terms, competitors), else null; mentions: `yourMentions`, `relevant`, `noiseRemoved`, ≤20 relevant `posts`; feeds; slack; mcp: `endpoint` (the MCP v2 OAuth server), `auth`, `clients`, `client`, `connected` — no key is ever created for MCP). |
 | `data.trial` | object | Once the workspace exists: `{plan, allowance, startsAt, endsAt}`. `startsAt` is `on_finish` and `endsAt` null until setup finishes — the 7-day clock starts at finish. |
 | `data.alreadyDone` | true | The write had nothing to do (an idempotent re-run). |
 | `data.reviewed` | true | Manual review approved the workspace (the post-review tail). |
@@ -1093,12 +1097,14 @@ Without `--json`: A terminal asks to connect Slack, prints a one-time link and w
       {
         "ref": "k1",
         "keyword": "Acme",
-        "type": "own_brand"
+        "type": "own_brand",
+        "refinement": null
       },
       {
         "ref": "k2",
         "keyword": "LaunchDarkly",
-        "type": "competitor"
+        "type": "competitor",
+        "refinement": null
       }
     ],
     "slots": {
@@ -1305,7 +1311,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `handle.draftId` | string \| null | The setup draft (website scan + proposal). |
 | `handle.proposalId` | string \| null | The keyword proposal. |
 | `completed` | string[] | Steps already done. |
-| `data` | object | The step's data (website: `domain, scanSteps, profile`; keywords: `keywords[{ref, keyword, type}], slots, problems`; mentions: `yourMentions`, `relevant`, `noiseRemoved`, ≤20 relevant `posts`; feeds; slack; mcp: `endpoint` (the MCP v2 OAuth server), `auth`, `clients`, `client`, `connected` — no key is ever created for MCP). |
+| `data` | object | The step's data (website: `domain, scanSteps, profile`; keywords: `keywords[{ref, keyword, type, refinement}], slots, problems` — `refinement` is `{additionalTerms, excludeWords}` on a narrowed keyword (an everyday-word brand: its site and handles, product and category terms, competitors), else null; mentions: `yourMentions`, `relevant`, `noiseRemoved`, ≤20 relevant `posts`; feeds; slack; mcp: `endpoint` (the MCP v2 OAuth server), `auth`, `clients`, `client`, `connected` — no key is ever created for MCP). |
 | `data.trial` | object | Once the workspace exists: `{plan, allowance, startsAt, endsAt}`. `startsAt` is `on_finish` and `endsAt` null until setup finishes — the 7-day clock starts at finish. |
 | `data.alreadyDone` | true | The write had nothing to do (an idempotent re-run). |
 | `data.reviewed` | true | Manual review approved the workspace (the post-review tail). |
@@ -1356,12 +1362,14 @@ Without `--json`: A terminal prints the step, its status, the trial and the next
       {
         "ref": "k1",
         "keyword": "Acme",
-        "type": "own_brand"
+        "type": "own_brand",
+        "refinement": null
       },
       {
         "ref": "k2",
         "keyword": "LaunchDarkly",
-        "type": "competitor"
+        "type": "competitor",
+        "refinement": null
       }
     ],
     "slots": {
@@ -1531,7 +1539,7 @@ Step 1 of onboard: watch Octolens read your website, correct the profile it foun
 
 | Flag | Type | Required (headless) | Description |
 |---|---|---|---|
-| `--add` | `string` | no | Add to a list row: competitor=, feature= or account=&lt;value&gt; (repeatable) |
+| `--add` | `string` | no | Add to a list row: competitor=, feature= or account=&lt;value&gt; (repeatable); a competitor may carry its site and X handle: competitor="Monocle monocle.so @monoclehq" |
 | `--confirm` | `boolean` | no | Accept the profile and move on to keywords |
 | `--domain` | `string` | no | Read this website instead (starts a new read, about 20s) |
 | `--heard-from` | `string` | no | How you heard about Octolens (e.g. linkedin, ai-tools:claude) |
@@ -1550,6 +1558,7 @@ octolens onboard website
 octolens onboard website --wait 45 --json
 octolens onboard website --remove competitor=Unleash --confirm --json
 octolens onboard website --set name=Acme --add competitor=GrowthBook --add account=@acmedev --json
+octolens onboard website --add competitor="Monocle monocle.so @monoclehq" --json
 octolens onboard website --domain acme.dev --json
 ```
 
@@ -1570,7 +1579,7 @@ With `--json`, stdout carries one JSON document with these fields.
 | `completed` | string[] | The steps already done. |
 | `data.domain` | string \| null | The website being read. |
 | `data.scanSteps` | object[] | One `{step, status: pending\|ok\|failed\|skipped, line, ms}` per thing the read collects. |
-| `data.profile` | object \| null | What the read found: `name`, `description`, `productAreas[]`, `competitors[]`, `ownAccounts[]`, `protectedVocabulary[]` (Never skip), … Null until read, or when the read failed. |
+| `data.profile` | object \| null | What the read found: `name`, `description`, `productAreas[]`, `competitors[]`, `ownAccounts[]` (each account once: a website by its bare host, no `www.` twin), `protectedVocabulary[]` (Never skip), … Null until read, or when the read failed. |
 | `needs` | object[] | The flags the step still wants: `{flag, kind: decision\|human_value\|optional, default?, choices?, why}`. |
 | `nextAction` | object \| null | `poll` while reading (re-run after `retryAfterSeconds`), `decide` to accept the profile (`humanPrompt` is the question to relay), `ask_human` when the read failed (the name and one-line description only a person can give). `command`, `argv`, `retryAfterSeconds`, `url`. |
 | `alternatives` | object[] | Other commands that apply here, `{command, why}`. |
