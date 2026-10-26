@@ -814,6 +814,7 @@ With `--json`, stdout carries one JSON document with these fields.
 | `handle.draftId` | string \| null | The setup the collection belongs to. |
 | `completed` | string[] | The steps already done (`mentions` once continued). |
 | `data.stage` | enum: `collecting`, `reading`, `optimizing`, `ready` | How far the first collection got (`optimizing` = removing the noise). |
+| `data.pairs` | object | `{expected, settled}`: the keyword × platform searches of the first collection, settled of expected (the collecting stage's measure; `expected` 0 = not counted by this server). |
 | `data.yourMentions` | integer | Your mentions: everything collected (relevant + noise). |
 | `data.relevant` | integer | Relevant mentions: the ones about you. |
 | `data.noiseRemoved` | integer \| null | Noise removed: what the automatic noise removal took out; null until step 3 is done, and on the classic path (nothing is removed there). |
@@ -858,6 +859,10 @@ Without `--json`: A terminal shows the live collection and the noise removal, th
     "stage": "optimizing",
     "progress": 92,
     "found": 214,
+    "pairs": {
+      "expected": 12,
+      "settled": 12
+    },
     "yourMentions": 214,
     "relevant": 84,
     "noiseRemoved": null,
@@ -938,6 +943,10 @@ Once step 3 is done, the same document carries the three numbers and the relevan
     "stage": "ready",
     "progress": 100,
     "found": 214,
+    "pairs": {
+      "expected": 12,
+      "settled": 12
+    },
     "yourMentions": 214,
     "relevant": 84,
     "noiseRemoved": 130,
@@ -1064,7 +1073,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 
 Exactly one document on stdout and nothing on stderr. A refused request (a Sandbox workspace, a second trial, an existing account) prints NO stdout document: it exits non-zero with the error envelope on stderr, whose additive `nextAction` names the recovery (`octolens login` for EMAIL_ALREADY_REGISTERED, `onboard status` for RESPONSE_LOST). The agent loop is `onboard status --json`, then run `nextAction.argv`. At the Slack step with no live link it mints one and answers `open_url` with the URL in `nextAction.url` at once (nothing on stderr); with a live link it waits up to `--wait` for the install. A failed first delivery exits 9 (`SLACK_ROUTE_DELIVERY_FAILED` / `SLACK_ROUTE_DELIVERY_PARTIALLY_FAILED`) with the per-route `deliveries` in the error.
 
-Without `--json`: A terminal asks to connect Slack, prints a one-time link and waits for it, lists where each feed goes (rN change channel, -N email only, u undo, Enter sends as shown) and prints one outcome line per route.
+Without `--json`: A terminal asks to connect Slack, prints a one-time link and waits for it, lists where each feed goes (r1 changes row 1's channel, -1 emails row 1 only, u undo, Enter sends as shown) and prints one outcome line per route.
 
 <Accordion title="Example output">
 
@@ -1210,7 +1219,7 @@ With `--json`, stdout carries one JSON document with these fields.
 
 `status` is `needs_human` and `nextAction.kind` is `ask_human`: only the person can read the emailed code. The pending signup is also saved to `pending-onboarding.json` (0600, no key) in the config dir, so `onboard verify` can omit `--signup-id` on the same machine. A personal email answers `WORK_EMAIL_REQUIRED` (exit 2). Re-running with the same email after a lost `verify` answer picks the same account back up.
 
-Without `--json`: A terminal runs the whole account block: banner, `Work email:`, `Code:`, then the verified line. Ctrl-C exits 8 and keeps the pending code for the next run.
+Without `--json`: A terminal runs the whole account block: banner, `Work email:`, `Code:`, then the verified line. The website is step 1's first question (`Website [acme.dev]:`, Enter keeps the email's domain). Ctrl-C exits 8 and keeps the pending code for the next run.
 
 <Accordion title="Example output">
 
