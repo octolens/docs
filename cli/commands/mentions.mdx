@@ -56,7 +56,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `data[].authorFollowers` | integer \| null | Author follower count at collection time. |
 | `data[].relevance` | enum: `relevant`, `not_relevant` | AI relevance classification (unscored posts collapse to `not_relevant`). |
 | `data[].relevanceComment` | string \| null | The AI's justification for its relevance verdict, when available. |
-| `data[].sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. |
+| `data[].sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. Workspaces on the new relevance engine (gradual rollout) receive sentiment for the company: `Positive` = good news for your company, e.g. a competitor criticised. |
+| `data[].emotion` | enum: `excited`, `satisfied`, `curious`, `confused`, `frustrated`, `angry`, `disappointed`, `concerned`, `neutral` — or null | The author's own emotion, independent of `sentiment` (on the new relevance engine, a post furious at a competitor is `Positive` for you and `angry` here). `null` until scored, for mentions scored before emotion detection existed, and for workspaces not yet on the new relevance engine (gradual rollout). |
 | `data[].language` | string \| null | Detected language as a full lowercase name (`english`, `spanish`, …; `undetermined` when detection fails) — never an ISO code. |
 | `data[].tags` | string[] | AI-assigned topic tags (e.g. `competitor_mention`, `buy_intent`). |
 | `data[].keywords` | object[] | Monitored keywords this mention matched. |
@@ -99,6 +100,7 @@ Without `--json`: A terminal renders the same mention stream as `mentions list`.
       "relevance": "relevant",
       "relevanceComment": "Asks for social-listening tool recommendations — a buying signal.",
       "sentiment": "Neutral",
+      "emotion": "curious",
       "language": "english",
       "tags": [
         "buy_intent"
@@ -129,6 +131,7 @@ Without `--json`: A terminal renders the same mention stream as `mentions list`.
       "relevance": "relevant",
       "relevanceComment": "Direct review from a configured customer-review target.",
       "sentiment": "Positive",
+      "emotion": "satisfied",
       "language": "english",
       "tags": [
         "user_feedback"
@@ -266,7 +269,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `data[].authorFollowers` | integer \| null | Author follower count at collection time. |
 | `data[].relevance` | enum: `relevant`, `not_relevant` | AI relevance classification (unscored posts collapse to `not_relevant`). |
 | `data[].relevanceComment` | string \| null | The AI's justification for its relevance verdict, when available. |
-| `data[].sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. |
+| `data[].sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. Workspaces on the new relevance engine (gradual rollout) receive sentiment for the company: `Positive` = good news for your company, e.g. a competitor criticised. |
+| `data[].emotion` | enum: `excited`, `satisfied`, `curious`, `confused`, `frustrated`, `angry`, `disappointed`, `concerned`, `neutral` — or null | The author's own emotion, independent of `sentiment` (on the new relevance engine, a post furious at a competitor is `Positive` for you and `angry` here). `null` until scored, for mentions scored before emotion detection existed, and for workspaces not yet on the new relevance engine (gradual rollout). |
 | `data[].language` | string \| null | Detected language as a full lowercase name (`english`, `spanish`, …; `undetermined` when detection fails) — never an ISO code. |
 | `data[].tags` | string[] | AI-assigned topic tags (e.g. `competitor_mention`, `buy_intent`). |
 | `data[].keywords` | object[] | Monitored keywords this mention matched. |
@@ -311,6 +315,7 @@ Without `--json`: A terminal run with `--output` prints a one-line summary of wh
       "relevance": "relevant",
       "relevanceComment": "Asks for social-listening tool recommendations — a buying signal.",
       "sentiment": "Neutral",
+      "emotion": "curious",
       "language": "english",
       "tags": [
         "buy_intent"
@@ -341,6 +346,7 @@ Without `--json`: A terminal run with `--output` prints a one-line summary of wh
       "relevance": "relevant",
       "relevanceComment": "Direct review from a configured customer-review target.",
       "sentiment": "Positive",
+      "emotion": "satisfied",
       "language": "english",
       "tags": [
         "user_feedback"
@@ -417,7 +423,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `authorFollowers` | integer \| null | Author follower count at collection time. |
 | `relevance` | enum: `relevant`, `not_relevant` | AI relevance classification (unscored posts collapse to `not_relevant`). |
 | `relevanceComment` | string \| null | The AI's justification for its relevance verdict, when available. |
-| `sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. |
+| `sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. Workspaces on the new relevance engine (gradual rollout) receive sentiment for the company: `Positive` = good news for your company, e.g. a competitor criticised. |
+| `emotion` | enum: `excited`, `satisfied`, `curious`, `confused`, `frustrated`, `angry`, `disappointed`, `concerned`, `neutral` — or null | The author's own emotion, independent of `sentiment` (on the new relevance engine, a post furious at a competitor is `Positive` for you and `angry` here). `null` until scored, for mentions scored before emotion detection existed, and for workspaces not yet on the new relevance engine (gradual rollout). |
 | `language` | string \| null | Detected language as a full lowercase name (`english`, `spanish`, …; `undetermined` when detection fails) — never an ISO code. |
 | `tags` | string[] | AI-assigned topic tags (e.g. `competitor_mention`, `buy_intent`). |
 | `keywords` | object[] | Monitored keywords this mention matched. |
@@ -457,6 +464,7 @@ Without `--json`: A terminal renders a detail panel: headline, addressing pair, 
   "relevance": "relevant",
   "relevanceComment": "Asks for social-listening tool recommendations — a buying signal.",
   "sentiment": "Neutral",
+  "emotion": "curious",
   "language": "english",
   "tags": [
     "buy_intent"
@@ -534,7 +542,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `data[].authorFollowers` | integer \| null | Author follower count at collection time. |
 | `data[].relevance` | enum: `relevant`, `not_relevant` | AI relevance classification (unscored posts collapse to `not_relevant`). |
 | `data[].relevanceComment` | string \| null | The AI's justification for its relevance verdict, when available. |
-| `data[].sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. |
+| `data[].sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. Workspaces on the new relevance engine (gradual rollout) receive sentiment for the company: `Positive` = good news for your company, e.g. a competitor criticised. |
+| `data[].emotion` | enum: `excited`, `satisfied`, `curious`, `confused`, `frustrated`, `angry`, `disappointed`, `concerned`, `neutral` — or null | The author's own emotion, independent of `sentiment` (on the new relevance engine, a post furious at a competitor is `Positive` for you and `angry` here). `null` until scored, for mentions scored before emotion detection existed, and for workspaces not yet on the new relevance engine (gradual rollout). |
 | `data[].language` | string \| null | Detected language as a full lowercase name (`english`, `spanish`, …; `undetermined` when detection fails) — never an ISO code. |
 | `data[].tags` | string[] | AI-assigned topic tags (e.g. `competitor_mention`, `buy_intent`). |
 | `data[].keywords` | object[] | Monitored keywords this mention matched. |
@@ -579,6 +588,7 @@ Without `--json`: A terminal renders a readable mention stream (headline, source
       "relevance": "relevant",
       "relevanceComment": "Asks for social-listening tool recommendations — a buying signal.",
       "sentiment": "Neutral",
+      "emotion": "curious",
       "language": "english",
       "tags": [
         "buy_intent"
@@ -609,6 +619,7 @@ Without `--json`: A terminal renders a readable mention stream (headline, source
       "relevance": "relevant",
       "relevanceComment": "Direct review from a configured customer-review target.",
       "sentiment": "Positive",
+      "emotion": "satisfied",
       "language": "english",
       "tags": [
         "user_feedback"
@@ -758,7 +769,8 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `mentions[].authorFollowers` | integer \| null | Author follower count at collection time. |
 | `mentions[].relevance` | enum: `relevant`, `not_relevant` | AI relevance classification (unscored posts collapse to `not_relevant`). |
 | `mentions[].relevanceComment` | string \| null | The AI's justification for its relevance verdict, when available. |
-| `mentions[].sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. |
+| `mentions[].sentiment` | enum: `Positive`, `Neutral`, `Negative` — or null | Sentiment classification. `null` until scored. Workspaces on the new relevance engine (gradual rollout) receive sentiment for the company: `Positive` = good news for your company, e.g. a competitor criticised. |
+| `mentions[].emotion` | enum: `excited`, `satisfied`, `curious`, `confused`, `frustrated`, `angry`, `disappointed`, `concerned`, `neutral` — or null | The author's own emotion, independent of `sentiment` (on the new relevance engine, a post furious at a competitor is `Positive` for you and `angry` here). `null` until scored, for mentions scored before emotion detection existed, and for workspaces not yet on the new relevance engine (gradual rollout). |
 | `mentions[].language` | string \| null | Detected language of a fresh search result as a lowercase ISO 639-1 code (`en`, `es`, …) — unlike the mentions feed, which uses full names. A row flagged `alreadyInWorkspace` keeps the workspace's stored full-name value (`english`). |
 | `mentions[].tags` | string[] | AI-assigned topic tags (e.g. `competitor_mention`, `buy_intent`). |
 | `mentions[].keywords` | object[] | Monitored keywords this mention matched. |
@@ -828,6 +840,7 @@ Without `--json`: A terminal renders each result in the `mentions list` stream l
       "relevance": "relevant",
       "relevanceComment": "Asks for social-listening tool recommendations — a buying signal.",
       "sentiment": "Neutral",
+      "emotion": "curious",
       "language": "en",
       "tags": [
         "buy_intent"
