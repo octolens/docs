@@ -45,7 +45,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | Field | Type | Description |
 |---|---|---|
 | `id` | integer | Stable numeric keyword id — what `keywords update/pause/resume/rm` accept. |
-| `keyword` | string | The phrase being tracked. |
+| `keyword` | string | The phrase being tracked. A whole-server Discord keyword carries `kind: "discord_server"` (absent for text keywords): its `keyword` is the server's name, never matched as text. |
 | `context` | string \| null | Disambiguation sentence used by AI relevance scoring. Auto-generated from the company profile when omitted at creation. |
 | `additionalTerms` | string \| null | Comma-separated terms required alongside the main keyword. `null` when none. |
 | `additionalTermsAndOr` | boolean | How `additionalTerms` combine: `true` = OR (any one), `false` = AND (all). |
@@ -122,7 +122,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 |---|---|---|
 | `data` | object[] | Every tracked keyword, sorted by name (case-insensitive, id tie-break). |
 | `data[].id` | integer | Stable numeric keyword id — what `keywords update/pause/resume/rm` accept. |
-| `data[].keyword` | string | The phrase being tracked. |
+| `data[].keyword` | string | The phrase being tracked. A whole-server Discord keyword carries `kind: "discord_server"` (absent for text keywords): its `keyword` is the server's name, never matched as text. |
 | `data[].context` | string \| null | Disambiguation sentence used by AI relevance scoring. Auto-generated from the company profile when omitted at creation. |
 | `data[].additionalTerms` | string \| null | Comma-separated terms required alongside the main keyword. `null` when none. |
 | `data[].additionalTermsAndOr` | boolean | How `additionalTerms` combine: `true` = OR (any one), `false` = AND (all). |
@@ -376,7 +376,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | Field | Type | Description |
 |---|---|---|
 | `id` | integer | Stable numeric keyword id — what `keywords update/pause/resume/rm` accept. |
-| `keyword` | string | The phrase being tracked. |
+| `keyword` | string | The phrase being tracked. A whole-server Discord keyword carries `kind: "discord_server"` (absent for text keywords): its `keyword` is the server's name, never matched as text. |
 | `context` | string \| null | Disambiguation sentence used by AI relevance scoring. Auto-generated from the company profile when omitted at creation. |
 | `additionalTerms` | string \| null | Comma-separated terms required alongside the main keyword. `null` when none. |
 | `additionalTermsAndOr` | boolean | How `additionalTerms` combine: `true` = OR (any one), `false` = AND (all). |
