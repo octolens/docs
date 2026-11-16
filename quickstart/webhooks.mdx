@@ -127,7 +127,7 @@ When `isReply` is `true`, `originalPostSourceId` points at the root of the threa
 | Reddit | The submission the comment belongs to. |
 | Hacker News | The story the comment belongs to. |
 | Bluesky | The thread's root post. |
-| X (Twitter) | The conversation's first tweet, when the data provider returns it. Some X replies arrive without it and carry `null`. |
+| X (Twitter) | The conversation's first tweet. |
 
 The root post itself is only sent as its own webhook if it matched one of your feeds. Mentions collected before November 2026 always carry `null`.
 
