@@ -235,7 +235,7 @@ With `--json`, stdout carries one JSON document with these fields. Backed by the
 | `negativeAuthors` | string[] | Author handles filtered out org-wide (exact match against `mention.author`). |
 | `negativeSubreddits` | string[] | Subreddits excluded from Reddit collection (stored without the `r/` prefix). |
 | `positiveSubreddits` | string[] | Subreddit allowlist — when non-empty, Reddit mentions are restricted to these. |
-| `negativeRepos` | string[] | GitHub repos excluded, in `owner/name` form. |
+| `negativeRepos` | string[] | GitHub repos excluded, in `owner/name` form (`owner` or `owner/*` = all its repos). |
 
 Without `--json`: A terminal renders each list with its values (or just one list with `--list`).
 
