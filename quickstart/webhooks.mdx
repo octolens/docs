@@ -69,6 +69,8 @@ Octolens sends one mention per request. The top-level `action` field indicates w
     "authorFollowerCount": 1234,
     "source": "reddit",
     "sourceId": "111111111",
+    "isReply": true,
+    "originalPostSourceId": "1xx7euv",
     "relevanceScore": "high",
     "relevanceComment": "...",
     "keyword": "Octolens",
@@ -101,6 +103,8 @@ Octolens sends one mention per request. The top-level `action` field indicates w
 | `data.authorFollowerCount` | number | The author's follower count on the source platform, if available. |
 | `data.source` | string | The platform the mention came from (e.g. `reddit`, `twitter`, `github`). |
 | `data.sourceId` | string | The platform's native ID for the post. |
+| `data.isReply` | boolean | `true` when the mention is a reply or comment rather than a top-level post (X, Reddit, Bluesky, Hacker News). |
+| `data.originalPostSourceId` | string or null | For a reply, the `sourceId` of the post that started the thread (not the direct parent), in the same format as `sourceId`. Use it to group replies by thread or to match a reply to a mention you already received. `null` for top-level posts and whenever the root is unknown. See [Replies and thread roots](#replies-and-thread-roots). |
 | `data.relevanceScore` | string | Relevance assigned by the AI. One of `high`, `medium`, or `low`. |
 | `data.relevanceComment` | string | One-sentence explanation of why the mention matched. |
 | `data.keyword` | string | The first (primary) keyword that matched this post. Kept for backward compatibility; new integrations should use `keywords`. |
@@ -113,6 +117,19 @@ Octolens sends one mention per request. The top-level `action` field indicates w
 | `data.viewId` | number | ID of the feed that fired this webhook. (Field name kept for backward compatibility — feeds were previously called views.) |
 | `data.viewName` | string | Name of the feed that fired this webhook. |
 | `data.viewKeywords` | string[] | The keywords configured on the feed that fired this webhook. Useful for distinguishing which feed-filter matched when one feed covers multiple keywords. |
+
+### Replies and thread roots
+
+When `isReply` is `true`, `originalPostSourceId` points at the root of the thread:
+
+| Source | `originalPostSourceId` is |
+|---|---|
+| Reddit | The submission the comment belongs to. |
+| Hacker News | The story the comment belongs to. |
+| Bluesky | The thread's root post. |
+| X (Twitter) | The conversation's first tweet. |
+
+The root post itself is only sent as its own webhook if it matched one of your feeds. Mentions collected before November 2026 always carry `null`.
 
 <Note>
 Webhook field names differ slightly from the [REST API](/api/v2/overview) response. For example, the API returns `sentiment` while webhooks use `sentimentLabel`, and the API returns `keywords` as an array of objects like `{id, keyword}` while webhooks send `keywords` as an array of strings (plus `keyword` as a single string for backward compatibility). If you're wiring up both, map them explicitly.
